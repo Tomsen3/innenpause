@@ -1,0 +1,2222 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Innenpause</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2c2416">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Innenpause">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #f5f0e8;
+    --bg2: #ede7d9;
+    --bg3: #e2dace;
+    --card: #faf7f2;
+    --border: #d4ccbc;
+    --text: #2c2416;
+    --text2: #6b5f4e;
+    --text3: #9e8f7a;
+    --accent: #7a6d52;
+    --accent2: #b5956a;
+    --accent3: #8fa67a;
+    --warm: #c4845a;
+    --blue: #6a8fa6;
+    --radius: 12px;
+    --shadow: 0 2px 12px rgba(44,36,22,0.08);
+    --shadow-lg: 0 4px 24px rgba(44,36,22,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ============================================================
+     LIZENZ-SCREEN
+     ============================================================ */
+  #lizenz-screen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #2c2416 0%, #4a3c28 100%);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  #lizenz-screen.show { display: flex; }
+  .lizenz-box {
+    background: #faf7f2;
+    border-radius: 20px;
+    padding: 32px 28px;
+    max-width: 380px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+  }
+  .lizenz-logo {
+    font-size: 48px;
+    margin-bottom: 12px;
+  }
+  .lizenz-titel {
+    font-family: 'Lora', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .lizenz-sub {
+    font-size: 13px;
+    color: var(--text3);
+    margin-bottom: 28px;
+    line-height: 1.5;
+  }
+  .lizenz-label {
+    font-size: 12px;
+    color: var(--text2);
+    text-align: left;
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .lizenz-input {
+    width: 100%;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    outline: none;
+    letter-spacing: 1px;
+    text-align: center;
+    transition: border-color 0.2s;
+    margin-bottom: 8px;
+  }
+  .lizenz-input:focus { border-color: var(--accent2); }
+  .lizenz-error {
+    font-size: 12px;
+    color: var(--warm);
+    margin-bottom: 12px;
+    min-height: 18px;
+  }
+  .lizenz-btn {
+    width: 100%;
+    background: var(--accent);
+    color: #f5f0e8;
+    border: none;
+    border-radius: 10px;
+    padding: 13px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .lizenz-btn:hover { background: #5a4f3c; }
+  .lizenz-hinweis {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 16px;
+    line-height: 1.5;
+  }
+
+  /* IMPULS HEADER */
+  #impuls-header {
+    background: linear-gradient(135deg, #2c2416 0%, #4a3c28 100%);
+    color: #f5f0e8;
+    padding: 12px 20px 14px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .app-titel-bereich {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding-bottom: 8px;
+  }
+  #app-titel-anzeige {
+    font-family: 'Lora', serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: #f5f0e8;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  #app-titel-anzeige:hover { opacity: 0.75; }
+  #app-untertitel-anzeige {
+    font-size: 11px;
+    color: #9e8f7a;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  #app-untertitel-anzeige:hover { opacity: 0.75; }
+  #app-titel-edit-bereich {
+    display: none;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding-bottom: 8px;
+  }
+  #app-titel-edit-bereich input {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 6px;
+    color: #f5f0e8;
+    padding: 4px 8px;
+    font-family: 'Lora', serif;
+    font-size: 15px;
+    width: 100%;
+    margin-bottom: 5px;
+  }
+  #app-titel-edit-bereich input::placeholder { color: rgba(255,255,255,0.35); }
+  .titel-edit-aktionen { display: flex; gap: 8px; }
+  .titel-edit-aktionen button {
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+  }
+  .btn-titel-ok { background: var(--accent2); color: #fff; }
+  .btn-titel-ab { background: rgba(255,255,255,0.1); color: #ede7d9; }
+  .impuls-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+  }
+  .impuls-text {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #ede7d9;
+  }
+  .impuls-kategorie {
+    font-size: 11px;
+    color: #9e8f7a;
+    margin-top: 4px;
+  }
+
+  /* TABS */
+  #tab-bar {
+    display: flex;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    position: sticky;
+    top: 72px;
+    z-index: 99;
+  }
+  #tab-bar::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    flex: 1;
+    min-width: 64px;
+    padding: 12px 8px 10px;
+    border: none;
+    background: none;
+    color: var(--text3);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent2); }
+  .tab-icon { font-size: 18px; }
+
+  /* MAIN CONTENT */
+  #main { padding: 0 0 100px; max-width: 600px; margin: 0 auto; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin: 12px 16px;
+    box-shadow: var(--shadow);
+  }
+  .card-title {
+    font-family: 'Lora', serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* AKKORDEON */
+  .akkordeon {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin: 12px 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .akkordeon-header {
+    padding: 14px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Lora', serif;
+    font-size: 15px;
+    font-weight: 500;
+    user-select: none;
+    transition: background 0.2s;
+  }
+  .akkordeon-header:hover { background: var(--bg2); }
+  .akkordeon-header .zeit-badge {
+    font-size: 11px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    color: var(--text3);
+    background: var(--bg2);
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+  .akkordeon-arrow { transition: transform 0.3s; color: var(--text3); font-size: 12px; }
+  .akkordeon.open .akkordeon-arrow { transform: rotate(180deg); }
+  .akkordeon-body {
+    display: none;
+    padding: 0 16px 16px;
+    border-top: 1px solid var(--border);
+  }
+  .akkordeon.open .akkordeon-body { display: block; }
+
+  /* ÜBUNG JETZT */
+  .uebung-jetzt-card {
+    background: linear-gradient(135deg, var(--card) 0%, var(--bg2) 100%);
+    border: 1px solid var(--accent2);
+    border-radius: var(--radius);
+    margin: 8px 16px 4px;
+    padding: 16px;
+    box-shadow: var(--shadow);
+  }
+  .uebung-jetzt-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent2); font-weight: 500; margin-bottom: 6px; }
+  .uebung-jetzt-titel { font-family: 'Lora', serif; font-size: 17px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+  .uebung-jetzt-meta { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; font-size: 13px; color: var(--text2); }
+  .uebung-jetzt-desc { font-size: 13px; color: var(--text2); line-height: 1.5; margin-bottom: 10px; }
+
+  /* VORSCHLAG-KOMMENTAR */
+  .vorschlag-kommentar-bereich { margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px; }
+  .vorschlag-kommentar-label { font-size: 12px; color: var(--text2); margin-bottom: 6px; font-weight: 500; }
+  .vorschlag-kommentar-saved { font-size: 13px; color: var(--text2); font-style: italic; background: var(--bg2); border-radius: 8px; padding: 8px 10px; margin-bottom: 8px; }
+
+  /* SKALEN */
+  .skala-gruppe { margin: 10px 0; }
+  .skala-label { display: flex; justify-content: space-between; font-size: 13px; color: var(--text2); margin-bottom: 4px; }
+  .skala-wert { font-weight: 500; color: var(--accent2); }
+  input[type=range] {
+    width: 100%;
+    -webkit-appearance: none;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--bg3);
+    outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent2);
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+
+  /* INPUTS */
+  textarea, input[type=text], input[type=number], select {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+    resize: vertical;
+  }
+  textarea:focus, input[type=text]:focus, input[type=number]:focus, select:focus { border-color: var(--accent2); }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .btn-primary { background: var(--accent); color: #f5f0e8; }
+  .btn-primary:hover { background: #5a4f3c; }
+  .btn-secondary { background: var(--bg2); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { background: var(--bg3); }
+  .btn-sm { padding: 6px 12px; font-size: 13px; }
+  .btn-block { width: 100%; justify-content: center; margin-top: 12px; }
+  .btn-danger { background: #c0392b; color: #fff; }
+  .btn-danger:hover { background: #a93226; }
+
+  /* ÜBUNGS-KARTE */
+  .uebung-card { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin: 8px 0; position: relative; }
+  .uebung-titel { font-family: 'Lora', serif; font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+  .uebung-meta { font-size: 12px; color: var(--text3); display: flex; gap: 10px; margin-bottom: 8px; }
+  .uebung-desc { font-size: 14px; color: var(--text2); line-height: 1.5; }
+  .uebung-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; align-items: center; }
+  .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
+  .badge-kat { background: var(--bg2); color: var(--text2); }
+  .badge-done { background: #d4edda; color: #3a7c4a; }
+
+  /* STERNE */
+  .sterne { display: flex; gap: 4px; }
+  .stern { font-size: 20px; cursor: pointer; color: var(--border); transition: color 0.15s; }
+  .stern.aktiv { color: var(--accent2); }
+
+  /* DAUMEN */
+  .daumen-gruppe { display: flex; gap: 6px; }
+  .daumen-btn { padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); cursor: pointer; font-size: 16px; transition: all 0.15s; }
+  .daumen-btn.aktiv { background: var(--bg3); border-color: var(--accent); }
+
+  /* JOURNAL */
+  .journal-entry { background: var(--bg); border-left: 3px solid var(--accent2); border-radius: 0 8px 8px 0; padding: 10px 14px; margin: 8px 0; }
+  .journal-time { font-size: 11px; color: var(--text3); margin-bottom: 4px; }
+  .journal-text { font-size: 14px; color: var(--text); line-height: 1.5; }
+
+  /* VERLAUF */
+  .verlauf-nav { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--card); border-bottom: 1px solid var(--border); }
+  .verlauf-datum { font-family: 'Lora', serif; font-size: 15px; }
+  .nav-arrow { background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; cursor: pointer; font-size: 14px; }
+  .nav-arrow:hover { background: var(--bg3); }
+
+  /* CHECKIN */
+  .checkin-zeile { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--bg3); font-size: 13px; }
+  .checkin-zeile:last-child { border-bottom: none; }
+  .checkin-balken { width: 80px; height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
+  .checkin-balken-fill { height: 100%; background: var(--accent2); border-radius: 3px; }
+
+  /* EINSTELLUNGEN */
+  .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--bg3); }
+  .setting-label { font-size: 14px; color: var(--text); }
+  .setting-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+
+  /* TOGGLE */
+  .toggle { position: relative; width: 44px; height: 24px; }
+  .toggle input { display: none; }
+  .toggle-slider { position: absolute; inset: 0; background: var(--border); border-radius: 12px; cursor: pointer; transition: background 0.2s; }
+  .toggle-slider::before { content: ''; position: absolute; width: 18px; height: 18px; background: white; border-radius: 50%; top: 3px; left: 3px; transition: transform 0.2s; }
+  .toggle input:checked + .toggle-slider { background: var(--accent2); }
+  .toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+  /* TAGESFRAGE */
+  .tagesfrage-toggle { font-size: 12px; color: var(--blue); cursor: pointer; margin-top: 8px; display: flex; align-items: center; gap: 4px; }
+  .tagesfrage-bereich { display: none; margin-top: 10px; }
+  .tagesfrage-bereich.open { display: block; }
+  .tagesfrage-text { font-family: 'Lora', serif; font-style: italic; font-size: 14px; color: var(--text2); margin-bottom: 8px; padding: 8px 12px; background: var(--bg2); border-radius: 8px; border-left: 3px solid var(--blue); }
+
+  /* TOAST */
+  #toast {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--text);
+    color: var(--bg);
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 13px;
+    opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+    z-index: 200;
+    white-space: nowrap;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* LOADING */
+  .loading { text-align: center; padding: 40px; color: var(--text3); font-style: italic; }
+
+  /* DIVIDER */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
+
+  /* MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(44,36,22,0.5); z-index: 300; align-items: flex-end; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--card); border-radius: 20px 20px 0 0; padding: 20px; width: 100%; max-width: 600px; margin: 0 auto; max-height: 85vh; overflow-y: auto; }
+  .modal-titel { font-family: 'Lora', serif; font-size: 17px; font-weight: 500; margin-bottom: 16px; }
+
+  /* POOL VERWALTUNG */
+  .uebung-pool-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--bg3); gap: 8px; }
+  .pool-item-info { flex: 1; }
+  .pool-item-titel { font-size: 14px; font-weight: 500; }
+  .pool-item-kat { font-size: 11px; color: var(--text3); }
+  .pool-item-actions { display: flex; gap: 4px; }
+  .btn-icon { background: none; border: none; cursor: pointer; font-size: 16px; padding: 4px; color: var(--text3); transition: color 0.15s; }
+  .btn-icon:hover { color: var(--warm); }
+
+  input[type=date] {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+  }
+
+  .section-label { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); font-weight: 500; padding: 16px 16px 4px; }
+  .empty-state { text-align: center; padding: 30px 20px; color: var(--text3); font-style: italic; font-family: 'Lora', serif; font-size: 14px; }
+
+  .heute-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 12px 16px; }
+  .heute-slot { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 10px; text-align: center; cursor: pointer; transition: all 0.2s; }
+  .heute-slot:hover { background: var(--bg2); }
+  .heute-slot.aktiv { border-color: var(--accent2); background: #fdf5e6; }
+  .heute-slot-icon { font-size: 22px; margin-bottom: 4px; }
+  .heute-slot-label { font-size: 12px; color: var(--text2); }
+  .heute-slot-status { font-size: 10px; color: var(--text3); margin-top: 2px; }
+
+  /* Daten-Verwaltung */
+  .daten-info { font-size: 12px; color: var(--text3); padding: 8px 0; }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     LIZENZ-SCREEN (erscheint nur beim ersten Start)
+     ============================================================ -->
+<div id="lizenz-screen">
+  <div class="lizenz-box">
+    <div class="lizenz-logo">🌿</div>
+    <div class="lizenz-titel">Innenpause</div>
+    <div class="lizenz-sub">Bitte gib deinen Lizenzschlüssel ein, um die App zu aktivieren.</div>
+    <div class="lizenz-label">Lizenzschlüssel</div>
+    <input type="text" class="lizenz-input" id="lizenz-input"
+      placeholder="XXXX-XXXX-XXXX-XXXX"
+      autocomplete="off" autocorrect="off" autocapitalize="characters"
+      spellcheck="false">
+    <div class="lizenz-error" id="lizenz-error"></div>
+    <button class="lizenz-btn" onclick="pruefeeLizenz()">Aktivieren</button>
+    <div class="lizenz-hinweis">Der Schlüssel wird einmalig gespeichert und ist danach nicht mehr erforderlich.</div>
+  </div>
+</div>
+
+<!-- TAGESIMPULS HEADER -->
+<div id="impuls-header">
+  <div class="app-titel-bereich" onclick="oeffneTitelEdit()">
+    <span id="app-titel-anzeige">Innenpause</span>
+    <span id="app-untertitel-anzeige">Deine täglichen Achtsamkeits-Momente</span>
+  </div>
+  <div id="app-titel-edit-bereich">
+    <input type="text" id="app-titel-input" placeholder="App-Name..." maxlength="40">
+    <input type="text" id="app-untertitel-input" placeholder="Untertitel..." maxlength="60">
+    <div class="titel-edit-aktionen">
+      <button class="btn-titel-ok" onclick="speichereAppTitel()">✓ Speichern</button>
+      <button class="btn-titel-ab" onclick="schliesseTitelEdit()">Abbrechen</button>
+    </div>
+  </div>
+  <div class="impuls-label">✦ Tagesimpuls</div>
+  <div class="impuls-text" id="impuls-text">Lade Impuls...</div>
+  <div class="impuls-kategorie" id="impuls-kategorie"></div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <button class="tab-btn active" onclick="zeigeTab('heute')" id="tab-heute">
+    <span class="tab-icon">☀️</span>Heute
+  </button>
+  <button class="tab-btn" onclick="zeigeTab('checkin')" id="tab-checkin">
+    <span class="tab-icon">📊</span>Check-in
+  </button>
+  <button class="tab-btn" onclick="zeigeTab('uebungen')" id="tab-uebungen">
+    <span class="tab-icon">🌿</span>Übungen
+  </button>
+  <button class="tab-btn" onclick="zeigeTab('verlauf')" id="tab-verlauf">
+    <span class="tab-icon">📖</span>Verlauf
+  </button>
+  <button class="tab-btn" onclick="zeigeTab('einstellungen')" id="tab-einstellungen">
+    <span class="tab-icon">⚙️</span>Einst.
+  </button>
+</div>
+
+<div id="main">
+
+  <!-- ===== TAB: HEUTE ===== -->
+  <div id="content-heute" class="tab-content active">
+    <div class="heute-grid">
+      <div class="heute-slot" id="slot-morgen" onclick="zeigeTab('checkin'); oeffneCheckin('morgen')">
+        <div class="heute-slot-icon">🌅</div>
+        <div class="heute-slot-label">Morgen</div>
+        <div class="heute-slot-status" id="status-morgen">–</div>
+      </div>
+      <div class="heute-slot" id="slot-mittag" onclick="zeigeTab('checkin'); oeffneCheckin('mittag')">
+        <div class="heute-slot-icon">☀️</div>
+        <div class="heute-slot-label">Mittag</div>
+        <div class="heute-slot-status" id="status-mittag">–</div>
+      </div>
+      <div class="heute-slot" id="slot-abend" onclick="zeigeTab('checkin'); oeffneCheckin('abend')">
+        <div class="heute-slot-icon">🌙</div>
+        <div class="heute-slot-label">Abend</div>
+        <div class="heute-slot-status" id="status-abend">–</div>
+      </div>
+    </div>
+
+    <div class="section-label">Übung jetzt</div>
+    <div id="uebung-jetzt-container">
+      <div class="loading">Lade aktuelle Übung...</div>
+    </div>
+
+    <div class="section-label">Übungsvorschläge</div>
+    <div id="heute-vorschlaege-container">
+      <div class="loading">Lade Vorschläge...</div>
+    </div>
+
+    <div class="section-label">Notizbuch</div>
+    <div class="card">
+      <textarea id="journal-input" rows="3" placeholder="Gedanken, Beobachtungen, Momente..."></textarea>
+      <button class="btn btn-primary btn-block btn-sm" onclick="speichereJournal()">Eintrag speichern</button>
+    </div>
+    <div id="journal-eintraege-heute"></div>
+
+    <div class="section-label">Tagesabschluss</div>
+    <div class="card">
+      <div class="card-title">🌙 Tagesabschluss</div>
+      <textarea id="abschluss-text" rows="3" placeholder="Was nehme ich vom heutigen Tag mit?"></textarea>
+      <div style="margin-top:10px">
+        <label style="font-size:13px;color:var(--text2)">Highlight des Tages</label>
+        <input type="text" id="abschluss-highlight" placeholder="Ein Moment, der gut war..." style="margin-top:6px">
+      </div>
+      <div style="margin-top:10px">
+        <label style="font-size:13px;color:var(--text2)">Dankbarkeit</label>
+        <input type="text" id="abschluss-dankbarkeit" placeholder="Ich bin dankbar für..." style="margin-top:6px">
+      </div>
+      <button class="btn btn-primary btn-block" onclick="speichereAbschluss()">Tagesabschluss speichern</button>
+    </div>
+
+    <!-- Heutige Übungen (wird dynamisch befüllt) -->
+    <div class="section-label">Heutige Übungen</div>
+    <div id="heute-uebungen-container"></div>
+  </div>
+
+  <!-- ===== TAB: CHECK-IN ===== -->
+  <div id="content-checkin" class="tab-content">
+    <div class="akkordeon" id="akk-morgen">
+      <div class="akkordeon-header" onclick="toggleAkk('morgen')">
+        <span>🌅 Morgen-Check-in</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="zeit-badge">Morgens</span>
+          <span class="akkordeon-arrow">▼</span>
+        </div>
+      </div>
+      <div class="akkordeon-body">
+        <div id="form-morgen"></div>
+        <button class="btn btn-primary btn-block" onclick="speichereCheckin('morgen')">Speichern</button>
+      </div>
+    </div>
+    <div class="akkordeon" id="akk-mittag">
+      <div class="akkordeon-header" onclick="toggleAkk('mittag')">
+        <span>☀️ Mittag-Check-in</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="zeit-badge">Mittags</span>
+          <span class="akkordeon-arrow">▼</span>
+        </div>
+      </div>
+      <div class="akkordeon-body">
+        <div id="form-mittag"></div>
+        <button class="btn btn-primary btn-block" onclick="speichereCheckin('mittag')">Speichern</button>
+      </div>
+    </div>
+    <div class="akkordeon" id="akk-abend">
+      <div class="akkordeon-header" onclick="toggleAkk('abend')">
+        <span>🌙 Abend-Check-in</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="zeit-badge">Abends</span>
+          <span class="akkordeon-arrow">▼</span>
+        </div>
+      </div>
+      <div class="akkordeon-body">
+        <div id="form-abend"></div>
+        <button class="btn btn-primary btn-block" onclick="speichereCheckin('abend')">Speichern</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TAB: ÜBUNGEN ===== -->
+  <div id="content-uebungen" class="tab-content">
+    <div class="card" style="margin-top:12px">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <select id="filter-kat" onchange="ladeUebungen()" style="flex:1;min-width:120px">
+          <option value="">Alle Kategorien</option>
+          <option value="Atem">Atem</option>
+          <option value="Körperwahrnehmung">Körperwahrnehmung</option>
+          <option value="Stimme & Singen">Stimme & Singen</option>
+          <option value="GfK & Bedürfnisse">GfK & Bedürfnisse</option>
+          <option value="Selbstmitgefühl">Selbstmitgefühl</option>
+          <option value="Polyvagal & Regulation">Polyvagal & Regulation</option>
+          <option value="Bewegung & Rhythmus">Bewegung & Rhythmus</option>
+          <option value="Stille & Meditation">Stille & Meditation</option>
+          <option value="Kontakt & Verbindung">Kontakt & Verbindung</option>
+          <option value="Energie & Lebendigkeit">Energie & Lebendigkeit</option>
+        </select>
+        <select id="filter-zeit" onchange="ladeUebungen()" style="flex:1;min-width:100px">
+          <option value="">Alle Zeiten</option>
+          <option value="morgen">Morgen</option>
+          <option value="mittag">Mittag</option>
+          <option value="abend">Abend</option>
+        </select>
+      </div>
+    </div>
+    <div id="uebungen-container"><div class="loading">Lade Übungen...</div></div>
+    <div style="padding: 0 16px">
+      <button class="btn btn-secondary btn-block" onclick="oeffneNeueUebung()">+ Neue Übung hinzufügen</button>
+    </div>
+  </div>
+
+  <!-- ===== TAB: VERLAUF ===== -->
+  <div id="content-verlauf" class="tab-content">
+    <div class="verlauf-nav">
+      <button class="nav-arrow" onclick="verlaufNavigiere(-1)">◀</button>
+      <div>
+        <div class="verlauf-datum" id="verlauf-datum-anzeige"></div>
+        <input type="date" id="verlauf-datum" onchange="ladeVerlauf()" style="margin-top:4px">
+      </div>
+      <button class="nav-arrow" onclick="verlaufNavigiere(1)">▶</button>
+    </div>
+    <div id="verlauf-container"><div class="loading">Datum wählen...</div></div>
+  </div>
+
+  <!-- ===== TAB: EINSTELLUNGEN ===== -->
+  <div id="content-einstellungen" class="tab-content">
+
+    <div class="section-label">Anzeige</div>
+    <div class="card">
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Tagesfrage anzeigen</div>
+          <div class="setting-sub">Tägliche Reflexionsfrage im Check-in</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="toggle-tagesfrage" checked onchange="speichereEinstellung('tagesfrage', this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Automatisch öffnen</div>
+          <div class="setting-sub">Passenden Check-in zur Tageszeit öffnen</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="toggle-auto-akk" checked onchange="speichereEinstellung('autoAkk', this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="section-label">Tageszeiten-Grenzen</div>
+    <div class="card">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:12px">Ab welcher Uhrzeit sollen Übungsvorschläge eingeblendet werden?</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <div style="flex:1;min-width:80px">
+          <label style="font-size:12px;color:var(--text2)">🌅 Morgen ab</label>
+          <div style="display:flex;align-items:center;gap:4px;margin-top:4px">
+            <input type="number" id="set-start-morgen" min="0" max="12" value="5" style="width:60px">
+            <span style="font-size:13px;color:var(--text2)">Uhr</span>
+          </div>
+        </div>
+        <div style="flex:1;min-width:80px">
+          <label style="font-size:12px;color:var(--text2)">☀️ Mittag ab</label>
+          <div style="display:flex;align-items:center;gap:4px;margin-top:4px">
+            <input type="number" id="set-start-mittag" min="0" max="18" value="11" style="width:60px">
+            <span style="font-size:13px;color:var(--text2)">Uhr</span>
+          </div>
+        </div>
+        <div style="flex:1;min-width:80px">
+          <label style="font-size:12px;color:var(--text2)">🌙 Abend ab</label>
+          <div style="display:flex;align-items:center;gap:4px;margin-top:4px">
+            <input type="number" id="set-start-abend" min="0" max="23" value="17" style="width:60px">
+            <span style="font-size:13px;color:var(--text2)">Uhr</span>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-block" style="margin-top:14px" onclick="speichereTageszeitenGrenzen()">Speichern</button>
+    </div>
+
+    <div class="section-label">Übungspool</div>
+    <div class="card">
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Standard-Pool laden</div>
+          <div class="setting-sub">120 Übungen als Startpunkt importieren</div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="importiereStandardPool()">Import</button>
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Übungen verwalten</div>
+          <div class="setting-sub">Bearbeiten, löschen, hinzufügen</div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="zeigeTab('uebungen')">Öffnen</button>
+      </div>
+    </div>
+
+    <div class="section-label">Daten</div>
+    <div class="card">
+      <div class="daten-info" id="daten-info">Alle Daten werden lokal auf diesem Gerät gespeichert.</div>
+      <div class="setting-row" style="margin-top:8px">
+        <div>
+          <div class="setting-label">Daten exportieren</div>
+          <div class="setting-sub">JSON-Backup aller lokalen Daten</div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="exportiereAllesDaten()">Export</button>
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Daten importieren</div>
+          <div class="setting-sub">Backup wiederherstellen</div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('import-file').click()">Import</button>
+        <input type="file" id="import-file" accept=".json" style="display:none" onchange="importiereDaten(this)">
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Alle Daten löschen</div>
+          <div class="setting-sub">App zurücksetzen (nicht rückgängig machbar)</div>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="loescheAllesDaten()">Löschen</button>
+      </div>
+    </div>
+
+    <div class="section-label">Lizenz</div>
+    <div class="card">
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Aktivierungsstatus</div>
+          <div class="setting-sub" id="lizenz-status-anzeige">Aktiv ✓</div>
+        </div>
+        <span>🔑</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FEEDBACK MODAL -->
+<div class="modal-overlay" id="feedback-modal">
+  <div class="modal">
+    <div class="modal-titel" id="feedback-modal-titel">Übung bewerten</div>
+    <input type="hidden" id="feedback-daily-id">
+    <div style="margin-bottom:16px">
+      <div style="font-size:13px;color:var(--text2);margin-bottom:8px">Wie war diese Übung für dich?</div>
+      <div class="sterne" id="feedback-sterne">
+        <span class="stern" onclick="setStern(1)">★</span>
+        <span class="stern" onclick="setStern(2)">★</span>
+        <span class="stern" onclick="setStern(3)">★</span>
+        <span class="stern" onclick="setStern(4)">★</span>
+        <span class="stern" onclick="setStern(5)">★</span>
+      </div>
+    </div>
+    <div style="margin-bottom:16px">
+      <div style="font-size:13px;color:var(--text2);margin-bottom:8px">Tendenz</div>
+      <div class="daumen-gruppe">
+        <button class="daumen-btn" id="daumen-hoch" onclick="setDaumen('hoch')">👍</button>
+        <button class="daumen-btn" id="daumen-neutral" onclick="setDaumen('neutral')">😐</button>
+        <button class="daumen-btn" id="daumen-runter" onclick="setDaumen('runter')">👎</button>
+      </div>
+    </div>
+    <div style="margin-bottom:16px">
+      <div style="font-size:13px;color:var(--text2);margin-bottom:8px">Notiz (optional)</div>
+      <textarea id="feedback-notiz" rows="2" placeholder="Was ist dir aufgefallen?"></textarea>
+    </div>
+    <label style="display:flex;align-items:center;gap:8px;margin-bottom:16px;font-size:14px;cursor:pointer">
+      <input type="checkbox" id="feedback-markiert"> Als Favorit markieren ⭐
+    </label>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-secondary" style="flex:1" onclick="schliesseFeedback()">Abbrechen</button>
+      <button class="btn btn-primary" style="flex:1" onclick="speichereFeedback()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEUE ÜBUNG MODAL -->
+<div class="modal-overlay" id="uebung-modal">
+  <div class="modal">
+    <div class="modal-titel" id="uebung-modal-titel">Neue Übung</div>
+    <input type="hidden" id="uebung-edit-id">
+    <div style="margin-bottom:12px">
+      <label style="font-size:13px;color:var(--text2)">Titel *</label>
+      <input type="text" id="uebung-titel-input" placeholder="Name der Übung" style="margin-top:4px">
+    </div>
+    <div style="margin-bottom:12px">
+      <label style="font-size:13px;color:var(--text2)">Beschreibung</label>
+      <textarea id="uebung-desc-input" rows="3" placeholder="Anleitung (Einladungssprache, max. 5 Min)" style="margin-top:4px"></textarea>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+      <div>
+        <label style="font-size:13px;color:var(--text2)">Kategorie *</label>
+        <select id="uebung-kat-input" style="margin-top:4px">
+          <option value="Atem">Atem</option>
+          <option value="Körperwahrnehmung">Körperwahrnehmung</option>
+          <option value="Stimme & Singen">Stimme & Singen</option>
+          <option value="GfK & Bedürfnisse">GfK & Bedürfnisse</option>
+          <option value="Selbstmitgefühl">Selbstmitgefühl</option>
+          <option value="Polyvagal & Regulation">Polyvagal & Regulation</option>
+          <option value="Bewegung & Rhythmus">Bewegung & Rhythmus</option>
+          <option value="Stille & Meditation">Stille & Meditation</option>
+          <option value="Kontakt & Verbindung">Kontakt & Verbindung</option>
+          <option value="Energie & Lebendigkeit">Energie & Lebendigkeit</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:13px;color:var(--text2)">Dauer (Min)</label>
+        <input type="number" id="uebung-dauer-input" value="3" min="1" max="30" style="margin-top:4px">
+      </div>
+    </div>
+    <div style="margin-bottom:16px">
+      <label style="font-size:13px;color:var(--text2)">Tageszeit</label>
+      <div style="display:flex;gap:8px;margin-top:6px">
+        <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer">
+          <input type="checkbox" class="tz-check" value="morgen"> Morgen
+        </label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer">
+          <input type="checkbox" class="tz-check" value="mittag"> Mittag
+        </label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer">
+          <input type="checkbox" class="tz-check" value="abend"> Abend
+        </label>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-secondary" style="flex:1" onclick="schliesseUebungModal()">Abbrechen</button>
+      <button class="btn btn-primary" style="flex:1" onclick="speichereUebung()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ============================================================
+// LIZENZ
+// Gültiger Schlüssel – Vergleich erfolgt clientseitig (Offline-App).
+// Für erhöhte Sicherheit könnte man dies serverseitig validieren.
+// ============================================================
+const GUELTIGE_LIZENZ = 'ACHT-2026-R4mX-9Kw3';
+const LIZENZ_KEY = 'app_lizenz_aktiv';
+
+function pruefeeLizenz() {
+  const eingabe = document.getElementById('lizenz-input').value.trim();
+  const errEl   = document.getElementById('lizenz-error');
+  if (eingabe === GUELTIGE_LIZENZ) {
+    localStorage.setItem(LIZENZ_KEY, '1');
+    document.getElementById('lizenz-screen').classList.remove('show');
+    errEl.textContent = '';
+    ladeApp();
+  } else {
+    errEl.textContent = '❌ Ungültiger Lizenzschlüssel. Bitte überprüfen.';
+    document.getElementById('lizenz-input').focus();
+  }
+}
+
+// Enter-Taste im Lizenz-Input
+document.getElementById('lizenz-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') pruefeeLizenz();
+});
+
+function zeigeHauptApp() {
+  if (!localStorage.getItem(LIZENZ_KEY)) {
+    document.getElementById('lizenz-screen').classList.add('show');
+    return false;
+  }
+  return true;
+}
+
+// ============================================================
+// LOCALSTORAGE – Datenhaltung
+// Struktur aller gespeicherten Schlüssel:
+//   app_lizenz_aktiv     → '1' wenn aktiviert
+//   app_titel            → string
+//   app_untertitel       → string
+//   setting_*            → Einstellungen
+//   exercises            → JSON-Array aller Übungen
+//   checkins             → JSON-Objekt { "YYYY-MM-DD": { morgen: {...}, mittag: {...}, abend: {...} } }
+//   journal              → JSON-Objekt { "YYYY-MM-DD": [ {time, text}, ... ] }
+//   daily_exercises      → JSON-Objekt { "YYYY-MM-DD": [ {id, exerciseId, tageszeit, erledigt, feedback} ] }
+//   daily_summary        → JSON-Objekt { "YYYY-MM-DD": { abschlusstext, highlight, dankbarkeit } }
+//   daily_suggestions    → JSON-Objekt { "YYYY-MM-DD": { morgen: {exerciseId, kommentar}, ... } }
+//   exercise_rotation    → JSON-Objekt { morgen: [...], mittag: [...], abend: [...] }
+// ============================================================
+
+function ls(key, fallback = null) {
+  try {
+    const v = localStorage.getItem(key);
+    if (v === null) return fallback;
+    return JSON.parse(v);
+  } catch { return fallback; }
+}
+
+function lsSet(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) { console.warn('localStorage voll?', e); }
+}
+
+// ============================================================
+// TAGESIMPULS-POOL (120 Impulse)
+// ============================================================
+const IMPULSE_POOL = [
+  { text: "Was schwingt heute in mir an?", kategorie: "Resonanz & Kontakt" },
+  { text: "Ich darf berühren und berührt werden.", kategorie: "Resonanz & Kontakt" },
+  { text: "Resonanz braucht keine Leistung – nur Offenheit.", kategorie: "Resonanz & Kontakt" },
+  { text: "Welche Qualität möchte ich heute ausstrahlen?", kategorie: "Resonanz & Kontakt" },
+  { text: "Ich bin in Beziehung – mit mir, mit anderen, mit dem Leben.", kategorie: "Resonanz & Kontakt" },
+  { text: "Was von außen berührt mich gerade innerlich?", kategorie: "Resonanz & Kontakt" },
+  { text: "Ich muss nicht alles kontrollieren, um verbunden zu sein.", kategorie: "Resonanz & Kontakt" },
+  { text: "Resonanz ist keine Technik – sie ist eine Haltung.", kategorie: "Resonanz & Kontakt" },
+  { text: "Was klingt in mir nach, wenn ich an heute denke?", kategorie: "Resonanz & Kontakt" },
+  { text: "Ich bin nicht getrennt – ich bin Teil von etwas Größerem.", kategorie: "Resonanz & Kontakt" },
+  { text: "Drei Atemzüge gehören mir.", kategorie: "Atem & Ankommen" },
+  { text: "Ankommen darf leise sein.", kategorie: "Atem & Ankommen" },
+  { text: "Der Atem weiß immer, wo ich bin.", kategorie: "Atem & Ankommen" },
+  { text: "Ich atme mich ins Jetzt.", kategorie: "Atem & Ankommen" },
+  { text: "Jeder Ausatem ist ein kleines Loslassen.", kategorie: "Atem & Ankommen" },
+  { text: "Ich muss nirgendwo anders sein als hier.", kategorie: "Atem & Ankommen" },
+  { text: "Der nächste Atemzug ist bereits ein Neuanfang.", kategorie: "Atem & Ankommen" },
+  { text: "Atmen ist das Einfachste, das ich für mich tun kann.", kategorie: "Atem & Ankommen" },
+  { text: "Im Einatem: Empfangen. Im Ausatem: Loslassen.", kategorie: "Atem & Ankommen" },
+  { text: "Heute darf mein Atem mein Anker sein.", kategorie: "Atem & Ankommen" },
+  { text: "Mein Körper ist kein Problem – er ist mein Zuhause.", kategorie: "Körper & Sicherheit" },
+  { text: "Sicherheit entsteht von innen.", kategorie: "Körper & Sicherheit" },
+  { text: "Was spüre ich gerade – ohne es zu bewerten?", kategorie: "Körper & Sicherheit" },
+  { text: "Mein Nervensystem darf sich orientieren.", kategorie: "Körper & Sicherheit" },
+  { text: "Ich schenke mir einen Moment des Innehaltens.", kategorie: "Körper & Sicherheit" },
+  { text: "Mein Körper erinnert sich an Sicherheit – ich lade sie ein.", kategorie: "Körper & Sicherheit" },
+  { text: "Verbindung beginnt im Körper, nicht im Kopf.", kategorie: "Körper & Sicherheit" },
+  { text: "Regulation ist kein Versagen – sie ist Fürsorge.", kategorie: "Körper & Sicherheit" },
+  { text: "Ich darf meinen Körper heute freundlich befragen.", kategorie: "Körper & Sicherheit" },
+  { text: "Co-Regulation ist ein Geschenk – geben und empfangen.", kategorie: "Körper & Sicherheit" },
+  { text: "Ein Ton darf heute einfach sein.", kategorie: "Stimme & Klang" },
+  { text: "Meine Stimme kennt mich.", kategorie: "Stimme & Klang" },
+  { text: "Summen ist Selbstfürsorge.", kategorie: "Stimme & Klang" },
+  { text: "Klang trägt, was Worte nicht fassen.", kategorie: "Stimme & Klang" },
+  { text: "Ich darf heute hörbar sein.", kategorie: "Stimme & Klang" },
+  { text: "Meine Stimme braucht keine Bühne – nur Erlaubnis.", kategorie: "Stimme & Klang" },
+  { text: "Ein Laut kann mehr bewegen als tausend Gedanken.", kategorie: "Stimme & Klang" },
+  { text: "Ich singe nicht für andere – ich singe für mich.", kategorie: "Stimme & Klang" },
+  { text: "Mein Klang ist Ausdruck, nicht Leistung.", kategorie: "Stimme & Klang" },
+  { text: "Was möchte heute in mir klingen?", kategorie: "Stimme & Klang" },
+  { text: "Was bräuchte ich gerade von einem guten Freund?", kategorie: "Selbstmitgefühl" },
+  { text: "Ich darf unvollständig sein.", kategorie: "Selbstmitgefühl" },
+  { text: "Fürsorge für andere beginnt hier – bei mir.", kategorie: "Selbstmitgefühl" },
+  { text: "Fehler sind kein Urteil über mich.", kategorie: "Selbstmitgefühl" },
+  { text: "Ich bin gut genug, genau so.", kategorie: "Selbstmitgefühl" },
+  { text: "Selbstmitgefühl ist keine Schwäche – es ist Stärke.", kategorie: "Selbstmitgefühl" },
+  { text: "Ich darf heute sanft mit mir sein.", kategorie: "Selbstmitgefühl" },
+  { text: "Was würde ich einem lieben Menschen sagen, der fühlt, was ich fühle?", kategorie: "Selbstmitgefühl" },
+  { text: "Ich anerkenne, was mich heute kostet.", kategorie: "Selbstmitgefühl" },
+  { text: "Mitgefühl beginnt, wenn ich aufhöre, mich zu verurteilen.", kategorie: "Selbstmitgefühl" },
+  { text: "Was ist mir heute wirklich wichtig?", kategorie: "GfK & innere Haltung" },
+  { text: "Hinter jedem Impuls steckt ein Bedürfnis.", kategorie: "GfK & innere Haltung" },
+  { text: "Ich kann bitten, ohne zu fordern.", kategorie: "GfK & innere Haltung" },
+  { text: "Beobachten statt bewerten – auch mich selbst.", kategorie: "GfK & innere Haltung" },
+  { text: "Verbindung geht vor Recht-haben.", kategorie: "GfK & innere Haltung" },
+  { text: "Was brauche ich gerade – und wie kann ich darum bitten?", kategorie: "GfK & innere Haltung" },
+  { text: "Jedes Gefühl ist ein Bote eines Bedürfnisses.", kategorie: "GfK & innere Haltung" },
+  { text: "Ich darf Nein sagen, ohne mich zu erklären.", kategorie: "GfK & innere Haltung" },
+  { text: "Empathie beginnt mit Neugier, nicht mit Ratschlägen.", kategorie: "GfK & innere Haltung" },
+  { text: "Was möchte ich heute wirklich ausdrücken?", kategorie: "GfK & innere Haltung" },
+  { text: "Welche Version von mir möchte heute auftauchen?", kategorie: "Hypnosystemik" },
+  { text: "Ich kann wählen, welche Geschichte ich erzähle.", kategorie: "Hypnosystemik" },
+  { text: "Was wäre, wenn es leichter ginge?", kategorie: "Hypnosystemik" },
+  { text: "Ressourcen sind immer schon da – ich darf sie suchen.", kategorie: "Hypnosystemik" },
+  { text: "Heute ist ein neuer Kontext.", kategorie: "Hypnosystemik" },
+  { text: "Jede Stimmung ist ein Zustand – kein Dauerzustand.", kategorie: "Hypnosystemik" },
+  { text: "Was würde die ressourcevolle Version von mir jetzt tun?", kategorie: "Hypnosystemik" },
+  { text: "Ich bin mehr als mein aktuelles Erleben.", kategorie: "Hypnosystemik" },
+  { text: "Veränderung beginnt mit einer anderen Frage.", kategorie: "Hypnosystemik" },
+  { text: "Welche Möglichkeit sehe ich, die ich gestern noch nicht gesehen habe?", kategorie: "Hypnosystemik" },
+  { text: "Die Wunde ist der Ort, durch den das Licht in dich eindringt.", kategorie: "Rumi & Weisheit" },
+  { text: "Verkaufe deine Klugheit und kauf Staunen.", kategorie: "Rumi & Weisheit" },
+  { text: "Du bist nicht ein Tropfen im Ozean – du bist der ganze Ozean in einem Tropfen.", kategorie: "Rumi & Weisheit" },
+  { text: "Was du suchst, sucht auch dich.", kategorie: "Rumi & Weisheit" },
+  { text: "Sei still wie Wasser – und lass das Leben durch dich fließen.", kategorie: "Rumi & Weisheit" },
+  { text: "Das Herz ist ein Spiegel – halte es rein.", kategorie: "Rumi & Weisheit" },
+  { text: "Tanz, als ob niemand zuschaut – und als ob alle es sehen dürfen.", kategorie: "Rumi & Weisheit" },
+  { text: "In der Stille spricht die tiefste Wahrheit.", kategorie: "Rumi & Weisheit" },
+  { text: "Liebe ist die Brücke zwischen dir und allem anderen.", kategorie: "Rumi & Weisheit" },
+  { text: "Wer sich selbst kennt, kennt seinen Herrn.", kategorie: "Rumi & Weisheit" },
+  { text: "Mein Körper liebt es, sich zu strecken.", kategorie: "Bewegung & Lebendigkeit" },
+  { text: "Lebendigkeit braucht Raum – ich mache mir welchen.", kategorie: "Bewegung & Lebendigkeit" },
+  { text: "Wann habe ich zuletzt getanzt – auch nur innerlich?", kategorie: "Bewegung & Lebendigkeit" },
+  { text: "Energie folgt der Aufmerksamkeit.", kategorie: "Bewegung & Lebendigkeit" },
+  { text: "Ich erlaube mir, leicht zu sein.", kategorie: "Bewegung & Lebendigkeit" },
+  { text: "Bewegung ist keine Pflicht – sie ist ein Geschenk an meinen Körper.", kategorie: "Bewegung & Lebendigkeit" },
+  { text: "Was möchte sich heute in mir bewegen – wörtlich oder übertragen?", kategorie: "Bewegung & Lebendigkeit" },
+  { text: "Lebendigkeit ist kein Ziel, sondern eine Entscheidung.", kategorie: "Bewegung & Lebendigkeit" },
+  { text: "Ich schüttele ab, was nicht mehr gebraucht wird.", kategorie: "Bewegung & Lebendigkeit" },
+  { text: "Mein Körper kennt den Weg zur Freude.", kategorie: "Bewegung & Lebendigkeit" },
+  { text: "Nicht jede Pause muss gefüllt werden.", kategorie: "Stille & Innehalten" },
+  { text: "In der Stille höre ich, was wichtig ist.", kategorie: "Stille & Innehalten" },
+  { text: "Ich muss nichts produzieren, um wertvoll zu sein.", kategorie: "Stille & Innehalten" },
+  { text: "Stille ist kein Mangel – sie ist Raum.", kategorie: "Stille & Innehalten" },
+  { text: "Was zeigt sich, wenn ich nichts tue?", kategorie: "Stille & Innehalten" },
+  { text: "Innehalten ist keine Unterbrechung – es ist der Kern.", kategorie: "Stille & Innehalten" },
+  { text: "Ich darf heute langsamer werden.", kategorie: "Stille & Innehalten" },
+  { text: "In der Pause liegt die Kraft für den nächsten Schritt.", kategorie: "Stille & Innehalten" },
+  { text: "Nichtstun ist auch eine Form von Fürsorge.", kategorie: "Stille & Innehalten" },
+  { text: "Was möchte ich heute loslassen, bevor der Tag endet?", kategorie: "Stille & Innehalten" },
+  { text: "Welcher Teil von mir braucht heute besonders Aufmerksamkeit?", kategorie: "Innere Anteile" },
+  { text: "Ich darf auch die schwierigen Anteile in mir willkommen heißen.", kategorie: "Innere Anteile" },
+  { text: "Das Kind in mir darf gehört werden – ohne Erklärung.", kategorie: "Innere Anteile" },
+  { text: "Ich muss nicht funktionieren, um liebenswert zu sein.", kategorie: "Innere Anteile" },
+  { text: "Was hätte das jüngere Ich von mir heute gebraucht?", kategorie: "Innere Anteile" },
+  { text: "Ich trage Wunden – und ich trage auch Heilung.", kategorie: "Innere Anteile" },
+  { text: "Jeder Anteil in mir hat seinen Grund.", kategorie: "Innere Anteile" },
+  { text: "Ich begegne mir heute mit der Sanftheit, die ich anderen schenke.", kategorie: "Innere Anteile" },
+  { text: "Was möchte der verletzliche Teil von mir heute hören?", kategorie: "Innere Anteile" },
+  { text: "Ich bin ganz – auch wenn ich mich fragmentiert fühle.", kategorie: "Innere Anteile" },
+  { text: "Was hat mich heute getragen?", kategorie: "Dankbarkeit & Rückschau" },
+  { text: "Ich anerkenne, was ich geleistet habe.", kategorie: "Dankbarkeit & Rückschau" },
+  { text: "Ein Moment des Tages war gut – welcher?", kategorie: "Dankbarkeit & Rückschau" },
+  { text: "Dankbarkeit ist eine Übungssache.", kategorie: "Dankbarkeit & Rückschau" },
+  { text: "Was möchte ich vom heutigen Tag mitnehmen?", kategorie: "Dankbarkeit & Rückschau" },
+  { text: "Drei kleine Dinge, die heute da waren – auch wenn der Tag schwer war.", kategorie: "Dankbarkeit & Rückschau" },
+  { text: "Wer oder was hat mir heute Kraft gegeben?", kategorie: "Dankbarkeit & Rückschau" },
+  { text: "Ich schließe den Tag mit Würde, nicht mit Bewertung.", kategorie: "Dankbarkeit & Rückschau" },
+  { text: "Was bin ich heute für jemanden gewesen – auch unbemerkt?", kategorie: "Dankbarkeit & Rückschau" },
+  { text: "Ich danke mir für alles, was ich heute versucht habe.", kategorie: "Dankbarkeit & Rückschau" }
+];
+
+// ============================================================
+// TAGESFRAGEN
+// ============================================================
+const TAGESFRAGEN = [
+  "Was brauche ich heute, um gut für mich zu sorgen?",
+  "Welche Grenze möchte ich heute achten – bei mir selbst oder anderen?",
+  "Was möchte ich heute bewusst genießen?",
+  "Welcher Moment gestern hat mich überrascht?",
+  "Was würde ich heute anders machen als gestern?",
+  "Welche Stärke hat mir heute schon geholfen?",
+  "Was gibt mir heute Halt?",
+  "Wofür bin ich heute dankbar?",
+  "Was möchte ich heute loslassen?",
+  "Welchen kleinen Schritt kann ich heute gehen?",
+  "Was nährt meine Seele heute?",
+  "Wie möchte ich heute mit mir sprechen?",
+  "Was will ich heute annehmen, so wie es ist?",
+  "Welche Begegnung hat mich zuletzt bewegt?",
+  "Was bin ich gerade lernend?",
+  "Wo spüre ich heute Lebendigkeit?",
+  "Was wäre, wenn heute ein guter Tag wird?",
+  "Was brauche ich von mir selbst heute?",
+  "Welcher Moment hat mich zuletzt aus der Balance gebracht – was steckt dahinter?",
+  "Was möchte ich heute mit Humor betrachten?",
+  "Welches Bedürfnis wurde heute schon erfüllt?",
+  "Was mache ich heute einfach nur, weil es mir gut tut?",
+  "Was möchte mein Körper mir heute sagen?",
+  "Welche Verbindung möchte ich heute pflegen?",
+  "Was wäre ein mutiger Schritt für heute?",
+  "Worauf bin ich heute stolz – auch auf Kleines?",
+  "Was hilft mir, wenn ich mich überfordert fühle?",
+  "Was bedeutet heute Erholung für mich?",
+  "Welche Qualität möchte ich heute in meine Beziehungen bringen?",
+  "Was trägt mich, wenn ich mich nicht selbst tragen kann?"
+];
+
+// Standard-Übungspool für den Import
+const STANDARD_UEBUNGEN = [
+  { titel: "Ankeratem", beschreibung: "Nimm dir einen Moment und folge einfach deinem Atem – ohne ihn zu verändern. Spür das Ein- und Ausströmen. Wenn deine Gedanken wandern, kehre sanft zurück. Der Atem ist immer da.", kategorie: "Atem", dauer_minuten: 3, tageszeit: ["morgen", "mittag", "abend"] },
+  { titel: "4-7-8 Atem", beschreibung: "Atme 4 Sekunden ein, halte 7 Sekunden, atme 8 Sekunden aus. Wiederhole 3–4 mal. Diese verlängerte Ausatmung aktiviert den Parasympathikus und signalisiert dem Nervensystem: Sicherheit.", kategorie: "Atem", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
+  { titel: "Seufzen dürfen", beschreibung: "Atme tief ein – und seufze beim Ausatmen hörbar aus. Kein stiller Atem, sondern ein echter, lauter Seufzer. Wiederhole 3 mal. Der physiologische Seufzer ist einer der schnellsten Regulationswege des Nervensystems.", kategorie: "Atem", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
+  { titel: "Wellenatmung", beschreibung: "Stell dir vor, dein Atem ist eine Welle. Beim Einatmen baut sie sich auf – Bauch, Rippen, Brust. Beim Ausatmen zieht sie sich zurück – Brust, Rippen, Bauch. Lass drei Wellen durch dich hindurchgehen.", kategorie: "Atem", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
+  { titel: "Brummender Ausatem", beschreibung: "Atme ein – und beim Ausatmen brumme leise: „Hmmm.\" Spür die Vibration im Brustkorb. Wiederhole 5 mal. Das Brummen stimuliert den Vagusnerv direkt über die Kehle.", kategorie: "Atem", dauer_minuten: 3, tageszeit: ["morgen", "mittag", "abend"] },
+  { titel: "Boxatmung", beschreibung: "4 Sekunden einatmen – 4 halten – 4 ausatmen – 4 halten. Ein Quadrat. Wiederhole 4 Runden. Besonders hilfreich bei innerer Unruhe oder Anspannung.", kategorie: "Atem", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
+  { titel: "Atemraum finden", beschreibung: "Leg eine Hand auf den Bauch, eine auf die Brust. Spür: Welche Hand bewegt sich mehr? Lass beim nächsten Atemzug bewusst die Bauchhand steigen – und die Brusthand ruhig bleiben. Drei Atemzüge.", kategorie: "Atem", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
+  { titel: "Ausatemverlängerung", beschreibung: "Atme normal ein – und zähl beim Ausatmen innerlich: 1, 2, 3, 4, 5, 6. Beim nächsten Ausatem: bis 7. Dann 8. Wie weit kannst du gehen, ohne Druck? Die verlängerte Ausatmung ist direkter Parasympathikus-Trigger.", kategorie: "Atem", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
+  { titel: "Atem und Wort", beschreibung: "Wähle ein einziges Wort, das sich heute richtig anfühlt – z.B. „Ruhe\", „Weite\", „Ja\", „Sanft\". Atme ein. Beim Ausatmen sage das Wort lautlos oder flüsternd. Wiederhole 5 mal.", kategorie: "Atem", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
+  { titel: "Morgendlicher erster Atemzug", beschreibung: "Noch bevor du aufstehst: Nimm einen ganz bewussten ersten tiefen Atemzug. Stell dir vor, du atmest den neuen Tag ein. Kein Vorhaben, kein Plan – nur dieser eine Atemzug als Schwelle.", kategorie: "Atem", dauer_minuten: 1, tageszeit: ["morgen"] },
+  { titel: "Body-Scan Light", beschreibung: "Wandere mit deiner Aufmerksamkeit langsam von den Füßen nach oben – Unterschenkel, Knie, Oberschenkel, Bauch, Brust, Schultern, Hals, Gesicht. Keine Bewertung, nur Wahrnehmung: Was ist gerade da?", kategorie: "Körperwahrnehmung", dauer_minuten: 5, tageszeit: ["morgen", "abend"] },
+  { titel: "Füße auf dem Boden", beschreibung: "Steh oder sitz. Spür bewusst den Kontakt deiner Füße mit dem Boden. Drücke sie leicht in den Boden – und lass wieder los. Wiederhole dreimal. Erdung ist einer der einfachsten Wege aus dem Kopf in den Körper.", kategorie: "Körperwahrnehmung", dauer_minuten: 2, tageszeit: ["morgen", "mittag", "abend"] },
+  { titel: "Wo bin ich gerade?", beschreibung: "Schau dich kurz im Raum um und benenne innerlich fünf Dinge, die du siehst. Dann: Was hörst du? Was spürst du auf der Haut? Dieser Orientierungsreflex signalisiert dem Nervensystem: kein Alarm.", kategorie: "Körperwahrnehmung", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
+  { titel: "Hände wahrnehmen", beschreibung: "Halt inne und spür deine Hände. Sind sie warm oder kühl? Leicht oder schwer? Offen oder geschlossen? Reibe sie kurz aneinander – und spür dann die Wärme. Hände sind hochsensible Resonanzorgane.", kategorie: "Körperwahrnehmung", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
+  { titel: "Schultern loslassen", beschreibung: "Ziehe die Schultern einmal ganz hoch zu den Ohren – halte kurz – und lass sie dann mit einem Ausatem fallen. Wiederhole dreimal. Spür den Unterschied zwischen Halten und Loslassen.", kategorie: "Körperwahrnehmung", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
+  { titel: "Inneres Wetter", beschreibung: "Frag dich: Wenn mein Körper gerade ein Wetterbericht wäre – was wäre es? Sonnig? Bewölkt? Gewitter im Anmarsch? Nebel? Kein Urteil – nur ein Bild für das, was ist.", kategorie: "Körperwahrnehmung", dauer_minuten: 2, tageszeit: ["morgen", "abend"] },
+  { titel: "Spannungslandkarte", beschreibung: "Wo trägst du gerade Spannung im Körper? Kiefer, Nacken, Schultern, Bauch, Hände? Leg kurz eine Hand dorthin – nicht um zu verändern, sondern um wahrzunehmen.", kategorie: "Körperwahrnehmung", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
+  { titel: "Körperhaltung und Zustand", beschreibung: "Nimm kurz wahr: Wie sitze oder stehe ich gerade? Zusammengezogen oder offen? Verändere bewusst deine Haltung – richte dich auf, öffne die Brust leicht. Spür, ob sich etwas im Erleben verschiebt.", kategorie: "Körperwahrnehmung", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
+  { titel: "Selbstumarmung", beschreibung: "Lege die Arme um dich selbst – die Hände auf die Schultern oder Oberarme. Halte dich kurz. Keine Ironie, kein Kommentar. Nur Kontakt. Der Körper unterscheidet nicht immer, von wem die Berührung kommt.", kategorie: "Körperwahrnehmung", dauer_minuten: 2, tageszeit: ["abend"] },
+  { titel: "Schwingung spüren", beschreibung: "Stelle dich auf, lass die Knie leicht federn – auf und ab, auf und ab. Lass die Schwingung durch den Körper wandern. Wiederhole eine Minute. Rhythmische Bewegung reguliert das Nervensystem.", kategorie: "Körperwahrnehmung", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
+  { titel: "Summen als Heimkommen", beschreibung: "Summe irgendeinen Ton – den, der sich gerade richtig anfühlt. Kein Lied nötig. Nur Summen. Spür, wo der Ton im Körper resoniert. Lass ihn wandern.", kategorie: "Stimme & Singen", dauer_minuten: 3, tageszeit: ["morgen", "mittag", "abend"] },
+  { titel: "Vokalreise", beschreibung: "Singe oder summe nacheinander die Vokale: A – E – I – O – U. Langsam, ausgeatmet, spürend. Jeder Vokal erzeugt eine andere Resonanz im Körper. Welcher klingt heute am meisten nach dir?", kategorie: "Stimme & Singen", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "Ton des Morgens", beschreibung: "Noch vor dem ersten Kaffee: Öffne den Mund und lass einen Ton heraus – welchen auch immer. Kein Urteil, kein Publikum. Nur: Wie klingt heute mein erster Ton?", kategorie: "Stimme & Singen", dauer_minuten: 1, tageszeit: ["morgen"] },
+  { titel: "Schattensingen", beschreibung: "Summe oder singe ganz leise – fast unhörbar. So leise, dass es sich anfühlt, als würdest du nur innerlich singen. Diese Qualität des Leisen hat eine eigene Kraft: Sie lädt ein, statt zu fordern.", kategorie: "Stimme & Singen", dauer_minuten: 3, tageszeit: ["abend"] },
+  { titel: "Körperklopfen mit Ton", beschreibung: "Klopfe mit den Fingerspitzen sanft auf Brust oder Oberschenkel und summe gleichzeitig. Lass Klopfen und Ton sich synchronisieren. Dann: lass das Klopfen los und spür nach, ob der Ton bleibt.", kategorie: "Stimme & Singen", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "Lied ohne Worte", beschreibung: "Nimm eine Melodie, die dir gerade einfällt – und summe sie ohne Text. Nur Melodie, nur Körper. Manchmal sagt eine Melodie mehr über den inneren Zustand als jedes Wort.", kategorie: "Stimme & Singen", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
+  { titel: "Ich bin schön, wenn ich singe", beschreibung: "Singe oder summe irgendetwas – und erlaube dir dabei, den Satz zu denken: „Ich bin schön, wenn ich singe.\" Nicht als Bewertung. Als Einladung. Was verändert sich?", kategorie: "Stimme & Singen", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
+  { titel: "Töne für Gefühle", beschreibung: "Welches Gefühl ist gerade da? Gib ihm einen Ton – nicht in Worte fassen, sondern klingen lassen. Wie würde Erschöpfung klingen? Wie Dankbarkeit? Wie Unruhe? Lass es einfach heraus.", kategorie: "Stimme & Singen", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
+  { titel: "Abendlied", beschreibung: "Zum Tagesabschluss: Sing oder summe leise ein Lied, das dich begleitet – aus der Kindheit, aus der Reha, selbst erfunden. Keine Leistung. Nur Klang als Hülle für den Tag.", kategorie: "Stimme & Singen", dauer_minuten: 3, tageszeit: ["abend"] },
+  { titel: "Call and Response mit dir selbst", beschreibung: "Summe einen kurzen Ton oder eine Phrase – mach dann eine Pause und „höre\", was dein Körper antwortet. Singe erneut. Antworte wieder. Ein inneres Gespräch aus Tönen.", kategorie: "Stimme & Singen", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
+  { titel: "Was ist jetzt gerade da?", beschreibung: "Halte inne und frage dich: Was nehme ich gerade wahr – in mir, um mich herum? Ohne Bewertung. Nur Beobachtung. Was ist Beobachtung, was ist schon Interpretation?", kategorie: "GfK & Bedürfnisse", dauer_minuten: 2, tageszeit: ["morgen", "mittag", "abend"] },
+  { titel: "Gefühl benennen", beschreibung: "Wie fühle ich mich gerade – wirklich? Nicht „gut\" oder „okay\", sondern genauer: Müde? Angespannt? Froh? Traurig? Unruhig? Leicht? Nimm dir eine Minute, das Gefühl zu benennen ohne es zu verändern.", kategorie: "GfK & Bedürfnisse", dauer_minuten: 2, tageszeit: ["morgen", "mittag", "abend"] },
+  { titel: "Welches Bedürfnis steckt dahinter?", beschreibung: "Wenn du ein Gefühl benannt hast: Welches Bedürfnis könnte dahinterstecken? Ruhe? Kontakt? Anerkennung? Sinn? Selbstbestimmung? Spür nach – das Bedürfnis ist nie falsch.", kategorie: "GfK & Bedürfnisse", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
+  { titel: "Die Bitte an mich selbst", beschreibung: "Was könntest du heute für dich selbst tun, um einem wichtigen Bedürfnis ein wenig näher zu kommen? Keine große Geste nötig. Eine kleine, konkrete Bitte an dich selbst.", kategorie: "GfK & Bedürfnisse", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "Innerer Kritiker übersetzen", beschreibung: "Wenn eine kritische innere Stimme auftaucht: Was würde sie sagen, wenn sie als Bedürfnis sprechen würde statt als Vorwurf? „Du bist zu langsam\" → Bedürfnis nach Wirksamkeit. Übe die Übersetzung.", kategorie: "GfK & Bedürfnisse", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
+  { titel: "Dankbarkeit und Bedürfnis", beschreibung: "Wofür bist du heute – auch wenn der Tag schwer war – dankbar? Was sagt diese Dankbarkeit darüber, was dir wichtig ist? Welches Bedürfnis wurde erfüllt?", kategorie: "GfK & Bedürfnisse", dauer_minuten: 3, tageszeit: ["abend"] },
+  { titel: "Nein als Selbstfürsorge", beschreibung: "Gab es heute etwas, bei dem du Ja gesagt hast, obwohl ein Nein stimmiger gewesen wäre? Was hätte das Nein geschützt? Welches Bedürfnis wäre damit gehört worden?", kategorie: "GfK & Bedürfnisse", dauer_minuten: 3, tageszeit: ["abend"] },
+  { titel: "Bedürfnis-Check Mittag", beschreibung: "Mitten im Tag: Pause. Eine Minute. Frage dich: Was brauche ich gerade wirklich – Bewegung? Stille? Essen? Kontakt? Luft? Und: Kann ich mir das jetzt geben – auch nur ein bisschen?", kategorie: "GfK & Bedürfnisse", dauer_minuten: 2, tageszeit: ["mittag"] },
+  { titel: "Gefühls-Körper-Verbindung", beschreibung: "Benenne ein Gefühl, das gerade da ist. Dann: Wo spürst du es im Körper? Welche Qualität hat es – eng, weit, warm, schwer, prickelnd? Gefühle sind immer auch körperlich.", kategorie: "GfK & Bedürfnisse", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
+  { titel: "Brief an ein Bedürfnis", beschreibung: "Schreib zwei bis drei Sätze an ein Bedürfnis, das heute zu kurz gekommen ist – als würdest du ihm einen Brief schreiben. „Liebes Bedürfnis nach Ruhe, ich höre dich…\" Kein Muss, aber oft überraschend wirkungsvoll.", kategorie: "GfK & Bedürfnisse", dauer_minuten: 5, tageszeit: ["abend"] },
+  { titel: "Wie würde ich mit einem Freund sprechen?", beschreibung: "Wenn ein guter Freund das durchmachen würde, was du gerade durchmachst – was würdest du ihm sagen? Kannst du dir selbst dasselbe sagen?", kategorie: "Selbstmitgefühl", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
+  { titel: "Die drei Türen des Selbstmitgefühls", beschreibung: "Erinnere dich kurz: Ich leide gerade (Achtsamkeit). Leiden gehört zum Menschsein dazu (geteilte Menschlichkeit). Ich bin gut zu mir (Freundlichkeit). Drei Sätze, drei Atemzüge.", kategorie: "Selbstmitgefühl", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
+  { titel: "Innerer freundlicher Beobachter", beschreibung: "Stell dir vor, ein wohlwollender Zeuge schaut auf deinen Tag – nicht urteilend, nur beobachtend. Was würde er sagen? Was würde er anerkennen?", kategorie: "Selbstmitgefühl", dauer_minuten: 3, tageszeit: ["abend"] },
+  { titel: "Was habe ich heute gut gemacht?", beschreibung: "Nicht was war perfekt – sondern: Was habe ich heute versucht? Was ist mir trotz allem gelungen? Auch Kleines zählt. Besonders Kleines.", kategorie: "Selbstmitgefühl", dauer_minuten: 3, tageszeit: ["abend"] },
+  { titel: "Inneres Kind grüßen", beschreibung: "Stell dir kurz das Kind vor, das du warst – jünger, vielleicht verletzlicher. Schau es freundlich an. Was bräuchte es gerade von dir? Was könntest du ihm sagen?", kategorie: "Selbstmitgefühl", dauer_minuten: 3, tageszeit: ["abend"] },
+  { titel: "Selbst-Berührung als Fürsorge", beschreibung: "Leg eine Hand auf dein Herz. Spür die Wärme. Sag dir innerlich einen Satz – z.B. „Ich bin für mich da.\" Oder einfach nur: „Ja.\" Körperlicher Selbstkontakt aktiviert das Bindungssystem.", kategorie: "Selbstmitgefühl", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
+  { titel: "Was darf bleiben, wie es ist?", beschreibung: "Manchmal ist Akzeptanz die tiefste Form der Fürsorge. Frage dich: Was darf heute einfach so sein, wie es ist – ohne dass ich es verändern, reparieren oder verstehen muss?", kategorie: "Selbstmitgefühl", dauer_minuten: 3, tageszeit: ["abend"] },
+  { titel: "Innerer Kritiker und innerer Fürsorger", beschreibung: "Wenn eine selbstkritische Stimme laut wird: Welche andere innere Stimme könnte antworten – fürsorglich, weise, sanft? Was würde sie sagen? Gib ihr Raum.", kategorie: "Selbstmitgefühl", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
+  { titel: "Fehler als Menschlichkeit", beschreibung: "Gab es heute einen Moment, in dem du dir gegenüber hart warst? Frage dich: Wäre das auch einem anderen Menschen passiert? Was würde ich ihm sagen? Fehler sind kein Defekt – sie sind Menschlichkeit.", kategorie: "Selbstmitgefühl", dauer_minuten: 3, tageszeit: ["abend"] },
+  { titel: "Abendlicher Segen für dich selbst", beschreibung: "Zum Tagesabschluss: Formuliere einen kurzen Satz, der sich wie ein Segen für dich anfühlt – z.B. „Möge ich heute Nacht wirklich ausruhen.\" Oder: „Ich habe genug getan.\" Kein Muss – eine Einladung.", kategorie: "Selbstmitgefühl", dauer_minuten: 2, tageszeit: ["abend"] },
+  { titel: "Orientierung im Raum", beschreibung: "Drehe langsam den Kopf von links nach rechts – ganz langsam, wie eine Kamera, die den Raum scannt. Lass die Augen folgen. Spür, wie das Nervensystem sich beruhigt, wenn es „Alarm? Nein.\" registriert.", kategorie: "Polyvagal & Regulation", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
+  { titel: "Vagus-Summen", beschreibung: "Summe mit geschlossenem Mund laut genug, dass du die Vibration in Brust und Kehle spürst. Mindestens eine Minute. Der Vagusnerv verläuft durch die Kehle – Summen ist direkter Zugang.", kategorie: "Polyvagal & Regulation", dauer_minuten: 2, tageszeit: ["morgen", "mittag", "abend"] },
+  { titel: "Kaltes Wasser – Tauchreflex", beschreibung: "Halte kurz die Handgelenke unter kaltes Wasser – oder spritz dir etwas Wasser ins Gesicht. Der Tauchreflex aktiviert sofort den Parasympathikus. Einfach, schnell, wirksam.", kategorie: "Polyvagal & Regulation", dauer_minuten: 1, tageszeit: ["mittag"] },
+  { titel: "Sicherheitssignale suchen", beschreibung: "Schau dich im Raum um: Was signalisiert dir Sicherheit? Ein vertrautes Objekt, ein bestimmtes Licht, ein Geruch? Bleib einen Moment dabei. Das Nervensystem lernt durch Wiederholung von Sicherheit.", kategorie: "Polyvagal & Regulation", dauer_minuten: 2, tageszeit: ["morgen", "mittag", "abend"] },
+  { titel: "Soziale Verbindung als Regulation", beschreibung: "Denke an einen Menschen, bei dem du dich wirklich sicher fühlst. Stelle dir ihr/sein Gesicht vor – besonders den freundlichen Gesichtsausdruck. Das soziale Nervensystem reagiert auch auf Vorstellung.", kategorie: "Polyvagal & Regulation", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
+  { titel: "Voo-Übung", beschreibung: "Atme tief ein – und beim Ausatmen mache einen langen, tiefen „Voooo\"-Laut, wie ein Schiff in der Ferne. Spür die Vibration im Bauch. Wiederhole 5 mal. Diese Übung stammt direkt aus der Polyvagalforschung.", kategorie: "Polyvagal & Regulation", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
+  { titel: "Zittern erlauben", beschreibung: "Wenn du eine leichte Anspannung spürst: Erlaube deinem Körper, leicht zu zittern oder zu vibrieren – Hände, Beine, Kiefer. Tiere entladen Stress über Zittern. Wir haben verlernt, es zu erlauben.", kategorie: "Polyvagal & Regulation", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
+  { titel: "Pendeln zwischen Ressource und Belastung", beschreibung: "Denke kurz an etwas Schwieriges – dann wechsle bewusst zu einer Ressource (ein schöner Ort, ein gutes Gefühl, ein Mensch). Pendele mehrmals. Das Nervensystem lernt: Ich kann wechseln.", kategorie: "Polyvagal & Regulation", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
+  { titel: "Selbstmassage Kiefer", beschreibung: "Massiere sanft deinen Kiefer – Schläfen, Kiefergelenke, Unterkiefer. Öffne den Mund leicht und lass ihn wieder schließen. Der Kiefer ist eine der zentralen Spannungsspeicherstellen.", kategorie: "Polyvagal & Regulation", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
+  { titel: "Langer Ausatem mit Ton", beschreibung: "Atme ein – und beim langen Ausatem lasse einen beliebigen Ton heraus: „Aaaa\", „Oooo\", „Haaaa\". So lang wie möglich. Dann Stille. Dann wieder. Die Kombination aus Ausatmung und Ton ist einer der stärksten Vagus-Aktivatoren.", kategorie: "Polyvagal & Regulation", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
+  { titel: "Ausschütteln", beschreibung: "Steh auf und schüttele den ganzen Körper aus – Hände, Arme, Beine, Kopf, Schultern. 60 Sekunden. Keine Technik, nur Ausschütteln. Rhythmische Selbststimulation reguliert das Nervensystem sofort.", kategorie: "Bewegung & Rhythmus", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
+  { titel: "Klopfen auf Körperrhythmus", beschreibung: "Klopfe mit den Handflächen abwechselnd auf Oberschenkel – links, rechts, links, rechts – in deinem eigenen Tempo. Variiere: schneller, langsamer. Spür, welcher Rhythmus sich heute richtig anfühlt.", kategorie: "Bewegung & Rhythmus", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
+  { titel: "Gehen als Meditation", beschreibung: "Gehe fünf Minuten – bewusst langsamer als sonst. Spür jeden Schritt: Ferse, Sohle, Zehen. Kein Ziel, kein Tempo. Nur Gehen als vollständige Handlung.", kategorie: "Bewegung & Rhythmus", dauer_minuten: 5, tageszeit: ["morgen", "mittag"] },
+  { titel: "Rhythmus klopfen und summen", beschreibung: "Klopfe einen einfachen Rhythmus auf deinen Oberschenkeln – und summe gleichzeitig dazu. Lass beides zusammenwachsen. Die Kombination aus Bewegung und Stimme ist besonders integrierend.", kategorie: "Bewegung & Rhythmus", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "Spontantanz", beschreibung: "Ein Lied deiner Wahl – und bewege dich dazu, wie es sich anfühlt. Nicht tanzen für jemanden. Nur für dich. Auch Wiegen, Schwanken, Hüpfen zählt. Bewegung zur Musik reguliert tief.", kategorie: "Bewegung & Rhythmus", dauer_minuten: 5, tageszeit: ["morgen", "mittag"] },
+  { titel: "Federnd stehen", beschreibung: "Steh aufrecht und lass die Knie leicht federn – auf und ab, sanft und kontinuierlich. Stell dir vor, du bist ein Baum im Wind: verwurzelt, aber beweglich. Eine bis zwei Minuten.", kategorie: "Bewegung & Rhythmus", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
+  { titel: "Stretching mit Atem", beschreibung: "Strecke die Arme über den Kopf – so weit wie möglich – und atme dabei tief ein. Beim Ausatmen sinken die Arme. Dreimal. Die Kombination aus Dehnung und Atem entlädt gehaltene Spannung.", kategorie: "Bewegung & Rhythmus", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
+  { titel: "Eigener Beat", beschreibung: "Klopfe mit Händen, Füßen, Fingern einen Rhythmus, der sich heute nach dir anfühlt. Schnell? Langsam? Gleichmäßig? Unregelmäßig? Dein Rhythmus heute ist eine ehrliche Auskunft.", kategorie: "Bewegung & Rhythmus", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "Bewegung für ein Gefühl", beschreibung: "Welches Gefühl ist gerade da? Gib ihm eine Bewegung – nicht erklären, nur bewegen. Wie würde Erschöpfung sich bewegen? Wie Dankbarkeit? Wie Unruhe? Kein richtiges Ergebnis möglich.", kategorie: "Bewegung & Rhythmus", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
+  { titel: "Rhythmisches Wiegen", beschreibung: "Setz dich und wiege dich sanft vor und zurück – oder seitlich. Wie ein Kind, das sich selbst beruhigt. Diese Bewegung ist eine der ältesten Formen menschlicher Selbstregulation.", kategorie: "Bewegung & Rhythmus", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
+  { titel: "Nur sitzen", beschreibung: "Sitz einfach. Nichts tun. Keinen Gedanken folgen, nichts planen. Nur sitzen – und erlauben, dass das genug ist. Zwei Minuten können eine ganze Welt sein.", kategorie: "Stille & Meditation", dauer_minuten: 2, tageszeit: ["morgen", "abend"] },
+  { titel: "Gedanken vorbeiziehen lassen", beschreibung: "Stell dir vor, deine Gedanken sind Wolken. Du bist der Himmel. Wolken kommen – und sie ziehen weiter. Du musst ihnen nicht folgen, nicht festhalten, nicht vertreiben.", kategorie: "Stille & Meditation", dauer_minuten: 3, tageszeit: ["abend"] },
+  { titel: "Stille hören", beschreibung: "Was ist gerade das leiseste Geräusch, das du hörst? Und das lauteste? Wandere mit der Aufmerksamkeit zwischen Stille und Klang. Hören ohne Bewertung ist eine tiefe Form der Präsenz.", kategorie: "Stille & Meditation", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
+  { titel: "Ein Moment vollständiger Gegenwart", beschreibung: "Benenne innerlich: Was sehe ich? Was höre ich? Was spüre ich? Was rieche ich? Nur jetzt, nur hier. Dieser Moment ist vollständig – auch wenn er unspektakulär ist.", kategorie: "Stille & Meditation", dauer_minuten: 3, tageszeit: ["morgen", "mittag", "abend"] },
+  { titel: "Stille nach dem Ton", beschreibung: "Summe einen Ton – und dann: Stille. Lausche in die Stille nach dem Ton. Was bleibt? Diese Stille nach dem Klang ist eine besondere Qualität – Resonanz klingt nach.", kategorie: "Stille & Meditation", dauer_minuten: 3, tageszeit: ["abend"] },
+  { titel: "Atemstille finden", beschreibung: "Atme aus – und bleibe kurz in der Pause zwischen Ausatmen und Einatmen. Nicht anhalten, nur warten. Diese Schwelle ist ein Moment vollständiger Stille im Körper.", kategorie: "Stille & Meditation", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
+  { titel: "Nichts leisten", beschreibung: "Erlaube dir für zwei Minuten, nichts zu leisten, nichts zu verbessern, nichts zu planen. Einfach: Hier sein. Wenn die innere Stimme sagt „Du solltest…\" – freundlich nicken und bleiben.", kategorie: "Stille & Meditation", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
+  { titel: "Innere Stille aufsuchen", beschreibung: "Stell dir vor, tief in dir gibt es einen Ort, der immer still ist – unberührt vom Lärm des Tages. Wie würde er aussehen, sich anfühlen? Besuche ihn kurz.", kategorie: "Stille & Meditation", dauer_minuten: 3, tageszeit: ["abend"] },
+  { titel: "Mit geschlossenen Augen sitzen", beschreibung: "Schließe die Augen – und bleibe einfach. Keine Aufgabe. Keine Technik. Nur Augen zu, Innen sein. So lange wie es sich richtig anfühlt.", kategorie: "Stille & Meditation", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
+  { titel: "Abend-Stille", beschreibung: "Bevor du schläfst: fünf Minuten ohne Bildschirm, ohne Musik, ohne Gespräch. Nur Stille. Lass den Tag sacken. Du musst ihn nicht verstehen – nur loslassen.", kategorie: "Stille & Meditation", dauer_minuten: 5, tageszeit: ["abend"] },
+  { titel: "Kontakt-Moment bewusst gestalten", beschreibung: "Wähle heute ein Gespräch und sei darin vollständig präsent – kein Handy, kein Hintergedanke. Nur dieser Mensch, dieser Moment. Echte Verbindung braucht keine Zeit, nur Präsenz.", kategorie: "Kontakt & Verbindung", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "Dankbarkeit aussprechen", beschreibung: "Sag oder schreibe heute jemandem etwas, wofür du dankbar bist – konkret und ehrlich. Nicht „danke für alles\", sondern „danke für genau diesen Moment, diesen Satz, diese Geste.\"", kategorie: "Kontakt & Verbindung", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
+  { titel: "Verbindung in der Erinnerung", beschreibung: "Denke an einen Menschen, der dir gutgetan hat – auch wenn er nicht mehr da ist oder weit weg lebt. Spür die Verbindung. Verbundenheit existiert auch über Zeit und Raum.", kategorie: "Kontakt & Verbindung", dauer_minuten: 3, tageszeit: ["abend"] },
+  { titel: "Eine ehrliche Nachricht", beschreibung: "Schreibe jemandem heute eine kurze, echte Nachricht – nicht Pflicht, sondern Kontakt. Was möchtest du wirklich sagen? Was hast du schon zu lange nicht gesagt?", kategorie: "Kontakt & Verbindung", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "Präsenz verschenken", beschreibung: "Wähle heute eine Begegnung und schenke ihr deine volle Aufmerksamkeit – dem Kassierer, dem Kollegen, der Nachbarin. Kein großer Aufwand. Nur: wirklich da sein.", kategorie: "Kontakt & Verbindung", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
+  { titel: "Energie-Check", beschreibung: "Auf einer Skala von 0–10: Wie ist mein Energielevel gerade? Ohne Wertung. Dann: Was würde es um einen Punkt heben – realistisch und jetzt umsetzbar?", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
+  { titel: "Powerpause", beschreibung: "Steh auf, strecke dich, atme dreimal tief durch – und dann: eine Minute Pause vom Bildschirm. Raus aus dem Modus. Kurze Aktivierungspausen verhindern Erschöpfungsakkumulation.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["mittag"] },
+  { titel: "Freude aufspüren", beschreibung: "Was macht dir Freude – auch kleines? Ein Geruch, ein Bild, ein Gedanke, ein Lied? Bleibe kurz dabei. Freude ist kein Luxus – sie ist Nahrung für das Nervensystem.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "Morgenaktivierung mit Stimme", beschreibung: "Gähne laut und ausgiebig – übertrieben, theatralisch. Dann ein kräftiges „Ha!\" Dann Arme strecken. Diese Sequenz weckt Körper und Stimme gleichzeitig.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["morgen"] },
+  { titel: "Ressource aktivieren", beschreibung: "Denke an einen Moment, in dem du dich lebendig, wirksam und verbunden gefühlt hast. Wo warst du? Was hast du getan? Spür kurz nach, was das in deinem Körper macht.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "Lebendigkeit im Körper suchen", beschreibung: "Wo spürst du gerade am meisten Lebendigkeit in deinem Körper? Ein Kribbeln, Wärme, Leichtigkeit – auch das Kleinste zählt. Leg die Hand dorthin. Lass es sich ausbreiten.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "Was lässt mich aufleuchten?", beschreibung: "Frage dich: Was hat mich in der letzten Zeit – auch kurz – wirklich aufleuchten lassen? Nicht was sollte mich freuen, sondern was hat es tatsächlich getan? Bleib einen Moment bei diesem Bild.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
+  { titel: "Aktivierungsatem", beschreibung: "Kurze, kräftige Atemzüge durch die Nase – ein, aus, ein, aus – schnell und rhythmisch, 20 Mal. Dann tief einatmen, kurz halten, langsam ausatmen. Wach und lebendig im Körper.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["morgen"] },
+  { titel: "Freudenspeicher anzapfen", beschreibung: "Ruf dir eine Erinnerung auf, bei der du wirklich Freude gespürt hast – nicht „nett\", sondern lebendig. Was war es? Lass das Bild, den Klang, das Körpergefühl zurückkommen.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "Spielimpuls", beschreibung: "Tu für zwei Minuten etwas Spielerisches – summe eine Melodie und erfinde spontan einen Text, klopfe einen Rhythmus, zeichne Kritzeleien, spring einmal hoch. Spielen ist keine Belohnung – es ist Grundnahrungsmittel.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
+  { titel: "Lachen einladen", beschreibung: "Denke an etwas, das dich zuletzt wirklich zum Lachen gebracht hat – oder beginne einfach zu lachen, auch ohne Grund. Künstliches Lachen wird nach wenigen Sekunden fast immer echt. Der Körper weiß nicht, ob es gespielt ist.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
+  { titel: "Strecken und Gähnen", beschreibung: "Strecke dich so ausgiebig wie möglich – Arme, Beine, Rücken. Gähne dabei theatralisch. Dann schüttle alles aus. Diese Kombination aktiviert den Körper und signalisiert gleichzeitig Entspannung – ein paradoxer Lebendigkeit-Booster.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
+  { titel: "Natur-Kontakt", beschreibung: "Geh kurz nach draußen – oder öffne zumindest ein Fenster. Spür die Luft auf der Haut, hör die Außengeräusche, schau in den Himmel. Auch 2 Minuten Naturkontakt heben das Energielevel messbar.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "Lied das trägt", beschreibung: "Spiele ein Lied ab, das dich trägt – nicht beruhigt, sondern aufrecht hält. Das Lied das sagt: Du bist hier, du bist lebendig, es geht weiter. Hör es bewusst, nicht nebenbei.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 5, tageszeit: ["morgen", "mittag"] },
+  { titel: "Wozu bin ich heute lebendig?", beschreibung: "Wofür bin ich heute lebendig? Nicht „was muss ich tun\" – sondern: Was in mir will heute leben, wirken, begegnen? Eine Frage als Tagesstart, keine Antwort nötig.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["morgen"] },
+];
+
+// ============================================================
+// HILFSFUNKTIONEN
+// ============================================================
+function heuteString() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function zeitstempel() {
+  return new Date().toTimeString().slice(0, 5);
+}
+
+function getTageszeit() {
+  const h = new Date().getHours();
+  const startMittag = parseInt(localStorage.getItem('setting_startMittag') ?? '11');
+  const startAbend  = parseInt(localStorage.getItem('setting_startAbend')  ?? '17');
+  if (h < startMittag) return 'morgen';
+  if (h < startAbend)  return 'mittag';
+  return 'abend';
+}
+
+function getFreigeschalteteTageszeiten() {
+  const h = new Date().getHours();
+  const startMorgen = parseInt(localStorage.getItem('setting_startMorgen') ?? '5');
+  const startMittag = parseInt(localStorage.getItem('setting_startMittag') ?? '11');
+  const startAbend  = parseInt(localStorage.getItem('setting_startAbend')  ?? '17');
+  const result = [];
+  if (h >= startMorgen) result.push('morgen');
+  if (h >= startMittag) result.push('mittag');
+  if (h >= startAbend)  result.push('abend');
+  return result;
+}
+
+function zeigToast(msg, dauer = 2500) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), dauer);
+}
+
+function genId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+}
+
+function zeigeTab(name) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('content-' + name).classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'verlauf') ladeVerlaufInit();
+  if (name === 'uebungen') ladeUebungen();
+  if (name === 'heute') ladeHeuteTab();
+  if (name === 'einstellungen') ladeEinstellungenUI();
+}
+
+function toggleAkk(name, directId = false) {
+  const el = directId ? document.getElementById(name) : document.getElementById('akk-' + name);
+  if (el) el.classList.toggle('open');
+}
+
+function oeffneCheckin(zeit) {
+  const el = document.getElementById('akk-' + zeit);
+  if (!el.classList.contains('open')) el.classList.add('open');
+  setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+// ============================================================
+// TAGESIMPULS
+// ============================================================
+function ladeImpuls() {
+  const heute = heuteString();
+  const seed = parseInt(heute.replace(/-/g, '')) % IMPULSE_POOL.length;
+  const impuls = IMPULSE_POOL[seed];
+  document.getElementById('impuls-text').textContent = impuls.text;
+  document.getElementById('impuls-kategorie').textContent = '✦ ' + impuls.kategorie;
+}
+
+// ============================================================
+// CHECK-IN FORMULARE
+// ============================================================
+function skalaHTML(id, label, val = 5) {
+  return `
+    <div class="skala-gruppe">
+      <div class="skala-label">
+        <span>${label}</span>
+        <span class="skala-wert" id="val-${id}">${val}</span>
+      </div>
+      <input type="range" id="${id}" min="1" max="10" value="${val}"
+        oninput="document.getElementById('val-${id}').textContent=this.value">
+    </div>`;
+}
+
+function tagesfrageHTML(tageszeit) {
+  const heute = heuteString();
+  const seed = (parseInt(heute.replace(/-/g, '')) + tageszeit.length) % TAGESFRAGEN.length;
+  const frage = TAGESFRAGEN[seed];
+  const showTf = JSON.parse(localStorage.getItem('setting_tagesfrage') ?? 'true');
+  if (!showTf) return '';
+  return `
+    <div class="tagesfrage-toggle" onclick="toggleTagesfrage('${tageszeit}')">
+      ➤ Tagesfrage ein-/ausblenden
+    </div>
+    <div class="tagesfrage-bereich" id="tf-${tageszeit}">
+      <div class="tagesfrage-text">${frage}</div>
+      <textarea id="tf-antwort-${tageszeit}" rows="2" placeholder="Deine Antwort..."></textarea>
+      <input type="hidden" id="tf-text-${tageszeit}" value="${frage.replace(/"/g,'&quot;')}">
+    </div>`;
+}
+
+function toggleTagesfrage(tz) {
+  document.getElementById('tf-' + tz)?.classList.toggle('open');
+}
+
+function baueCheckinFormular(tageszeit) {
+  const container = document.getElementById('form-' + tageszeit);
+  if (!container) return;
+  let html = '';
+  if (tageszeit === 'morgen') {
+    html += `<div style="margin-top:12px"><strong style="font-size:13px;color:var(--text2)">Schlaf</strong></div>`;
+    html += skalaHTML('schlaf-q-' + tageszeit, '😴 Schlafqualität');
+    html += `<div class="skala-gruppe" style="margin-top:8px">
+      <div class="skala-label"><span>⏱ Stunden</span></div>
+      <input type="number" id="schlaf-std-${tageszeit}" min="0" max="24" step="0.5" value="7" style="width:100px">
+    </div>`;
+    html += '<hr class="divider">';
+  }
+  html += `<div style="margin-top:4px"><strong style="font-size:13px;color:var(--text2)">Wie geht es dir?</strong></div>`;
+  html += skalaHTML('stimmung-' + tageszeit, '🌤 Stimmung');
+  html += skalaHTML('energie-' + tageszeit, '⚡ Energie');
+  html += skalaHTML('koerper-' + tageszeit, '🫀 Körper');
+  html += skalaHTML('verbundenheit-' + tageszeit, '🤝 Verbundenheit');
+  html += '<hr class="divider">';
+  html += `<div style="margin-bottom:8px"><strong style="font-size:13px;color:var(--text2)">Freitext</strong></div>`;
+  html += `<textarea id="freitext-${tageszeit}" rows="2" placeholder="Wie ist es gerade wirklich?"></textarea>`;
+  html += tagesfrageHTML(tageszeit);
+  container.innerHTML = html;
+}
+
+function ladeCheckinWerte() {
+  const heute = heuteString();
+  const checkins = ls('checkins', {});
+  const tagesDaten = checkins[heute] || {};
+  ['morgen', 'mittag', 'abend'].forEach(tz => {
+    const row = tagesDaten[tz];
+    if (!row) return;
+    setSlider('stimmung-' + tz, row.stimmung);
+    setSlider('energie-' + tz, row.energie);
+    setSlider('koerper-' + tz, row.koerper);
+    setSlider('verbundenheit-' + tz, row.verbundenheit);
+    if (tz === 'morgen') {
+      setSlider('schlaf-q-morgen', row.schlaf_qualitaet);
+      if (row.schlaf_stunden != null) {
+        const el = document.getElementById('schlaf-std-morgen');
+        if (el) el.value = row.schlaf_stunden;
+      }
+    }
+    if (row.freitext) {
+      const el = document.getElementById('freitext-' + tz);
+      if (el) el.value = row.freitext;
+    }
+    if (row.tagesfrage_antwort) {
+      const el = document.getElementById('tf-antwort-' + tz);
+      if (el) el.value = row.tagesfrage_antwort;
+    }
+    document.getElementById('status-' + tz).textContent = '✓';
+    document.getElementById('slot-' + tz).classList.add('aktiv');
+  });
+}
+
+function setSlider(id, val) {
+  const el = document.getElementById(id);
+  if (el && val != null) {
+    el.value = val;
+    const disp = document.getElementById('val-' + id);
+    if (disp) disp.textContent = val;
+  }
+}
+
+function speichereCheckin(tageszeit) {
+  const heute = heuteString();
+  const obj = {
+    stimmung: +document.getElementById('stimmung-' + tageszeit).value,
+    energie:  +document.getElementById('energie-'  + tageszeit).value,
+    koerper:  +document.getElementById('koerper-'  + tageszeit).value,
+    verbundenheit: +document.getElementById('verbundenheit-' + tageszeit).value,
+    freitext: document.getElementById('freitext-' + tageszeit)?.value || null,
+    tagesfrage_antwort: document.getElementById('tf-antwort-' + tageszeit)?.value || null,
+    tagesfrage_text:    document.getElementById('tf-text-' + tageszeit)?.value || null,
+    gespeichert_um: new Date().toISOString()
+  };
+  if (tageszeit === 'morgen') {
+    obj.schlaf_qualitaet = +document.getElementById('schlaf-q-morgen').value;
+    obj.schlaf_stunden   = +document.getElementById('schlaf-std-morgen').value;
+  }
+  const checkins = ls('checkins', {});
+  if (!checkins[heute]) checkins[heute] = {};
+  checkins[heute][tageszeit] = obj;
+  lsSet('checkins', checkins);
+  zeigToast('✓ Check-in gespeichert');
+  document.getElementById('status-' + tageszeit).textContent = '✓';
+  document.getElementById('slot-' + tageszeit).classList.add('aktiv');
+}
+
+// ============================================================
+// ÜBUNGEN
+// ============================================================
+function getUebungen() {
+  return ls('exercises', []);
+}
+
+function ladeUebungen() {
+  const kat  = document.getElementById('filter-kat')?.value  || '';
+  const zeit = document.getElementById('filter-zeit')?.value || '';
+  let alle = getUebungen().filter(u => u.aktiv !== false);
+  if (kat)  alle = alle.filter(u => u.kategorie === kat);
+  if (zeit) alle = alle.filter(u => !u.tageszeit || u.tageszeit.length === 0 || u.tageszeit.includes(zeit));
+  renderUebungen(alle);
+}
+
+function renderUebungen(liste) {
+  const c = document.getElementById('uebungen-container');
+  if (!liste || liste.length === 0) {
+    c.innerHTML = '<div class="empty-state">Keine Übungen gefunden.<br>Importiere den Standard-Pool in den Einstellungen.</div>';
+    return;
+  }
+  c.innerHTML = liste.map(u => uebungCardHTML(u)).join('');
+}
+
+function uebungCardHTML(u) {
+  const tz = u.tageszeit && u.tageszeit.length ? u.tageszeit.join(', ') : 'jederzeit';
+  return `
+    <div class="uebung-card" id="uebung-${u.id}">
+      <div class="uebung-titel">${u.titel}</div>
+      <div class="uebung-meta">
+        <span class="badge badge-kat">${u.kategorie}</span>
+        <span>⏱ ${u.dauer_minuten} Min</span>
+        <span>🕐 ${tz}</span>
+      </div>
+      ${u.beschreibung ? `<div class="uebung-desc">${u.beschreibung}</div>` : ''}
+      <div class="uebung-actions">
+        <button class="btn btn-primary btn-sm" onclick="uebungZuHeuteHinzufuegen('${u.id}')">+ Heute machen</button>
+        <button class="btn btn-secondary btn-sm" onclick="bearbeiteUebung('${u.id}')">✏️</button>
+        <button class="btn btn-secondary btn-sm" onclick="loescheUebung('${u.id}')">🗑</button>
+      </div>
+    </div>`;
+}
+
+function uebungZuHeuteHinzufuegen(exerciseId) {
+  const heute = heuteString();
+  const tz = getTageszeit();
+  const dailyEx = ls('daily_exercises', {});
+  if (!dailyEx[heute]) dailyEx[heute] = [];
+  const eintrag = {
+    id: genId(),
+    exerciseId,
+    tageszeit: tz,
+    erledigt: false,
+    erledigt_at: null,
+    feedback: null,
+    erstellt_am: new Date().toISOString()
+  };
+  dailyEx[heute].push(eintrag);
+  lsSet('daily_exercises', dailyEx);
+  zeigToast('✓ Zum heutigen Tag hinzugefügt');
+  ladeHeuteUebungen();
+}
+
+function ladeHeuteUebungen() {
+  const heute = heuteString();
+  const dailyEx = ls('daily_exercises', {})[heute] || [];
+  const alleUebungen = getUebungen();
+  const c = document.getElementById('heute-uebungen-container');
+  if (dailyEx.length === 0) {
+    c.innerHTML = '<div class="empty-state">Noch keine Übungen für heute.<br>Füge welche im Übungen-Tab hinzu.</div>';
+    return;
+  }
+  c.innerHTML = dailyEx.map(de => {
+    const u = alleUebungen.find(x => x.id === de.exerciseId);
+    const titel = u ? u.titel : 'Übung';
+    const fb = de.feedback;
+    const sterne = fb?.sterne ? '★'.repeat(fb.sterne) + '☆'.repeat(5 - fb.sterne) : null;
+    return `
+      <div class="card" style="margin:8px 16px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div class="uebung-titel" style="font-size:14px">${titel}</div>
+            ${u ? `<div class="uebung-meta"><span class="badge badge-kat">${u.kategorie}</span></div>` : ''}
+          </div>
+          ${de.erledigt ? '<span class="badge badge-done">✓ Erledigt</span>' : ''}
+        </div>
+        ${sterne ? `<div style="margin-top:6px;font-size:13px;color:var(--accent2)">${sterne}</div>` : ''}
+        ${fb?.notiz ? `<div style="margin-top:4px;font-size:12px;color:var(--text2);font-style:italic">"${fb.notiz}"</div>` : ''}
+        <div class="uebung-actions" style="margin-top:10px">
+          ${!de.erledigt ? `<button class="btn btn-primary btn-sm" onclick="markiereErledigt('${de.id}')">✓ Erledigt</button>` : ''}
+          <button class="btn btn-secondary btn-sm" onclick="oeffreFeedback('${de.id}', '${titel.replace(/'/g,"\\'")}')">★ Bewerten</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function markiereErledigt(dailyExId) {
+  const heute = heuteString();
+  const dailyEx = ls('daily_exercises', {});
+  if (!dailyEx[heute]) return;
+  const idx = dailyEx[heute].findIndex(e => e.id === dailyExId);
+  if (idx === -1) return;
+  dailyEx[heute][idx].erledigt = true;
+  dailyEx[heute][idx].erledigt_at = new Date().toISOString();
+  lsSet('daily_exercises', dailyEx);
+  zeigToast('✓ Als erledigt markiert');
+  ladeHeuteUebungen();
+}
+
+// ============================================================
+// FEEDBACK
+// ============================================================
+let feedbackSterne = 0;
+let feedbackDaumen = 'neutral';
+let feedbackDailyId = null;
+
+function oeffreFeedback(dailyId, titel) {
+  feedbackSterne = 0;
+  feedbackDaumen = 'neutral';
+  feedbackDailyId = dailyId;
+  document.getElementById('feedback-daily-id').value = dailyId;
+  document.getElementById('feedback-modal-titel').textContent = titel;
+  document.getElementById('feedback-notiz').value = '';
+  document.getElementById('feedback-markiert').checked = false;
+  document.querySelectorAll('.stern').forEach(s => s.classList.remove('aktiv'));
+  document.querySelectorAll('.daumen-btn').forEach(b => b.classList.remove('aktiv'));
+  document.getElementById('feedback-modal').classList.add('open');
+}
+
+function setStern(n) {
+  feedbackSterne = n;
+  document.querySelectorAll('.stern').forEach((s, i) => s.classList.toggle('aktiv', i < n));
+}
+
+function setDaumen(val) {
+  feedbackDaumen = val;
+  document.querySelectorAll('.daumen-btn').forEach(b => b.classList.remove('aktiv'));
+  document.getElementById('daumen-' + val).classList.add('aktiv');
+}
+
+function schliesseFeedback() {
+  document.getElementById('feedback-modal').classList.remove('open');
+}
+
+function speichereFeedback() {
+  const heute = heuteString();
+  const dailyEx = ls('daily_exercises', {});
+  if (!dailyEx[heute]) { schliesseFeedback(); return; }
+  const idx = dailyEx[heute].findIndex(e => e.id === feedbackDailyId);
+  if (idx === -1) { schliesseFeedback(); return; }
+  dailyEx[heute][idx].feedback = {
+    sterne: feedbackSterne || null,
+    daumen: feedbackDaumen,
+    notiz: document.getElementById('feedback-notiz').value || null,
+    markiert: document.getElementById('feedback-markiert').checked,
+    gespeichert_um: new Date().toISOString()
+  };
+  lsSet('daily_exercises', dailyEx);
+  zeigToast('✓ Feedback gespeichert');
+  schliesseFeedback();
+  ladeHeuteUebungen();
+}
+
+// ============================================================
+// JOURNAL
+// ============================================================
+function speichereJournal() {
+  const text = document.getElementById('journal-input').value.trim();
+  if (!text) { zeigToast('Bitte etwas eingeben'); return; }
+  const heute = heuteString();
+  const journal = ls('journal', {});
+  if (!journal[heute]) journal[heute] = [];
+  journal[heute].push({ id: genId(), time: zeitstempel(), text, erstellt_am: new Date().toISOString() });
+  lsSet('journal', journal);
+  document.getElementById('journal-input').value = '';
+  zeigToast('✓ Eintrag gespeichert');
+  ladeHeuteJournal();
+}
+
+function ladeHeuteJournal() {
+  const heute = heuteString();
+  const eintraege = ls('journal', {})[heute] || [];
+  const c = document.getElementById('journal-eintraege-heute');
+  if (eintraege.length === 0) { c.innerHTML = ''; return; }
+  c.innerHTML = '<div style="padding:0 16px">' +
+    eintraege.map(e => `
+      <div class="journal-entry">
+        <div class="journal-time">🕐 ${e.time}</div>
+        <div class="journal-text">${e.text}</div>
+      </div>`).join('') + '</div>';
+}
+
+// ============================================================
+// TAGESABSCHLUSS
+// ============================================================
+function speichereAbschluss() {
+  const heute = heuteString();
+  const summary = ls('daily_summary', {});
+  summary[heute] = {
+    abschlusstext: document.getElementById('abschluss-text').value || null,
+    highlight:     document.getElementById('abschluss-highlight').value || null,
+    dankbarkeit:   document.getElementById('abschluss-dankbarkeit').value || null,
+    gespeichert_um: new Date().toISOString()
+  };
+  lsSet('daily_summary', summary);
+  zeigToast('✓ Tagesabschluss gespeichert');
+}
+
+function ladeAbschlussWerte() {
+  const data = ls('daily_summary', {})[heuteString()];
+  if (data) {
+    if (data.abschlusstext) document.getElementById('abschluss-text').value = data.abschlusstext;
+    if (data.highlight)     document.getElementById('abschluss-highlight').value = data.highlight;
+    if (data.dankbarkeit)   document.getElementById('abschluss-dankbarkeit').value = data.dankbarkeit;
+  }
+}
+
+// ============================================================
+// HEUTE TAB
+// ============================================================
+function ladeHeuteTab() {
+  ladeCheckinWerte();
+  ladeHeuteUebungen();
+  ladeHeuteJournal();
+  ladeAbschlussWerte();
+}
+
+// ============================================================
+// VORSCHLÄGE (lokal, ohne Supabase)
+// ============================================================
+function holeOderErstelleVorschlagLokal(tageszeit, alleUebungen) {
+  const heute = heuteString();
+  const suggestions = ls('daily_suggestions', {});
+  if (!suggestions[heute]) suggestions[heute] = {};
+
+  // Heute schon einen Vorschlag?
+  const existing = suggestions[heute][tageszeit];
+  if (existing) {
+    const u = alleUebungen.find(x => x.id === existing.exerciseId);
+    if (u) return { ...existing, uebung: u };
+  }
+
+  // Rotation
+  const rotation = ls('exercise_rotation', { morgen: [], mittag: [], abend: [] });
+  const bereitsGezeigt = rotation[tageszeit] || [];
+
+  let pool = alleUebungen.filter(u =>
+    (!u.tageszeit || u.tageszeit.length === 0 || u.tageszeit.includes(tageszeit)) &&
+    !bereitsGezeigt.includes(u.id)
+  );
+  if (pool.length === 0) {
+    pool = alleUebungen.filter(u =>
+      !u.tageszeit || u.tageszeit.length === 0 || u.tageszeit.includes(tageszeit)
+    );
+    rotation[tageszeit] = [];
+  }
+  if (pool.length === 0) return null;
+
+  const gewaehlt = pool[Math.floor(Math.random() * pool.length)];
+  suggestions[heute][tageszeit] = { exerciseId: gewaehlt.id, kommentar: '' };
+  lsSet('daily_suggestions', suggestions);
+  rotation[tageszeit] = [...(rotation[tageszeit] || []), gewaehlt.id];
+  lsSet('exercise_rotation', rotation);
+  return { exerciseId: gewaehlt.id, kommentar: '', uebung: gewaehlt };
+}
+
+function speichereVorschlagKommentar(tageszeit) {
+  const ta = document.getElementById('vorschlag-kommentar-' + tageszeit);
+  if (!ta) return;
+  const kommentar = ta.value.trim();
+  const heute = heuteString();
+  const suggestions = ls('daily_suggestions', {});
+  if (!suggestions[heute]) suggestions[heute] = {};
+  if (!suggestions[heute][tageszeit]) suggestions[heute][tageszeit] = {};
+  suggestions[heute][tageszeit].kommentar = kommentar;
+  lsSet('daily_suggestions', suggestions);
+  zeigToast('✓ Kommentar gespeichert');
+}
+
+function ladeVorschlaege() {
+  const container    = document.getElementById('heute-vorschlaege-container');
+  const jetztContainer = document.getElementById('uebung-jetzt-container');
+  const freigeschaltet = getFreigeschalteteTageszeiten();
+  const alleUebungen = getUebungen().filter(u => u.aktiv !== false);
+
+  if (freigeschaltet.length === 0) {
+    const startMorgen = parseInt(localStorage.getItem('setting_startMorgen') ?? '5');
+    container.innerHTML = `<div class="empty-state">Ab ${startMorgen} Uhr erscheinen hier deine Übungsvorschläge.</div>`;
+    jetztContainer.innerHTML = `<div class="empty-state" style="margin:8px 16px">Ab ${startMorgen} Uhr erscheint hier deine erste Übung.</div>`;
+    return;
+  }
+
+  if (alleUebungen.length === 0) {
+    container.innerHTML = '<div class="empty-state">Noch keine Übungen vorhanden.<br>Importiere den Standard-Pool in den Einstellungen.</div>';
+    jetztContainer.innerHTML = '<div class="empty-state" style="margin:8px 16px">Kein Übungspool vorhanden.</div>';
+    return;
+  }
+
+  const tzConfig = [
+    { key: 'morgen', label: '🌅 Morgen', emoji: '🌅' },
+    { key: 'mittag', label: '☀️ Mittag', emoji: '☀️' },
+    { key: 'abend',  label: '🌙 Abend',  emoji: '🌙' }
+  ];
+  const aktuelletageszeit = getTageszeit();
+  let jetztHTML = '';
+  let akkHTML = '';
+
+  for (const { key, label, emoji } of tzConfig) {
+    if (!freigeschaltet.includes(key)) continue;
+    const vorschlag = holeOderErstelleVorschlagLokal(key, alleUebungen);
+    const u = vorschlag?.uebung || null;
+    const kommentar = vorschlag?.kommentar || '';
+    const isAktiv = aktuelletageszeit === key;
+
+    if (isAktiv && u) {
+      jetztHTML = `
+        <div class="uebung-jetzt-card">
+          <div class="uebung-jetzt-label">${emoji} ${key.charAt(0).toUpperCase() + key.slice(1)}-Übung</div>
+          <div class="uebung-jetzt-titel">${u.titel}</div>
+          <div class="uebung-jetzt-meta">
+            <span class="badge badge-kat">${u.kategorie}</span>
+            <span>⏱ ${u.dauer_minuten} Min</span>
+          </div>
+          ${u.beschreibung ? `<div class="uebung-jetzt-desc">${u.beschreibung}</div>` : ''}
+          <div class="uebung-actions">
+            <button class="btn btn-primary btn-sm" onclick="uebungZuHeuteHinzufuegen('${u.id}')">+ Heute planen</button>
+          </div>
+        </div>`;
+    }
+
+    const akkInhalt = u ? `
+      <div style="padding-top:8px">
+        <div class="uebung-titel">${u.titel}</div>
+        <div class="uebung-meta" style="margin:4px 0 8px">
+          <span class="badge badge-kat">${u.kategorie}</span>
+          <span>⏱ ${u.dauer_minuten} Min</span>
+        </div>
+        ${u.beschreibung ? `<div class="uebung-desc" style="font-size:13px;color:var(--text2);margin-bottom:10px">${u.beschreibung}</div>` : ''}
+        <div class="vorschlag-kommentar-bereich">
+          <div class="vorschlag-kommentar-label">💬 Wie lief diese Übung für dich?</div>
+          <textarea id="vorschlag-kommentar-${key}" rows="2"
+            placeholder="Deine Erfahrung..."
+            style="width:100%;margin-bottom:8px">${kommentar}</textarea>
+          <button class="btn btn-secondary btn-sm btn-block"
+            onclick="speichereVorschlagKommentar('${key}')">
+            Kommentar speichern
+          </button>
+        </div>
+        <div class="uebung-actions" style="margin-top:10px">
+          <button class="btn btn-primary btn-sm" onclick="uebungZuHeuteHinzufuegen('${u.id}')">+ Heute planen</button>
+        </div>
+      </div>` : '<div class="empty-state" style="padding:12px 0">Keine Übung verfügbar.</div>';
+
+    akkHTML += `
+      <div class="akkordeon${isAktiv ? ' open' : ''}" id="vorschlag-akk-${key}">
+        <div class="akkordeon-header" onclick="toggleAkk('vorschlag-akk-${key}', true)">
+          <span>${label}</span>
+          <span class="akkordeon-arrow">▼</span>
+        </div>
+        <div class="akkordeon-body">${akkInhalt}</div>
+      </div>`;
+  }
+
+  jetztContainer.innerHTML = jetztHTML || '<div class="empty-state" style="margin:8px 16px">Keine aktuelle Übung verfügbar.</div>';
+  container.innerHTML = akkHTML || '<div class="empty-state">Keine Vorschläge verfügbar.</div>';
+}
+
+// ============================================================
+// ÜBUNG MODAL
+// ============================================================
+function oeffneNeueUebung() {
+  document.getElementById('uebung-edit-id').value = '';
+  document.getElementById('uebung-modal-titel').textContent = 'Neue Übung';
+  document.getElementById('uebung-titel-input').value = '';
+  document.getElementById('uebung-desc-input').value = '';
+  document.getElementById('uebung-kat-input').value = 'Atem';
+  document.getElementById('uebung-dauer-input').value = 3;
+  document.querySelectorAll('.tz-check').forEach(c => c.checked = false);
+  document.getElementById('uebung-modal').classList.add('open');
+}
+
+function bearbeiteUebung(id) {
+  const alle = getUebungen();
+  const u = alle.find(x => x.id === id);
+  if (!u) return;
+  document.getElementById('uebung-edit-id').value = u.id;
+  document.getElementById('uebung-modal-titel').textContent = 'Übung bearbeiten';
+  document.getElementById('uebung-titel-input').value = u.titel;
+  document.getElementById('uebung-desc-input').value = u.beschreibung || '';
+  document.getElementById('uebung-kat-input').value = u.kategorie;
+  document.getElementById('uebung-dauer-input').value = u.dauer_minuten;
+  document.querySelectorAll('.tz-check').forEach(c => {
+    c.checked = u.tageszeit && u.tageszeit.includes(c.value);
+  });
+  document.getElementById('uebung-modal').classList.add('open');
+}
+
+function schliesseUebungModal() {
+  document.getElementById('uebung-modal').classList.remove('open');
+}
+
+function speichereUebung() {
+  const id = document.getElementById('uebung-edit-id').value;
+  const tageszeiten = [...document.querySelectorAll('.tz-check:checked')].map(c => c.value);
+  const obj = {
+    titel:        document.getElementById('uebung-titel-input').value.trim(),
+    beschreibung: document.getElementById('uebung-desc-input').value.trim() || null,
+    kategorie:    document.getElementById('uebung-kat-input').value,
+    dauer_minuten: +document.getElementById('uebung-dauer-input').value,
+    tageszeit:    tageszeiten.length ? tageszeiten : [],
+    aktiv: true
+  };
+  if (!obj.titel) { zeigToast('Titel ist Pflicht'); return; }
+  let alle = getUebungen();
+  if (id) {
+    const idx = alle.findIndex(x => x.id === id);
+    if (idx !== -1) alle[idx] = { ...alle[idx], ...obj };
+  } else {
+    alle.push({ id: genId(), ...obj, reihenfolge: alle.length });
+  }
+  lsSet('exercises', alle);
+  zeigToast('✓ Übung gespeichert');
+  schliesseUebungModal();
+  ladeUebungen();
+}
+
+function loescheUebung(id) {
+  if (!confirm('Übung wirklich löschen?')) return;
+  let alle = getUebungen();
+  alle = alle.map(u => u.id === id ? { ...u, aktiv: false } : u);
+  lsSet('exercises', alle);
+  zeigToast('✓ Übung gelöscht');
+  ladeUebungen();
+}
+
+// ============================================================
+// EINSTELLUNGEN
+// ============================================================
+function speichereEinstellung(key, val) {
+  localStorage.setItem('setting_' + key, JSON.stringify(val));
+}
+
+function ladeEinstellungenUI() {
+  const m  = localStorage.getItem('setting_startMorgen') ?? '5';
+  const mi = localStorage.getItem('setting_startMittag') ?? '11';
+  const a  = localStorage.getItem('setting_startAbend')  ?? '17';
+  const elM  = document.getElementById('set-start-morgen');
+  const elMi = document.getElementById('set-start-mittag');
+  const elA  = document.getElementById('set-start-abend');
+  if (elM)  elM.value  = m;
+  if (elMi) elMi.value = mi;
+  if (elA)  elA.value  = a;
+  // Toggles
+  const tf = JSON.parse(localStorage.getItem('setting_tagesfrage') ?? 'true');
+  const autoAkk = JSON.parse(localStorage.getItem('setting_autoAkk') ?? 'true');
+  const tfEl = document.getElementById('toggle-tagesfrage');
+  const aaEl = document.getElementById('toggle-auto-akk');
+  if (tfEl) tfEl.checked = tf;
+  if (aaEl) aaEl.checked = autoAkk;
+
+  // Datengröße anzeigen
+  let total = 0;
+  for (let k in localStorage) {
+    if (localStorage.hasOwnProperty(k)) total += (localStorage[k].length * 2); // UTF-16
+  }
+  const kb = (total / 1024).toFixed(1);
+  document.getElementById('daten-info').textContent = `Alle Daten lokal gespeichert. Aktuell: ${kb} KB`;
+}
+
+function speichereTageszeitenGrenzen() {
+  const m  = parseInt(document.getElementById('set-start-morgen').value) || 5;
+  const mi = parseInt(document.getElementById('set-start-mittag').value) || 11;
+  const a  = parseInt(document.getElementById('set-start-abend').value)  || 17;
+  localStorage.setItem('setting_startMorgen', m);
+  localStorage.setItem('setting_startMittag', mi);
+  localStorage.setItem('setting_startAbend',  a);
+  zeigToast('✓ Tageszeiten gespeichert');
+  ladeVorschlaege();
+}
+
+function importiereStandardPoolStill() {
+  // Wird beim ersten Start automatisch aufgerufen – kein Confirm
+  const alle = getUebungen();
+  if (alle.length > 0) return; // Schon vorhanden
+  const neu = STANDARD_UEBUNGEN.map((u, i) => ({
+    id: genId(), ...u, aktiv: true, reihenfolge: i
+  }));
+  lsSet('exercises', neu);
+  console.log('Standard-Pool geladen:', neu.length, 'Übungen');
+}
+
+function importiereStandardPool() {
+  if (!confirm('120 Standard-Übungen importieren? Vorhandene Übungen bleiben erhalten.')) return;
+  const alle = getUebungen();
+  let neu = 0;
+  STANDARD_UEBUNGEN.forEach((u, i) => {
+    // Duplikat-Check: gleicher Titel
+    if (!alle.find(x => x.titel === u.titel)) {
+      alle.push({ id: genId(), ...u, aktiv: true, reihenfolge: alle.length + i });
+      neu++;
+    }
+  });
+  // Zusätzlich alle IMPULSE als Übungen? Nein – nur die 10 konkreten Übungen oben.
+  lsSet('exercises', alle);
+  zeigToast(`✓ ${neu} Übungen importiert`);
+  ladeUebungen();
+}
+
+// ============================================================
+// DATEN EXPORT / IMPORT
+// ============================================================
+function exportiereAllesDaten() {
+  const backup = {
+    version: 1,
+    exportiert_am: new Date().toISOString(),
+    exercises: ls('exercises', []),
+    checkins:  ls('checkins', {}),
+    journal:   ls('journal', {}),
+    daily_exercises: ls('daily_exercises', {}),
+    daily_summary:   ls('daily_summary', {}),
+    daily_suggestions: ls('daily_suggestions', {}),
+    exercise_rotation: ls('exercise_rotation', {}),
+    app_titel:     localStorage.getItem('app_titel') || 'Innenpause',
+    app_untertitel: localStorage.getItem('app_untertitel') || 'Deine täglichen Achtsamkeits-Momente'
+  };
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `achtsamkeit-backup-${heuteString()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  zeigToast('✓ Export gestartet');
+}
+
+function importiereDaten(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.version) throw new Error('Unbekanntes Format');
+      if (!confirm('Backup wiederherstellen? Bestehende Daten werden überschrieben.')) return;
+      if (data.exercises) lsSet('exercises', data.exercises);
+      if (data.checkins)  lsSet('checkins', data.checkins);
+      if (data.journal)   lsSet('journal', data.journal);
+      if (data.daily_exercises) lsSet('daily_exercises', data.daily_exercises);
+      if (data.daily_summary)   lsSet('daily_summary', data.daily_summary);
+      if (data.daily_suggestions) lsSet('daily_suggestions', data.daily_suggestions);
+      if (data.exercise_rotation) lsSet('exercise_rotation', data.exercise_rotation);
+      if (data.app_titel)     localStorage.setItem('app_titel', data.app_titel);
+      if (data.app_untertitel) localStorage.setItem('app_untertitel', data.app_untertitel);
+      zeigToast('✓ Backup importiert – lade neu...');
+      setTimeout(() => location.reload(), 1500);
+    } catch(err) {
+      zeigToast('❌ Fehler: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  input.value = '';
+}
+
+function loescheAllesDaten() {
+  if (!confirm('Wirklich ALLE Daten löschen? Diese Aktion kann nicht rückgängig gemacht werden!')) return;
+  if (!confirm('Letzter Hinweis: Bitte vorher ein Backup exportieren. Fortfahren?')) return;
+  const lizenz = localStorage.getItem(LIZENZ_KEY); // Lizenz behalten
+  localStorage.clear();
+  if (lizenz) localStorage.setItem(LIZENZ_KEY, lizenz);
+  zeigToast('✓ Alle Daten gelöscht – lade neu...');
+  setTimeout(() => location.reload(), 1500);
+}
+
+// ============================================================
+// APP-TITEL
+// ============================================================
+function ladeAppTitel() {
+  const titel     = localStorage.getItem('app_titel')      || 'Innenpause';
+  const untertitel = localStorage.getItem('app_untertitel') || 'Deine täglichen Achtsamkeits-Momente';
+  document.getElementById('app-titel-anzeige').textContent     = titel;
+  document.getElementById('app-untertitel-anzeige').textContent = untertitel;
+  document.title = titel;
+}
+
+function oeffneTitelEdit() {
+  const titel     = localStorage.getItem('app_titel')      || 'Innenpause';
+  const untertitel = localStorage.getItem('app_untertitel') || 'Deine täglichen Achtsamkeits-Momente';
+  document.getElementById('app-titel-input').value     = titel;
+  document.getElementById('app-untertitel-input').value = untertitel;
+  document.querySelector('.app-titel-bereich').style.display  = 'none';
+  document.getElementById('app-titel-edit-bereich').style.display = 'block';
+  document.getElementById('app-titel-input').focus();
+}
+
+function schliesseTitelEdit() {
+  document.querySelector('.app-titel-bereich').style.display  = 'flex';
+  document.getElementById('app-titel-edit-bereich').style.display = 'none';
+}
+
+function speichereAppTitel() {
+  const titel     = document.getElementById('app-titel-input').value.trim()     || 'Innenpause';
+  const untertitel = document.getElementById('app-untertitel-input').value.trim() || 'Deine täglichen Achtsamkeits-Momente';
+  localStorage.setItem('app_titel',     titel);
+  localStorage.setItem('app_untertitel', untertitel);
+  ladeAppTitel();
+  schliesseTitelEdit();
+  zeigToast('✓ Name gespeichert');
+}
+
+// ============================================================
+// VERLAUF
+// ============================================================
+function ladeVerlaufInit() {
+  const inp = document.getElementById('verlauf-datum');
+  if (!inp.value) inp.value = heuteString();
+  ladeVerlauf();
+}
+
+function verlaufNavigiere(richtung) {
+  const inp = document.getElementById('verlauf-datum');
+  const d = new Date(inp.value);
+  d.setDate(d.getDate() + richtung);
+  inp.value = d.toISOString().slice(0, 10);
+  ladeVerlauf();
+}
+
+function ladeVerlauf() {
+  const datum = document.getElementById('verlauf-datum').value;
+  if (!datum) return;
+  const d = new Date(datum + 'T12:00:00');
+  const opt = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  document.getElementById('verlauf-datum-anzeige').textContent = d.toLocaleDateString('de-DE', opt);
+
+  const c = document.getElementById('verlauf-container');
+  const tagesDaten  = ls('checkins', {})[datum] || {};
+  const dailyEx     = ls('daily_exercises', {})[datum] || [];
+  const journal     = ls('journal', {})[datum] || [];
+  const summary     = ls('daily_summary', {})[datum] || null;
+  const alleUebungen = getUebungen();
+
+  let html = '';
+
+  // Check-ins
+  const tzArr = ['morgen', 'mittag', 'abend'].filter(k => tagesDaten[k]);
+  if (tzArr.length > 0) {
+    html += '<div class="section-label">Check-ins</div>';
+    tzArr.forEach(tz => {
+      const ci = tagesDaten[tz];
+      const icons  = { morgen: '🌅', mittag: '☀️', abend: '🌙' };
+      const labels = { morgen: 'Morgen', mittag: 'Mittag', abend: 'Abend' };
+      html += `<div class="card"><div class="card-title">${icons[tz]} ${labels[tz]}</div>`;
+      if (tz === 'morgen' && ci.schlaf_qualitaet) {
+        html += `<div class="checkin-zeile"><span>😴 Schlaf</span><div style="display:flex;gap:8px;align-items:center"><div class="checkin-balken"><div class="checkin-balken-fill" style="width:${ci.schlaf_qualitaet*10}%"></div></div><span>${ci.schlaf_qualitaet}/10</span></div></div>`;
+      }
+      [['stimmung','🌤 Stimmung'],['energie','⚡ Energie'],['koerper','🫀 Körper'],['verbundenheit','🤝 Verbundenheit']].forEach(([k,l]) => {
+        if (ci[k] != null) html += `<div class="checkin-zeile"><span>${l}</span><div style="display:flex;gap:8px;align-items:center"><div class="checkin-balken"><div class="checkin-balken-fill" style="width:${ci[k]*10}%"></div></div><span>${ci[k]}/10</span></div></div>`;
+      });
+      if (ci.freitext) html += `<div style="margin-top:8px;font-size:13px;color:var(--text2);font-style:italic">"${ci.freitext}"</div>`;
+      if (ci.tagesfrage_antwort) html += `<div style="margin-top:8px;font-size:12px;color:var(--text3)">${ci.tagesfrage_text}<br><span style="color:var(--text2)">${ci.tagesfrage_antwort}</span></div>`;
+      html += '</div>';
+    });
+  }
+
+  // Übungen
+  if (dailyEx.length > 0) {
+    html += '<div class="section-label">Übungen</div>';
+    dailyEx.forEach(de => {
+      const u = alleUebungen.find(x => x.id === de.exerciseId);
+      const titel = u ? u.titel : 'Übung';
+      const fb = de.feedback;
+      html += `<div class="card">
+        <div class="uebung-titel" style="font-size:14px">${titel}</div>
+        ${u ? `<div class="uebung-meta"><span class="badge badge-kat">${u.kategorie}</span></div>` : ''}
+        ${de.erledigt ? '<span class="badge badge-done">✓ Erledigt</span>' : '<span style="font-size:12px;color:var(--text3)">nicht erledigt</span>'}
+        ${fb ? `<div style="margin-top:8px;font-size:13px">
+          ${fb.sterne ? '★'.repeat(fb.sterne) + '☆'.repeat(5-fb.sterne) : ''}
+          ${fb.daumen === 'hoch' ? '👍' : fb.daumen === 'runter' ? '👎' : ''}
+          ${fb.markiert ? '⭐' : ''}
+          ${fb.notiz ? `<div style="color:var(--text2);font-style:italic;margin-top:4px">"${fb.notiz}"</div>` : ''}
+        </div>` : ''}
+      </div>`;
+    });
+  }
+
+  // Journal
+  if (journal.length > 0) {
+    html += '<div class="section-label">Notizen</div><div style="padding:0 16px">';
+    journal.forEach(e => {
+      html += `<div class="journal-entry"><div class="journal-time">🕐 ${e.time}</div><div class="journal-text">${e.text}</div></div>`;
+    });
+    html += '</div>';
+  }
+
+  // Tagesabschluss
+  if (summary) {
+    html += '<div class="section-label">Tagesabschluss</div><div class="card">';
+    if (summary.abschlusstext) html += `<div style="font-size:14px;margin-bottom:8px">${summary.abschlusstext}</div>`;
+    if (summary.highlight)     html += `<div style="font-size:13px;color:var(--text2)">✨ ${summary.highlight}</div>`;
+    if (summary.dankbarkeit)   html += `<div style="font-size:13px;color:var(--text2);margin-top:4px">🙏 ${summary.dankbarkeit}</div>`;
+    html += '</div>';
+  }
+
+  if (!html) html = '<div class="empty-state">Keine Einträge für diesen Tag.</div>';
+  c.innerHTML = html;
+}
+
+// ============================================================
+// TAGESZEIT-DEFAULTS
+// ============================================================
+function setzeTageszeitDefaults() {
+  const tz = getTageszeit();
+  const autoAkk = JSON.parse(localStorage.getItem('setting_autoAkk') ?? 'true');
+  if (autoAkk) {
+    document.getElementById('akk-' + tz)?.classList.add('open');
+  }
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function ladeApp() {
+  importiereStandardPoolStill(); // Erster Start: Pool laden
+  ladeImpuls();
+  ladeAppTitel();
+  baueCheckinFormular('morgen');
+  baueCheckinFormular('mittag');
+  baueCheckinFormular('abend');
+  setzeTageszeitDefaults();
+  ladeHeuteTab();
+  ladeVorschlaege();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (zeigeHauptApp()) {
+    ladeApp();
+  }
+});
+
+// ============================================================
+// SERVICE WORKER REGISTRIERUNG (PWA)
+// ============================================================
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').then(() => {
+    console.log('Service Worker registriert');
+  }).catch(err => {
+    console.warn('SW Registrierung fehlgeschlagen:', err);
+  });
+}
+</script>
+</body>
+</html>
