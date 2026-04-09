@@ -426,6 +426,14 @@
   .stern { font-size: 20px; cursor: pointer; color: var(--border); transition: color 0.15s; }
   .stern.aktiv { color: var(--accent2); }
 
+  /* INLINE STERNE (Vorschläge) */
+  .inline-sterne { display: flex; gap: 6px; margin: 10px 0 4px; }
+  .inline-stern { font-size: 24px; cursor: pointer; color: var(--border); transition: color 0.15s; line-height: 1; }
+  .inline-stern.aktiv { color: var(--accent2); }
+  .inline-stern:hover { color: var(--accent2); opacity: 0.7; }
+  .bewertung-anzeige { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .bewertung-gespeichert { font-size: 12px; color: var(--accent3); margin-top: 4px; font-weight: 500; }
+
   /* DAUMEN */
   .daumen-gruppe { display: flex; gap: 6px; }
   .daumen-btn { padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); cursor: pointer; font-size: 16px; transition: all 0.15s; }
@@ -716,6 +724,13 @@
           <option value="morgen">Morgen</option>
           <option value="mittag">Mittag</option>
           <option value="abend">Abend</option>
+        </select>
+        <select id="sort-uebungen" onchange="ladeUebungen()" style="flex:1;min-width:130px">
+          <option value="">Standard</option>
+          <option value="bewertung_desc">★ Beste zuerst</option>
+          <option value="bewertung_asc">★ Schlechteste zuerst</option>
+          <option value="name_asc">A–Z</option>
+          <option value="name_desc">Z–A</option>
         </select>
       </div>
     </div>
@@ -1490,9 +1505,25 @@ function getUebungen() {
 function ladeUebungen() {
   const kat  = document.getElementById('filter-kat')?.value  || '';
   const zeit = document.getElementById('filter-zeit')?.value || '';
+  const sort = document.getElementById('sort-uebungen')?.value || '';
   let alle = getUebungen().filter(u => u.aktiv !== false);
   if (kat)  alle = alle.filter(u => u.kategorie === kat);
   if (zeit) alle = alle.filter(u => !u.tageszeit || u.tageszeit.length === 0 || u.tageszeit.includes(zeit));
+  if (sort === 'bewertung_desc') {
+    alle.sort((a, b) => (b.bewertung_schnitt || 0) - (a.bewertung_schnitt || 0));
+  } else if (sort === 'bewertung_asc') {
+    // Unbewertete ans Ende
+    alle.sort((a, b) => {
+      if (!a.bewertung_schnitt && !b.bewertung_schnitt) return 0;
+      if (!a.bewertung_schnitt) return 1;
+      if (!b.bewertung_schnitt) return -1;
+      return a.bewertung_schnitt - b.bewertung_schnitt;
+    });
+  } else if (sort === 'name_asc') {
+    alle.sort((a, b) => a.titel.localeCompare(b.titel, 'de'));
+  } else if (sort === 'name_desc') {
+    alle.sort((a, b) => b.titel.localeCompare(a.titel, 'de'));
+  }
   renderUebungen(alle);
 }
 
@@ -1507,6 +1538,11 @@ function renderUebungen(liste) {
 
 function uebungCardHTML(u) {
   const tz = u.tageszeit && u.tageszeit.length ? u.tageszeit.join(', ') : 'jederzeit';
+  const bewertung = u.bewertung_schnitt ? u.bewertung_schnitt.toFixed(1) : null;
+  const bewertungAnzahl = u.bewertung_anzahl || 0;
+  const sterneAnzeige = bewertung
+    ? `<span style="color:var(--accent2);font-size:13px">★ ${bewertung}</span><span style="color:var(--text3);font-size:11px"> (${bewertungAnzahl}×)</span>`
+    : '';
   return `
     <div class="uebung-card" id="uebung-${u.id}">
       <div class="uebung-titel">${u.titel}</div>
@@ -1514,6 +1550,7 @@ function uebungCardHTML(u) {
         <span class="badge badge-kat">${u.kategorie}</span>
         <span>⏱ ${u.dauer_minuten} Min</span>
         <span>🕐 ${tz}</span>
+        ${sterneAnzeige}
       </div>
       ${u.beschreibung ? `<div class="uebung-desc">${u.beschreibung}</div>` : ''}
       <div class="uebung-actions">
@@ -1558,20 +1595,27 @@ function ladeHeuteUebungen() {
     const titel = u ? u.titel : 'Übung';
     const fb = de.feedback;
     const sterne = fb?.sterne ? '★'.repeat(fb.sterne) + '☆'.repeat(5 - fb.sterne) : null;
+    const daumenIcon = fb?.daumen === 'hoch' ? '👍' : fb?.daumen === 'runter' ? '👎' : fb?.daumen === 'neutral' ? '😐' : null;
+    const hatFeedback = fb && (fb.sterne || fb.daumen || fb.notiz || fb.markiert);
     return `
       <div class="card" style="margin:8px 16px">
         <div style="display:flex;justify-content:space-between;align-items:flex-start">
           <div>
-            <div class="uebung-titel" style="font-size:14px">${titel}</div>
+            <div class="uebung-titel" style="font-size:14px">${titel}${fb?.markiert ? ' ⭐' : ''}</div>
             ${u ? `<div class="uebung-meta"><span class="badge badge-kat">${u.kategorie}</span></div>` : ''}
           </div>
           ${de.erledigt ? '<span class="badge badge-done">✓ Erledigt</span>' : ''}
         </div>
-        ${sterne ? `<div style="margin-top:6px;font-size:13px;color:var(--accent2)">${sterne}</div>` : ''}
+        ${hatFeedback ? `<div style="margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          ${sterne ? `<span style="font-size:14px;color:var(--accent2)">${sterne}</span>` : ''}
+          ${daumenIcon ? `<span style="font-size:16px">${daumenIcon}</span>` : ''}
+        </div>` : ''}
         ${fb?.notiz ? `<div style="margin-top:4px;font-size:12px;color:var(--text2);font-style:italic">"${fb.notiz}"</div>` : ''}
         <div class="uebung-actions" style="margin-top:10px">
           ${!de.erledigt ? `<button class="btn btn-primary btn-sm" onclick="markiereErledigt('${de.id}')">✓ Erledigt</button>` : ''}
-          <button class="btn btn-secondary btn-sm" onclick="oeffreFeedback('${de.id}', '${titel.replace(/'/g,"\\'")}')">★ Bewerten</button>
+          <button class="btn btn-secondary btn-sm" onclick="oeffreFeedback('${de.id}', '${titel.replace(/'/g,"\\'")}')">
+            ${hatFeedback ? '✏️ Bewertung ändern' : '★ Bewerten'}
+          </button>
         </div>
       </div>`;
   }).join('');
@@ -1601,12 +1645,32 @@ function oeffreFeedback(dailyId, titel) {
   feedbackSterne = 0;
   feedbackDaumen = 'neutral';
   feedbackDailyId = dailyId;
+
+  // Vorhandenes Feedback vorladen
+  const heute = heuteString();
+  const dailyEx = ls('daily_exercises', {});
+  const eintrag = (dailyEx[heute] || []).find(e => e.id === dailyId);
+  const fb = eintrag?.feedback || null;
+
+  if (fb) {
+    feedbackSterne = fb.sterne || 0;
+    feedbackDaumen = fb.daumen || 'neutral';
+  }
+
   document.getElementById('feedback-daily-id').value = dailyId;
   document.getElementById('feedback-modal-titel').textContent = titel;
-  document.getElementById('feedback-notiz').value = '';
-  document.getElementById('feedback-markiert').checked = false;
-  document.querySelectorAll('.stern').forEach(s => s.classList.remove('aktiv'));
+  document.getElementById('feedback-notiz').value = fb?.notiz || '';
+  document.getElementById('feedback-markiert').checked = fb?.markiert || false;
+
+  // Sterne-Anzeige aktualisieren
+  document.querySelectorAll('.stern').forEach((s, i) => s.classList.toggle('aktiv', i < feedbackSterne));
+
+  // Daumen-Anzeige aktualisieren
   document.querySelectorAll('.daumen-btn').forEach(b => b.classList.remove('aktiv'));
+  if (feedbackDaumen) {
+    document.getElementById('daumen-' + feedbackDaumen)?.classList.add('aktiv');
+  }
+
   document.getElementById('feedback-modal').classList.add('open');
 }
 
@@ -1760,6 +1824,35 @@ function speichereVorschlagKommentar(tageszeit) {
   zeigToast('✓ Kommentar gespeichert');
 }
 
+// Sternbewertung direkt in Vorschlagskarte – wird am Exercise-Objekt gespeichert
+function bewerteSternVorschlag(exerciseId, sterne, tageszeit) {
+  // Sterne visuell aktualisieren
+  const container = document.getElementById('inline-sterne-' + tageszeit);
+  if (container) {
+    container.querySelectorAll('.inline-stern').forEach((s, i) => {
+      s.classList.toggle('aktiv', i < sterne);
+    });
+  }
+  // Bestehende Bewertung aus dem Exercise-Objekt laden und Durchschnitt berechnen
+  const alle = getUebungen();
+  const idx = alle.findIndex(x => x.id === exerciseId);
+  if (idx === -1) return;
+  const u = alle[idx];
+  const anzahlAlt = u.bewertung_anzahl || 0;
+  const schnittAlt = u.bewertung_schnitt || 0;
+  // Rollendes Mittel
+  const anzahlNeu = anzahlAlt + 1;
+  const schnittNeu = ((schnittAlt * anzahlAlt) + sterne) / anzahlNeu;
+  alle[idx].bewertung_sterne_letzt = sterne;
+  alle[idx].bewertung_schnitt = schnittNeu;
+  alle[idx].bewertung_anzahl = anzahlNeu;
+  lsSet('exercises', alle);
+  // Statusanzeige
+  const statusEl = document.getElementById('bewertung-status-' + tageszeit);
+  if (statusEl) statusEl.textContent = `✓ Gespeichert (Ø ${schnittNeu.toFixed(1)} aus ${anzahlNeu} Bewertung${anzahlNeu !== 1 ? 'en' : ''})`;
+  zeigToast('★ Bewertung gespeichert');
+}
+
 function ladeVorschlaege() {
   const container    = document.getElementById('heute-vorschlaege-container');
   const jetztContainer = document.getElementById('uebung-jetzt-container');
@@ -1817,8 +1910,19 @@ function ladeVorschlaege() {
         <div class="uebung-meta" style="margin:4px 0 8px">
           <span class="badge badge-kat">${u.kategorie}</span>
           <span>⏱ ${u.dauer_minuten} Min</span>
+          ${u.bewertung_schnitt ? `<span style="color:var(--accent2)">★ ${u.bewertung_schnitt.toFixed(1)}</span>` : ''}
         </div>
         ${u.beschreibung ? `<div class="uebung-desc" style="font-size:13px;color:var(--text2);margin-bottom:10px">${u.beschreibung}</div>` : ''}
+        <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
+          <div style="font-size:12px;color:var(--text2);margin-bottom:4px;font-weight:500">Wie hilfreich war diese Übung?</div>
+          <div class="inline-sterne" id="inline-sterne-${key}">
+            ${[1,2,3,4,5].map(n => `<span class="inline-stern${(u.bewertung_sterne_letzt || 0) >= n ? ' aktiv' : ''}"
+              onclick="bewerteSternVorschlag('${u.id}', ${n}, '${key}')">★</span>`).join('')}
+          </div>
+          <div class="bewertung-gespeichert" id="bewertung-status-${key}">
+            ${u.bewertung_anzahl ? `Ø ${u.bewertung_schnitt.toFixed(1)} aus ${u.bewertung_anzahl} Bewertung${u.bewertung_anzahl !== 1 ? 'en' : ''}` : ''}
+          </div>
+        </div>
         <div class="vorschlag-kommentar-bereich">
           <div class="vorschlag-kommentar-label">💬 Wie lief diese Übung für dich?</div>
           <textarea id="vorschlag-kommentar-${key}" rows="2"
