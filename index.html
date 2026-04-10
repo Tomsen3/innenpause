@@ -603,6 +603,36 @@
   .update-changelog { background: var(--bg2); border-radius: 8px; padding: 12px 14px; margin: 12px 0 16px; font-size: 13px; color: var(--text2); line-height: 1.6; max-height: 200px; overflow-y: auto; }
   .update-changelog li { margin-bottom: 4px; list-style: none; padding-left: 4px; }
   .update-changelog li::before { content: "✦ "; color: var(--accent2); }
+
+  /* HILFE MODAL */
+  #hilfe-modal { display: none; position: fixed; inset: 0; background: rgba(44,36,22,0.6); z-index: 500; flex-direction: column; }
+  #hilfe-modal.open { display: flex; }
+  .hilfe-container { background: var(--bg); flex: 1; overflow: hidden; display: flex; flex-direction: column; max-width: 600px; margin: 0 auto; width: 100%; margin-top: 40px; border-radius: 20px 20px 0 0; }
+  .hilfe-header { background: linear-gradient(135deg, #2c2416, #4a3c28); color: #f5f0e8; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-radius: 20px 20px 0 0; }
+  .hilfe-header-titel { font-family: 'Lora', serif; font-size: 17px; }
+  .hilfe-close { background: rgba(255,255,255,0.15); border: none; color: #f5f0e8; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: 14px; }
+  .hilfe-nav { display: flex; overflow-x: auto; background: var(--card); border-bottom: 1px solid var(--border); scrollbar-width: none; }
+  .hilfe-nav::-webkit-scrollbar { display: none; }
+  .hilfe-nav-btn { flex-shrink: 0; padding: 10px 14px; border: none; background: none; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
+  .hilfe-nav-btn.active { color: var(--accent); border-bottom-color: var(--accent2); }
+  .hilfe-body { flex: 1; overflow-y: auto; padding: 16px; }
+  .hilfe-sektion { display: none; }
+  .hilfe-sektion.active { display: block; }
+  .hilfe-h2 { font-family: 'Lora', serif; font-size: 16px; font-weight: 500; color: var(--text); margin: 16px 0 8px; }
+  .hilfe-h2:first-child { margin-top: 0; }
+  .hilfe-h3 { font-size: 13px; font-weight: 600; color: var(--accent); margin: 12px 0 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .hilfe-p { font-size: 13px; color: var(--text2); line-height: 1.6; margin-bottom: 8px; }
+  .hilfe-box { background: var(--bg2); border-radius: 8px; padding: 10px 12px; margin: 8px 0; font-size: 13px; color: var(--text2); line-height: 1.6; }
+  .hilfe-box.tipp { border-left: 3px solid var(--accent3); }
+  .hilfe-box.warn { border-left: 3px solid var(--warm); }
+  .hilfe-box.info { border-left: 3px solid var(--blue); }
+  .hilfe-kbd { display: inline-block; background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; font-size: 12px; font-family: monospace; color: var(--text); margin: 0 2px; }
+  .hilfe-schritt { display: flex; gap: 10px; margin: 6px 0; font-size: 13px; color: var(--text2); line-height: 1.5; }
+  .hilfe-schritt-nr { background: var(--accent2); color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; flex-shrink: 0; margin-top: 2px; }
+
+  /* ? BUTTON IM HEADER */
+  .hilfe-btn { background: rgba(255,255,255,0.12); border: none; color: #f5f0e8; border-radius: 8px; padding: 4px 10px; cursor: pointer; font-size: 15px; font-weight: 600; transition: background 0.2s; }
+  .hilfe-btn:hover { background: rgba(255,255,255,0.22); }
 </style>
 </head>
 <body>
@@ -628,9 +658,12 @@
 
 <!-- TAGESIMPULS HEADER -->
 <div id="impuls-header">
-  <div class="app-titel-bereich" onclick="oeffneTitelEdit()">
-    <span id="app-titel-anzeige">Innenpause</span>
-    <span id="app-untertitel-anzeige">Deine täglichen Achtsamkeits-Momente</span>
+  <div style="display:flex;justify-content:space-between;align-items:flex-start">
+    <div class="app-titel-bereich" onclick="oeffneTitelEdit()" style="flex:1">
+      <span id="app-titel-anzeige">Innenpause</span>
+      <span id="app-untertitel-anzeige">Deine täglichen Achtsamkeits-Momente</span>
+    </div>
+    <button class="hilfe-btn" onclick="oeffneHilfe()" title="Hilfe">?</button>
   </div>
   <div id="app-titel-edit-bereich">
     <input type="text" id="app-titel-input" placeholder="App-Name..." maxlength="40">
@@ -979,6 +1012,251 @@
 
   </div>
 </div>
+
+<!-- HILFE MODAL -->
+<div id="hilfe-modal">
+  <div class="hilfe-container">
+    <div class="hilfe-header">
+      <div class="hilfe-header-titel">📖 Hilfe & Anleitung</div>
+      <button class="hilfe-close" onclick="schliesseHilfe()">✕ Schließen</button>
+    </div>
+    <div class="hilfe-nav" id="hilfe-nav">
+      <button class="hilfe-nav-btn active" onclick="zeigeHilfeSektion('start')">🚀 Start</button>
+      <button class="hilfe-nav-btn" onclick="zeigeHilfeSektion('heute')">☀️ Heute</button>
+      <button class="hilfe-nav-btn" onclick="zeigeHilfeSektion('checkin')">📊 Check-in</button>
+      <button class="hilfe-nav-btn" onclick="zeigeHilfeSektion('uebungen')">🌿 Übungen</button>
+      <button class="hilfe-nav-btn" onclick="zeigeHilfeSektion('verlauf')">📖 Verlauf</button>
+      <button class="hilfe-nav-btn" onclick="zeigeHilfeSektion('einstellungen')">⚙️ Einstellungen</button>
+      <button class="hilfe-nav-btn" onclick="zeigeHilfeSektion('sync')">🔄 Sync</button>
+      <button class="hilfe-nav-btn" onclick="zeigeHilfeSektion('troubleshooting')">🛠 Probleme</button>
+    </div>
+    <div class="hilfe-body">
+
+      <!-- START -->
+      <div class="hilfe-sektion active" id="hilfe-start">
+        <div class="hilfe-h2">Willkommen bei Innenpause</div>
+        <div class="hilfe-p">Innenpause begleitet dich durch den Tag mit Achtsamkeitsübungen, täglichen Check-ins und einem persönlichen Notizbuch. Alle Daten bleiben auf deinem Gerät – nichts wird in die Cloud übertragen.</div>
+
+        <div class="hilfe-h2">Installation auf dem Gerät</div>
+        <div class="hilfe-p">Innenpause ist eine Web-App (PWA) und kann wie eine normale App auf deinem Gerät installiert werden – ohne App Store.</div>
+
+        <div class="hilfe-h3">💻 PC – Chrome oder Edge</div>
+        <div class="hilfe-schritt"><div class="hilfe-schritt-nr">1</div><div>Öffne <strong>innenpause.singende-krankenhaeuser.de</strong> im Browser</div></div>
+        <div class="hilfe-schritt"><div class="hilfe-schritt-nr">2</div><div>Klicke in der Adressleiste auf das <strong>Install-Symbol</strong> (⊕) oder über das Menü (⋮) → „App installieren"</div></div>
+        <div class="hilfe-schritt"><div class="hilfe-schritt-nr">3</div><div>„Installieren" bestätigen → App erscheint im Startmenü</div></div>
+
+        <div class="hilfe-h3">📱 Android – Chrome</div>
+        <div class="hilfe-schritt"><div class="hilfe-schritt-nr">1</div><div>Öffne die App-Adresse in Chrome</div></div>
+        <div class="hilfe-schritt"><div class="hilfe-schritt-nr">2</div><div>Tippe auf das Menü (⋮) → „Zum Startbildschirm hinzufügen"</div></div>
+        <div class="hilfe-schritt"><div class="hilfe-schritt-nr">3</div><div>„Hinzufügen" bestätigen</div></div>
+
+        <div class="hilfe-h3">🍎 iPhone / iPad – Safari</div>
+        <div class="hilfe-schritt"><div class="hilfe-schritt-nr">1</div><div>Öffne die App-Adresse in <strong>Safari</strong> (nicht Chrome!)</div></div>
+        <div class="hilfe-schritt"><div class="hilfe-schritt-nr">2</div><div>Tippe auf das Teilen-Symbol <strong>⎦↑⎤</strong> unten in der Leiste</div></div>
+        <div class="hilfe-schritt"><div class="hilfe-schritt-nr">3</div><div>„Zum Home-Bildschirm" → „Hinzufügen"</div></div>
+        <div class="hilfe-box info">Auf dem iPhone muss zwingend Safari verwendet werden – Chrome unterstützt die PWA-Installation auf iOS nicht.</div>
+
+        <div class="hilfe-h2">Erster Start & Lizenzschlüssel</div>
+        <div class="hilfe-p">Beim ersten Öffnen wirst du nach einem Lizenzschlüssel gefragt. Diesen erhältst du von der Person, die dir Zugang zur App gegeben hat. Der Schlüssel wird einmalig eingegeben und gespeichert – danach ist er nicht mehr nötig.</div>
+      </div>
+
+      <!-- HEUTE -->
+      <div class="hilfe-sektion" id="hilfe-heute">
+        <div class="hilfe-h2">Der Heute-Tab – dein Tagesüberblick</div>
+        <div class="hilfe-p">Der Heute-Tab ist deine Startseite. Hier siehst du auf einen Blick, was du für den Tag geplant hast und was bereits erledigt ist.</div>
+
+        <div class="hilfe-h3">🔥 Streak</div>
+        <div class="hilfe-p">Oben siehst du deinen aktuellen Streak – wie viele Tage in Folge du mindestens einen Check-in gemacht hast. Die farbigen Punkte zeigen die letzten 7 Tage.</div>
+
+        <div class="hilfe-h3">Morgen / Mittag / Abend</div>
+        <div class="hilfe-p">Die drei Kacheln zeigen den Status deiner täglichen Check-ins. Ein Häkchen (✓) bedeutet: für diese Tageszeit hast du bereits eingecheckt. Tippe auf eine Kachel um direkt zum Check-in zu springen.</div>
+
+        <div class="hilfe-h3">Übung jetzt</div>
+        <div class="hilfe-p">Hier wird dir die passende Übung für die aktuelle Tageszeit angezeigt – automatisch ausgewählt aus deinem Übungspool.</div>
+
+        <div class="hilfe-h3">Übungsvorschläge</div>
+        <div class="hilfe-p">Für jede Tageszeit (Morgen, Mittag, Abend) gibt es einen aufklappbaren Vorschlag. Du kannst:</div>
+        <div class="hilfe-box tipp">
+          • Die Übung mit ⭐ bewerten (1–5 Sterne)<br>
+          • Mit <strong>↻</strong> eine andere Übung anfordern<br>
+          • Die Übung mit „+ Heute planen" zum heutigen Tag hinzufügen
+        </div>
+
+        <div class="hilfe-h3">Notizbuch</div>
+        <div class="hilfe-p">Freie Notizen, Gedanken oder Beobachtungen – zeitgestempelt für diesen Tag gespeichert.</div>
+
+        <div class="hilfe-h3">Tagesabschluss</div>
+        <div class="hilfe-p">Am Ende des Tages kannst du festhalten: Was nehme ich mit? Was war das Highlight? Wofür bin ich dankbar?</div>
+
+        <div class="hilfe-h3">Heutige Übungen</div>
+        <div class="hilfe-p">Alle Übungen die du heute geplant hast, mit Status (erledigt / offen) und Möglichkeit zur Bewertung.</div>
+      </div>
+
+      <!-- CHECK-IN -->
+      <div class="hilfe-sektion" id="hilfe-checkin">
+        <div class="hilfe-h2">Check-in – wie geht es mir?</div>
+        <div class="hilfe-p">Der Check-in-Tab enthält drei Formulare – für Morgen, Mittag und Abend. Jedes kann unabhängig voneinander ausgefüllt werden.</div>
+
+        <div class="hilfe-h3">Was wird erfasst?</div>
+        <div class="hilfe-box info">
+          <strong>Morgen:</strong> Schlafqualität (1–10), Schlafdauer, Stimmung, Energie, Körpergefühl, Verbundenheit<br><br>
+          <strong>Mittag & Abend:</strong> Stimmung, Energie, Körpergefühl, Verbundenheit<br><br>
+          <strong>Alle:</strong> Freitext + optionale Tagesfrage
+        </div>
+
+        <div class="hilfe-h3">Tagesfrage</div>
+        <div class="hilfe-p">Eine tägliche Reflexionsfrage – wechselt automatisch jeden Tag. Du kannst sie ein- oder ausblenden (Einstellungen → Tagesfrage anzeigen). Die Antwort ist freiwillig.</div>
+
+        <div class="hilfe-h3">Speichern</div>
+        <div class="hilfe-p">Tippe auf „Speichern" am Ende des jeweiligen Formulars. Der Check-in kann jederzeit überschrieben werden – es zählt immer der letzte gespeicherte Stand.</div>
+
+        <div class="hilfe-box tipp">Tipp: Die App öffnet zur passenden Tageszeit automatisch den richtigen Check-in (sofern in den Einstellungen aktiviert).</div>
+      </div>
+
+      <!-- ÜBUNGEN -->
+      <div class="hilfe-sektion" id="hilfe-uebungen">
+        <div class="hilfe-h2">Übungen – dein persönlicher Pool</div>
+        <div class="hilfe-p">Hier findest du alle verfügbaren Übungen. Beim ersten Start wird automatisch ein Pool mit 120 Übungen geladen.</div>
+
+        <div class="hilfe-h3">Filtern & Sortieren</div>
+        <div class="hilfe-box info">
+          <strong>Kategorie:</strong> Atem, Körperwahrnehmung, Stimme & Singen, GfK, Selbstmitgefühl u.v.m.<br>
+          <strong>Tageszeit:</strong> Nur Übungen für Morgen / Mittag / Abend anzeigen<br>
+          <strong>Sortierung:</strong> ⭐ Favoriten · Beste zuerst · Schlechteste zuerst · A–Z · Z–A
+        </div>
+
+        <div class="hilfe-h3">Bewertung</div>
+        <div class="hilfe-p">In den Übungsvorschlägen (Heute-Tab) kannst du jede Übung mit 1–5 Sternen bewerten. Der Durchschnitt aller Bewertungen wird in der Übungskarte angezeigt (⭐ 4.2 · 3×).</div>
+
+        <div class="hilfe-h3">Favoriten</div>
+        <div class="hilfe-p">Übungen die du im Bewertungs-Modal mit ⭐ als Favorit markiert hast, erscheinen unter dem Filter „⭐ Favoriten".</div>
+
+        <div class="hilfe-h3">Eigene Übungen</div>
+        <div class="hilfe-p">Mit „+ Neue Übung hinzufügen" kannst du eigene Übungen erstellen. Bestehende Übungen lassen sich mit ✏️ bearbeiten oder mit 🗑 löschen (werden nur deaktiviert, nicht dauerhaft entfernt).</div>
+      </div>
+
+      <!-- VERLAUF -->
+      <div class="hilfe-sektion" id="hilfe-verlauf">
+        <div class="hilfe-h2">Verlauf – Rückblick & Muster</div>
+
+        <div class="hilfe-h3">Wochenübersicht</div>
+        <div class="hilfe-p">Oben im Verlauf-Tab siehst du eine Balkengrafik mit deinen durchschnittlichen Stimmungswerten der letzten 7 Tage. Leere Tage (kein Check-in) werden grau angezeigt.</div>
+
+        <div class="hilfe-h3">Tagesansicht</div>
+        <div class="hilfe-p">Über die Pfeile ◀ ▶ oder das Datumsfeld navigierst du zu einem bestimmten Tag. Angezeigt werden:</div>
+        <div class="hilfe-box info">
+          • Alle Check-ins des Tages (mit Balkenanzeige der Werte)<br>
+          • Erledigte Übungen inkl. Bewertungen<br>
+          • Notizbuch-Einträge<br>
+          • Tagesabschluss
+        </div>
+
+        <div class="hilfe-box tipp">Tipp: Der Verlauf ist rein lokal – er zeigt nur Daten von diesem Gerät. Für geräteübergreifenden Verlauf nutze die Sync-Funktion.</div>
+      </div>
+
+      <!-- EINSTELLUNGEN -->
+      <div class="hilfe-sektion" id="hilfe-einstellungen">
+        <div class="hilfe-h2">Einstellungen</div>
+
+        <div class="hilfe-h3">Anzeige</div>
+        <div class="hilfe-box info">
+          <strong>Tagesfrage anzeigen:</strong> Blendet die tägliche Reflexionsfrage im Check-in ein oder aus<br><br>
+          <strong>Automatisch öffnen:</strong> Öffnet beim App-Start automatisch den passenden Check-in (Morgen/Mittag/Abend) je nach Uhrzeit
+        </div>
+
+        <div class="hilfe-h3">Tageszeiten-Grenzen</div>
+        <div class="hilfe-p">Lege fest, ab welcher Uhrzeit die jeweilige Tageszeit beginnt – und damit, wann Übungsvorschläge erscheinen.</div>
+        <div class="hilfe-box info">
+          Standard: 🌅 Morgen ab 5 Uhr · ☀️ Mittag ab 11 Uhr · 🌙 Abend ab 17 Uhr
+        </div>
+
+        <div class="hilfe-h3">Übungspool</div>
+        <div class="hilfe-p">„Standard-Pool laden" importiert 120 vorgefertigte Übungen – ohne vorhandene zu überschreiben. Nützlich nach einem Neustart der App.</div>
+
+        <div class="hilfe-h3">Daten</div>
+        <div class="hilfe-box warn">
+          <strong>Exportieren:</strong> Lädt eine JSON-Datei mit allen deinen Daten herunter – als Backup oder zum Übertragen auf ein anderes Gerät<br><br>
+          <strong>Importieren:</strong> Spielt ein gespeichertes Backup wieder ein – überschreibt dabei alle aktuellen Daten<br><br>
+          <strong>Alle Daten löschen:</strong> Setzt die App vollständig zurück. Nicht rückgängig machbar – vorher Backup exportieren!
+        </div>
+
+        <div class="hilfe-h3">Synchronisierung</div>
+        <div class="hilfe-p">→ Siehe eigenen Hilfe-Bereich „🔄 Sync"</div>
+
+        <div class="hilfe-h3">Version</div>
+        <div class="hilfe-p">Zeigt die aktuell installierte App-Version. Mit „Prüfen" kannst du manuell nach einem Update suchen.</div>
+      </div>
+
+      <!-- SYNC -->
+      <div class="hilfe-sektion" id="hilfe-sync">
+        <div class="hilfe-h2">Synchronisierung zwischen Geräten</div>
+        <div class="hilfe-p">Da alle Daten lokal gespeichert sind, gibt es keine automatische Cloud-Synchronisierung. Du kannst deine Daten aber über eine eigene Datei auf OneDrive, Google Drive oder einem anderen Cloud-Speicher teilen.</div>
+
+        <div class="hilfe-h3">Einmalig einrichten</div>
+        <div class="hilfe-schritt"><div class="hilfe-schritt-nr">1</div><div>Einstellungen → Synchronisierung → „Einrichten"</div></div>
+        <div class="hilfe-schritt"><div class="hilfe-schritt-nr">2</div><div>„Neuen Speicherort wählen" → navigiere zu deinem OneDrive-Ordner</div></div>
+        <div class="hilfe-schritt"><div class="hilfe-schritt-nr">3</div><div>Dateiname bestätigen (z.B. „innenpause-sync.json") → Speichern</div></div>
+        <div class="hilfe-schritt"><div class="hilfe-schritt-nr">4</div><div>Auf dem zweiten Gerät: „Vorhandene Sync-Datei öffnen" → dieselbe Datei aus dem Cloud-Ordner wählen</div></div>
+
+        <div class="hilfe-h3">Tägliche Nutzung</div>
+        <div class="hilfe-p">Beim App-Start erscheint einmal täglich eine Erinnerung: „Möchtest du laden oder speichern?" – ein Tipp reicht.</div>
+        <div class="hilfe-box info">
+          <strong>↓ Laden:</strong> Holt die zuletzt gespeicherten Daten aus der Sync-Datei (z.B. vom anderen Gerät)<br><br>
+          <strong>↑ Speichern:</strong> Schreibt deine aktuellen Daten in die Sync-Datei
+        </div>
+        <div class="hilfe-box warn">Wichtig: Immer zuerst laden, dann arbeiten, dann speichern – sonst werden Daten vom anderen Gerät überschrieben.</div>
+
+        <div class="hilfe-h3">iPhone / Safari</div>
+        <div class="hilfe-p">Auf dem iPhone steht die automatische Sync-Funktion nicht zur Verfügung (technische Einschränkung von Safari). Hier nutze bitte den manuellen Export/Import unter „Daten".</div>
+      </div>
+
+      <!-- TROUBLESHOOTING -->
+      <div class="hilfe-sektion" id="hilfe-troubleshooting">
+        <div class="hilfe-h2">Probleme & Lösungen</div>
+
+        <div class="hilfe-h3">App zeigt alte Version nach Update</div>
+        <div class="hilfe-p">Der Browser hat eine ältere Version gespeichert. Lösung:</div>
+        <div class="hilfe-box info">
+          <strong>PC – Chrome/Edge:</strong><br>
+          <span class="hilfe-kbd">Strg</span> + <span class="hilfe-kbd">Shift</span> + <span class="hilfe-kbd">R</span> (Hard Refresh)<br><br>
+          Falls das nicht hilft:<br>
+          <span class="hilfe-kbd">F12</span> → Anwendung → Service Worker → „Registrierung aufheben" → <span class="hilfe-kbd">F5</span><br><br>
+          <strong>Android – Chrome:</strong><br>
+          Menü → Einstellungen → Datenschutz → Browserdaten löschen → nur „Cache" → Löschen<br><br>
+          <strong>iPhone – Safari:</strong><br>
+          iOS-Einstellungen → Safari → „Verlauf und Websitedaten löschen"
+        </div>
+
+        <div class="hilfe-h3">App lädt nicht / bleibt hängen</div>
+        <div class="hilfe-box info">
+          1. Tab schließen und URL neu öffnen<br>
+          2. Hard Refresh: <span class="hilfe-kbd">Strg</span> + <span class="hilfe-kbd">Shift</span> + <span class="hilfe-kbd">R</span><br>
+          3. Browser-Cache leeren (siehe oben)<br>
+          4. Service Worker deregistrieren (F12 → Anwendung → Service Worker)
+        </div>
+
+        <div class="hilfe-h3">Lizenzschlüssel wird nicht akzeptiert</div>
+        <div class="hilfe-p">Prüfe ob der Schlüssel exakt so eingegeben wurde wie erhalten – Groß-/Kleinschreibung beachten, keine Leerzeichen vor oder nach dem Schlüssel.</div>
+
+        <div class="hilfe-h3">Daten sind nach Browser-Update weg</div>
+        <div class="hilfe-p">In seltenen Fällen löscht ein Browser-Update den lokalen Speicher. Dagegen hilft nur ein regelmäßiges Backup (Einstellungen → Daten → Exportieren).</div>
+        <div class="hilfe-box warn">Empfehlung: Einmal pro Woche ein Backup exportieren – dauert nur einen Klick.</div>
+
+        <div class="hilfe-h3">App auf neuem Gerät einrichten</div>
+        <div class="hilfe-schritt"><div class="hilfe-schritt-nr">1</div><div>Auf dem alten Gerät: Einstellungen → Daten → „Exportieren" → Datei herunterladen</div></div>
+        <div class="hilfe-schritt"><div class="hilfe-schritt-nr">2</div><div>Datei per E-Mail, AirDrop oder Cloud-Speicher aufs neue Gerät übertragen</div></div>
+        <div class="hilfe-schritt"><div class="hilfe-schritt-nr">3</div><div>Auf dem neuen Gerät: App öffnen → Lizenzschlüssel eingeben → Einstellungen → Daten → „Importieren"</div></div>
+
+        <div class="hilfe-h3">Übungsvorschläge erscheinen nicht</div>
+        <div class="hilfe-p">Die Vorschläge erscheinen erst ab der in den Einstellungen festgelegten Uhrzeit. Standard: Morgen ab 5 Uhr. Prüfe unter Einstellungen → Tageszeiten-Grenzen ob die Zeiten passen.</div>
+
+        <div class="hilfe-h3">Sync-Datei kann nicht gefunden werden</div>
+        <div class="hilfe-p">Nach jedem Browser-Neustart muss die Sync-Datei einmalig neu ausgewählt werden – das ist eine Sicherheitsbeschränkung des Browsers. Tippe auf „↓ Laden" oder „↑ Speichern" und wähle die Datei erneut aus.</div>
+      </div>
+
+    </div><!-- /hilfe-body -->
+  </div><!-- /hilfe-container -->
+</div><!-- /hilfe-modal -->
 
 <!-- SYNC MODAL -->
 <div class="modal-overlay" id="sync-modal">
@@ -2632,7 +2910,38 @@ function setzeTageszeitDefaults() {
 }
 
 // ============================================================
-// SYNC-SYSTEM (File System Access API)
+// HILFE
+// ============================================================
+function oeffneHilfe(sektion) {
+  document.getElementById('hilfe-modal').classList.add('open');
+  zeigeHilfeSektion(sektion || 'start');
+}
+
+function schliesseHilfe() {
+  document.getElementById('hilfe-modal').classList.remove('open');
+}
+
+function zeigeHilfeSektion(name) {
+  document.querySelectorAll('.hilfe-sektion').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.hilfe-nav-btn').forEach(b => b.classList.remove('active'));
+  const sektion = document.getElementById('hilfe-' + name);
+  if (sektion) sektion.classList.add('active');
+  const btns = document.querySelectorAll('.hilfe-nav-btn');
+  btns.forEach(b => { if (b.getAttribute('onclick').includes("'" + name + "'")) b.classList.add('active'); });
+  // Scroll zurück nach oben
+  const body = document.querySelector('.hilfe-body');
+  if (body) body.scrollTop = 0;
+}
+
+// Hilfe per Escape schließen
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    schliesseHilfe();
+    schliesseSyncModal();
+  }
+});
+
+ (File System Access API)
 // Unterstützt: Chrome/Edge (Desktop + Android)
 // Nicht unterstützt: Safari/iPhone → Fallback auf manuellen Export
 // ============================================================
@@ -2889,7 +3198,7 @@ async function syncSpeichernUndSchliesse() {
 // Die Migration läuft automatisch beim nächsten Seitenaufruf.
 // ============================================================
 
-const APP_VERSION = '1.5';
+const APP_VERSION = '1.6';
 
 const APP_UPDATES = [
   {
@@ -2949,6 +3258,15 @@ const APP_UPDATES = [
       'Geführter Einrichtungsprozess für Synchronisierung',
       'Start-Erinnerung: tägliche Abfrage ob Sync gewünscht',
       'Fallback auf manuellen Export für Safari/iPhone',
+    ],
+    migration: (state) => state
+  },
+  {
+    version: '1.6',
+    changelog: [
+      '„?"-Hilfe-Button im Header',
+      'Vollständige Anleitung für alle Reiter integriert',
+      'Troubleshooting: Installation, Updates, Sync, Datenverlust',
     ],
     migration: (state) => state
   },
