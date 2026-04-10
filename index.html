@@ -423,14 +423,14 @@
 
   /* STERNE */
   .sterne { display: flex; gap: 4px; }
-  .stern { font-size: 20px; cursor: pointer; color: var(--border); transition: color 0.15s; }
-  .stern.aktiv { color: var(--accent2); }
+  .stern { font-size: 22px; cursor: pointer; opacity: 0.25; transition: opacity 0.15s; line-height: 1; }
+  .stern.aktiv { opacity: 1; }
 
   /* INLINE STERNE (Vorschläge) */
   .inline-sterne { display: flex; gap: 6px; margin: 10px 0 4px; }
-  .inline-stern { font-size: 24px; cursor: pointer; color: var(--border); transition: color 0.15s; line-height: 1; }
-  .inline-stern.aktiv { color: var(--accent2); }
-  .inline-stern:hover { color: var(--accent2); opacity: 0.7; }
+  .inline-stern { font-size: 26px; cursor: pointer; opacity: 0.2; transition: opacity 0.15s; line-height: 1; }
+  .inline-stern.aktiv { opacity: 1; }
+  .inline-stern:hover { opacity: 0.6; }
   .bewertung-anzeige { font-size: 12px; color: var(--text3); margin-top: 2px; }
   .bewertung-gespeichert { font-size: 12px; color: var(--accent3); margin-top: 4px; font-weight: 500; }
 
@@ -537,6 +537,34 @@
   .heute-slot-label { font-size: 12px; color: var(--text2); }
   .heute-slot-status { font-size: 10px; color: var(--text3); margin-top: 2px; }
 
+  /* STREAK */
+  .streak-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 8px 16px 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    box-shadow: var(--shadow);
+  }
+  .streak-feuer { font-size: 22px; }
+  .streak-text { flex: 1; }
+  .streak-zahl { font-family: 'Lora', serif; font-size: 18px; font-weight: 500; color: var(--accent2); line-height: 1; }
+  .streak-label { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .streak-tage { display: flex; gap: 4px; }
+  .streak-tag { width: 20px; height: 20px; border-radius: 50%; background: var(--bg3); font-size: 9px; display: flex; align-items: center; justify-content: center; }
+  .streak-tag.aktiv { background: var(--accent2); }
+  .streak-tag.heute { background: var(--accent); outline: 2px solid var(--accent2); }
+
+  /* WOCHEN-CHART */
+  .wochen-chart { margin: 0 16px; }
+  .wochen-chart svg { width: 100%; display: block; }
+  .chart-label { font-size: 10px; fill: var(--text3); font-family: 'DM Sans', sans-serif; }
+  .chart-bar { transition: opacity 0.2s; }
+  .chart-bar:hover { opacity: 0.75; }
+
   /* Daten-Verwaltung */
   .daten-info { font-size: 12px; color: var(--text3); padding: 8px 0; }
 
@@ -640,6 +668,7 @@
 
   <!-- ===== TAB: HEUTE ===== -->
   <div id="content-heute" class="tab-content active">
+    <div id="streak-container"></div>
     <div class="heute-grid">
       <div class="heute-slot" id="slot-morgen" onclick="zeigeTab('checkin'); oeffneCheckin('morgen')">
         <div class="heute-slot-icon">🌅</div>
@@ -763,6 +792,7 @@
         </select>
         <select id="sort-uebungen" onchange="ladeUebungen()" style="flex:1;min-width:130px">
           <option value="">Standard</option>
+          <option value="favoriten">⭐ Favoriten</option>
           <option value="bewertung_desc">★ Beste zuerst</option>
           <option value="bewertung_asc">★ Schlechteste zuerst</option>
           <option value="name_asc">A–Z</option>
@@ -778,6 +808,12 @@
 
   <!-- ===== TAB: VERLAUF ===== -->
   <div id="content-verlauf" class="tab-content">
+    <div class="section-label">Letzte 7 Tage – Stimmung</div>
+    <div class="card wochen-chart" style="margin:8px 16px">
+      <div id="wochen-chart-container">
+        <div class="loading">Lade Wochenübersicht...</div>
+      </div>
+    </div>
     <div class="verlauf-nav">
       <button class="nav-arrow" onclick="verlaufNavigiere(-1)">◀</button>
       <div>
@@ -923,11 +959,11 @@
     <div style="margin-bottom:16px">
       <div style="font-size:13px;color:var(--text2);margin-bottom:8px">Wie war diese Übung für dich?</div>
       <div class="sterne" id="feedback-sterne">
-        <span class="stern" onclick="setStern(1)">★</span>
-        <span class="stern" onclick="setStern(2)">★</span>
-        <span class="stern" onclick="setStern(3)">★</span>
-        <span class="stern" onclick="setStern(4)">★</span>
-        <span class="stern" onclick="setStern(5)">★</span>
+        <span class="stern" onclick="setStern(1)">⭐</span>
+        <span class="stern" onclick="setStern(2)">⭐</span>
+        <span class="stern" onclick="setStern(3)">⭐</span>
+        <span class="stern" onclick="setStern(4)">⭐</span>
+        <span class="stern" onclick="setStern(5)">⭐</span>
       </div>
     </div>
     <div style="margin-bottom:16px">
@@ -1580,7 +1616,16 @@ function ladeUebungen() {
   let alle = getUebungen().filter(u => u.aktiv !== false);
   if (kat)  alle = alle.filter(u => u.kategorie === kat);
   if (zeit) alle = alle.filter(u => !u.tageszeit || u.tageszeit.length === 0 || u.tageszeit.includes(zeit));
-  if (sort === 'bewertung_desc') {
+  if (sort === 'favoriten') {
+    // Nur Übungen die mindestens einmal als Favorit markiert wurden
+    // Favorit-Info steckt in daily_exercises → alle Tage durchsuchen
+    const allDaily = ls('daily_exercises', {});
+    const favIds = new Set();
+    Object.values(allDaily).forEach(tag =>
+      tag.forEach(de => { if (de.feedback?.markiert) favIds.add(de.exerciseId); })
+    );
+    alle = alle.filter(u => favIds.has(u.id));
+  } else if (sort === 'bewertung_desc') {
     alle.sort((a, b) => (b.bewertung_schnitt || 0) - (a.bewertung_schnitt || 0));
   } else if (sort === 'bewertung_asc') {
     // Unbewertete ans Ende
@@ -1612,7 +1657,7 @@ function uebungCardHTML(u) {
   const bewertung = u.bewertung_schnitt ? u.bewertung_schnitt.toFixed(1) : null;
   const bewertungAnzahl = u.bewertung_anzahl || 0;
   const sterneAnzeige = bewertung
-    ? `<span style="color:var(--accent2);font-size:13px">★ ${bewertung}</span><span style="color:var(--text3);font-size:11px"> (${bewertungAnzahl}×)</span>`
+    ? `<span style="color:var(--accent2);font-size:13px">⭐ ${bewertung}</span><span style="color:var(--text3);font-size:11px"> (${bewertungAnzahl}×)</span>`
     : '';
   return `
     <div class="uebung-card" id="uebung-${u.id}">
@@ -1665,7 +1710,7 @@ function ladeHeuteUebungen() {
     const u = alleUebungen.find(x => x.id === de.exerciseId);
     const titel = u ? u.titel : 'Übung';
     const fb = de.feedback;
-    const sterne = fb?.sterne ? '★'.repeat(fb.sterne) + '☆'.repeat(5 - fb.sterne) : null;
+    const sterne = fb?.sterne ? '⭐'.repeat(fb.sterne) + '<span style="opacity:0.2">⭐</span>'.repeat(5 - fb.sterne) : null;
     const daumenIcon = fb?.daumen === 'hoch' ? '👍' : fb?.daumen === 'runter' ? '👎' : fb?.daumen === 'neutral' ? '😐' : null;
     const hatFeedback = fb && (fb.sterne || fb.daumen || fb.notiz || fb.markiert);
     return `
@@ -1685,7 +1730,7 @@ function ladeHeuteUebungen() {
         <div class="uebung-actions" style="margin-top:10px">
           ${!de.erledigt ? `<button class="btn btn-primary btn-sm" onclick="markiereErledigt('${de.id}')">✓ Erledigt</button>` : ''}
           <button class="btn btn-secondary btn-sm" onclick="oeffreFeedback('${de.id}', '${titel.replace(/'/g,"\\'")}')">
-            ${hatFeedback ? '✏️ Bewertung ändern' : '★ Bewerten'}
+            ${hatFeedback ? '✏️ Bewertung ändern' : '⭐ Bewerten'}
           </button>
         </div>
       </div>`;
@@ -1841,6 +1886,7 @@ function ladeHeuteTab() {
   ladeHeuteUebungen();
   ladeHeuteJournal();
   ladeAbschlussWerte();
+  ladeStreak();
 }
 
 // ============================================================
@@ -1895,7 +1941,153 @@ function speichereVorschlagKommentar(tageszeit) {
   zeigToast('✓ Kommentar gespeichert');
 }
 
-// Sternbewertung direkt in Vorschlagskarte – wird am Exercise-Objekt gespeichert
+// ============================================================
+// STREAK
+// ============================================================
+function berechneStreak() {
+  const checkins = ls('checkins', {});
+  let streak = 0;
+  const heute = new Date();
+  // Heute zählt nur wenn schon ein Check-in vorhanden
+  let pruefdatum = new Date(heute);
+  const heuteStr = heuteString();
+  const hatHeute = checkins[heuteStr] &&
+    ['morgen','mittag','abend'].some(tz => checkins[heuteStr][tz]);
+  if (!hatHeute) pruefdatum.setDate(pruefdatum.getDate() - 1);
+
+  for (let i = 0; i < 365; i++) {
+    const ds = pruefdatum.toISOString().slice(0, 10);
+    const hat = checkins[ds] && ['morgen','mittag','abend'].some(tz => checkins[ds][tz]);
+    if (hat) {
+      streak++;
+      pruefdatum.setDate(pruefdatum.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+  return streak;
+}
+
+function ladeStreak() {
+  const streak = berechneStreak();
+  const c = document.getElementById('streak-container');
+  if (!c) return;
+  if (streak === 0) { c.innerHTML = ''; return; }
+
+  // Letzte 7 Tage als Punkte
+  const checkins = ls('checkins', {});
+  const tage = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const ds = d.toISOString().slice(0, 10);
+    const hat = checkins[ds] && ['morgen','mittag','abend'].some(tz => checkins[ds][tz]);
+    const istHeute = ds === heuteString();
+    tage.push({ ds, hat, istHeute });
+  }
+
+  const tagLabels = ['Mo','Di','Mi','Do','Fr','Sa','So'];
+  const punkte = tage.map(t => {
+    const wt = new Date(t.ds + 'T12:00:00').getDay();
+    const label = tagLabels[wt === 0 ? 6 : wt - 1];
+    const cls = t.istHeute ? 'streak-tag heute' : t.hat ? 'streak-tag aktiv' : 'streak-tag';
+    return `<div class="${cls}" title="${t.ds}">${label}</div>`;
+  }).join('');
+
+  const emoji = streak >= 14 ? '🔥' : streak >= 7 ? '✨' : streak >= 3 ? '🌱' : '🌿';
+  const text = streak === 1 ? 'Tag dabei' : 'Tage in Folge';
+
+  c.innerHTML = `
+    <div class="streak-bar">
+      <div class="streak-feuer">${emoji}</div>
+      <div class="streak-text">
+        <div class="streak-zahl">${streak}</div>
+        <div class="streak-label">${text}</div>
+      </div>
+      <div class="streak-tage">${punkte}</div>
+    </div>`;
+}
+
+// ============================================================
+// WOCHENÜBERSICHT (SVG-Balkengrafik)
+// ============================================================
+function ladeWochenChart() {
+  const c = document.getElementById('wochen-chart-container');
+  if (!c) return;
+  const checkins = ls('checkins', {});
+  const tage = [];
+  const tagLabels = ['Mo','Di','Mi','Do','Fr','Sa','So'];
+
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const ds = d.toISOString().slice(0, 10);
+    const wt = d.getDay();
+    const label = tagLabels[wt === 0 ? 6 : wt - 1];
+    const data = checkins[ds] || {};
+    // Durchschnitt aller Stimmungswerte des Tages
+    const werte = ['morgen','mittag','abend']
+      .filter(tz => data[tz]?.stimmung != null)
+      .map(tz => data[tz].stimmung);
+    const schnitt = werte.length ? werte.reduce((a,b) => a+b, 0) / werte.length : null;
+    tage.push({ label, schnitt, ds, istHeute: ds === heuteString() });
+  }
+
+  if (tage.every(t => t.schnitt === null)) {
+    c.innerHTML = '<div class="empty-state" style="padding:16px 0;font-size:13px">Noch keine Check-in Daten für die letzten 7 Tage.</div>';
+    return;
+  }
+
+  const W = 300, H = 100, pad = 20, barW = 28, gap = (W - pad*2 - barW*7) / 6;
+  let svg = `<svg viewBox="0 0 ${W} ${H+30}" xmlns="http://www.w3.org/2000/svg">`;
+
+  tage.forEach((t, i) => {
+    const x = pad + i * (barW + gap);
+    const farbe = t.istHeute ? '#b5956a' : '#8fa67a';
+    const farbeGrau = '#e2dace';
+
+    if (t.schnitt !== null) {
+      const barH = Math.max(4, (t.schnitt / 10) * H);
+      const y = H - barH;
+      svg += `<rect x="${x}" y="${y}" width="${barW}" height="${barH}" rx="4" fill="${farbe}" class="chart-bar"/>`;
+      svg += `<text x="${x + barW/2}" y="${y - 4}" text-anchor="middle" class="chart-label" fill="#6b5f4e" font-size="9">${t.schnitt.toFixed(1)}</text>`;
+    } else {
+      svg += `<rect x="${x}" y="${H-4}" width="${barW}" height="4" rx="2" fill="${farbeGrau}"/>`;
+    }
+    svg += `<text x="${x + barW/2}" y="${H+18}" text-anchor="middle" class="chart-label">${t.label}</text>`;
+  });
+
+  svg += `</svg>`;
+  c.innerHTML = svg;
+}
+
+// ============================================================
+// NEUE ÜBUNG VORSCHLAGEN (↻)
+// ============================================================
+function neueUebungVorschlagen(tageszeit) {
+  const heute = heuteString();
+  const alleUebungen = getUebungen().filter(u => u.aktiv !== false);
+  const suggestions = ls('daily_suggestions', {});
+  const rotation = ls('exercise_rotation', { morgen: [], mittag: [], abend: [] });
+
+  // Aktuelle Übung aus dem Vorschlag entfernen und zur "gesehen"-Liste hinzufügen
+  const aktuelleId = suggestions[heute]?.[tageszeit]?.exerciseId;
+  if (aktuelleId) {
+    rotation[tageszeit] = [...(rotation[tageszeit] || []), aktuelleId];
+    lsSet('exercise_rotation', rotation);
+  }
+
+  // Vorschlag zurücksetzen → holeOderErstelleVorschlagLokal wählt neue
+  if (suggestions[heute]) {
+    delete suggestions[heute][tageszeit];
+    lsSet('daily_suggestions', suggestions);
+  }
+
+  ladeVorschlaege();
+  zeigToast('↻ Neue Übung geladen');
+}
+
+
 function bewerteSternVorschlag(exerciseId, sterne, tageszeit) {
   // Sterne visuell aktualisieren
   const container = document.getElementById('inline-sterne-' + tageszeit);
@@ -1921,7 +2113,7 @@ function bewerteSternVorschlag(exerciseId, sterne, tageszeit) {
   // Statusanzeige
   const statusEl = document.getElementById('bewertung-status-' + tageszeit);
   if (statusEl) statusEl.textContent = `✓ Gespeichert (Ø ${schnittNeu.toFixed(1)} aus ${anzahlNeu} Bewertung${anzahlNeu !== 1 ? 'en' : ''})`;
-  zeigToast('★ Bewertung gespeichert');
+  zeigToast('⭐ Bewertung gespeichert');
 }
 
 function ladeVorschlaege() {
@@ -1981,14 +2173,14 @@ function ladeVorschlaege() {
         <div class="uebung-meta" style="margin:4px 0 8px">
           <span class="badge badge-kat">${u.kategorie}</span>
           <span>⏱ ${u.dauer_minuten} Min</span>
-          ${u.bewertung_schnitt ? `<span style="color:var(--accent2)">★ ${u.bewertung_schnitt.toFixed(1)}</span>` : ''}
+          ${u.bewertung_schnitt ? `<span style="color:var(--accent2)">⭐ ${u.bewertung_schnitt.toFixed(1)}</span>` : ''}
         </div>
         ${u.beschreibung ? `<div class="uebung-desc" style="font-size:13px;color:var(--text2);margin-bottom:10px">${u.beschreibung}</div>` : ''}
         <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
           <div style="font-size:12px;color:var(--text2);margin-bottom:4px;font-weight:500">Wie hilfreich war diese Übung?</div>
           <div class="inline-sterne" id="inline-sterne-${key}">
             ${[1,2,3,4,5].map(n => `<span class="inline-stern${(u.bewertung_sterne_letzt || 0) >= n ? ' aktiv' : ''}"
-              onclick="bewerteSternVorschlag('${u.id}', ${n}, '${key}')">★</span>`).join('')}
+              onclick="bewerteSternVorschlag('${u.id}', ${n}, '${key}')">⭐</span>`).join('')}
           </div>
           <div class="bewertung-gespeichert" id="bewertung-status-${key}">
             ${u.bewertung_anzahl ? `Ø ${u.bewertung_schnitt.toFixed(1)} aus ${u.bewertung_anzahl} Bewertung${u.bewertung_anzahl !== 1 ? 'en' : ''}` : ''}
@@ -2013,7 +2205,11 @@ function ladeVorschlaege() {
       <div class="akkordeon${isAktiv ? ' open' : ''}" id="vorschlag-akk-${key}">
         <div class="akkordeon-header" onclick="toggleAkk('vorschlag-akk-${key}', true)">
           <span>${label}</span>
-          <span class="akkordeon-arrow">▼</span>
+          <div style="display:flex;align-items:center;gap:8px">
+            <button class="btn btn-secondary btn-sm" style="font-size:12px;padding:3px 8px"
+              onclick="event.stopPropagation(); neueUebungVorschlagen('${key}')">↻</button>
+            <span class="akkordeon-arrow">▼</span>
+          </div>
         </div>
         <div class="akkordeon-body">${akkInhalt}</div>
       </div>`;
@@ -2279,6 +2475,7 @@ function speichereAppTitel() {
 function ladeVerlaufInit() {
   const inp = document.getElementById('verlauf-datum');
   if (!inp.value) inp.value = heuteString();
+  ladeWochenChart();
   ladeVerlauf();
 }
 
@@ -2339,7 +2536,7 @@ function ladeVerlauf() {
         ${u ? `<div class="uebung-meta"><span class="badge badge-kat">${u.kategorie}</span></div>` : ''}
         ${de.erledigt ? '<span class="badge badge-done">✓ Erledigt</span>' : '<span style="font-size:12px;color:var(--text3)">nicht erledigt</span>'}
         ${fb ? `<div style="margin-top:8px;font-size:13px">
-          ${fb.sterne ? '★'.repeat(fb.sterne) + '☆'.repeat(5-fb.sterne) : ''}
+          ${fb.sterne ? '⭐'.repeat(fb.sterne) + '<span style="opacity:0.2">⭐</span>'.repeat(5-fb.sterne) : ''}
           ${fb.daumen === 'hoch' ? '👍' : fb.daumen === 'runter' ? '👎' : ''}
           ${fb.markiert ? '⭐' : ''}
           ${fb.notiz ? `<div style="color:var(--text2);font-style:italic;margin-top:4px">"${fb.notiz}"</div>` : ''}
@@ -2394,7 +2591,7 @@ function setzeTageszeitDefaults() {
 // Die Migration läuft automatisch beim nächsten Seitenaufruf.
 // ============================================================
 
-const APP_VERSION = '1.2';
+const APP_VERSION = '1.4';
 
 const APP_UPDATES = [
   {
@@ -2429,6 +2626,24 @@ const APP_UPDATES = [
       return state;
     }
   }
+  {
+    version: '1.3',
+    changelog: [
+      'Streak-Anzeige: Tage in Folge mit 7-Tage-Punktereihe im Heute-Tab',
+      'Übungsvorschläge: ↻ Button für neue Übung pro Tageszeit',
+      'Verlauf: Wochenübersicht als Stimmungs-Balkengrafik',
+      'Übungen-Tab: Filter „⭐ Favoriten"',
+    ],
+    migration: (state) => state
+  },
+  {
+    version: '1.4',
+    changelog: [
+      'Bewertungssterne: ⭐ Emoji statt ★ Symbol',
+      'Inaktive Sterne besser erkennbar (transparenter Hintergrund)',
+    ],
+    migration: (state) => state
+  },
   // VORLAGE FÜR NÄCHSTES UPDATE:
   // {
   //   version: '1.3',
