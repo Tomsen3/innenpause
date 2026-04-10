@@ -926,6 +926,35 @@
       </div>
     </div>
 
+    <div class="section-label">Synchronisierung</div>
+    <div class="card">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.5">
+        Speichere deine Daten in einer Datei auf OneDrive, Google Drive oder einem anderen Ordner – und lade sie auf anderen Geräten wieder ein.
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Sync-Datei</div>
+          <div class="setting-sub" id="sync-datei-status">Kein Speicherort festgelegt</div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="zeigeSyncModal('einrichten')">Einrichten</button>
+      </div>
+      <div class="setting-row" id="sync-aktionen" style="display:none">
+        <div>
+          <div class="setting-label">Jetzt synchronisieren</div>
+          <div class="setting-sub">Daten laden oder speichern</div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-secondary btn-sm" onclick="syncLaden()">↓ Laden</button>
+          <button class="btn btn-primary btn-sm" onclick="syncSpeichern()">↑ Speichern</button>
+        </div>
+      </div>
+      <div class="setting-row" id="sync-letzter-stand" style="display:none">
+        <div>
+          <div class="setting-label" style="font-size:12px;color:var(--text3)" id="sync-letzter-text">–</div>
+        </div>
+      </div>
+    </div>
+
     <div class="section-label">Lizenz</div>
     <div class="card">
       <div class="setting-row">
@@ -948,6 +977,30 @@
       </div>
     </div>
 
+  </div>
+</div>
+
+<!-- SYNC MODAL -->
+<div class="modal-overlay" id="sync-modal">
+  <div class="modal">
+    <div class="modal-titel" id="sync-modal-titel">🔄 Synchronisierung</div>
+    <div id="sync-modal-inhalt"></div>
+  </div>
+</div>
+
+<!-- SYNC START-ERINNERUNG -->
+<div id="sync-erinnerung" style="display:none;position:fixed;inset:0;background:rgba(44,36,22,0.5);z-index:350;align-items:flex-end;justify-content:center">
+  <div style="background:var(--card);border-radius:20px 20px 0 0;padding:24px;width:100%;max-width:600px;box-shadow:var(--shadow-lg)">
+    <div style="font-family:'Lora',serif;font-size:17px;font-weight:500;margin-bottom:8px">🔄 Sync-Erinnerung</div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5">
+      Du hast eine Sync-Datei hinterlegt. Möchtest du deine Daten jetzt aktualisieren?
+    </div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:16px" id="sync-erinnerung-info"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-secondary btn-sm" onclick="schliesseSyncErinnerung()">Später</button>
+      <button class="btn btn-secondary" style="flex:1" onclick="syncLadenUndSchliesse()">↓ Backup laden</button>
+      <button class="btn btn-primary" style="flex:1" onclick="syncSpeichernUndSchliesse()">↑ Backup speichern</button>
+    </div>
   </div>
 </div>
 
@@ -2321,7 +2374,7 @@ function ladeEinstellungenUI() {
       ? `Installiert: ${gespeichert} · Neu: ${aktuell} ⚠️`
       : `Version ${aktuell} · aktuell ✓`;
   }
-  let total = 0;
+  ladeSyncUI();
   for (let k in localStorage) {
     if (localStorage.hasOwnProperty(k)) total += (localStorage[k].length * 2); // UTF-16
   }
@@ -2579,7 +2632,252 @@ function setzeTageszeitDefaults() {
 }
 
 // ============================================================
-// VERSIONS- UND UPDATE-SYSTEM
+// SYNC-SYSTEM (File System Access API)
+// Unterstützt: Chrome/Edge (Desktop + Android)
+// Nicht unterstützt: Safari/iPhone → Fallback auf manuellen Export
+// ============================================================
+const SYNC_UNTERSTUETZT = 'showSaveFilePicker' in window;
+let syncFileHandle = null; // Wird nach Auswahl gespeichert (nur Session)
+
+function getSyncInfo() {
+  // Metadaten über die zuletzt genutzte Sync-Datei
+  try {
+    const raw = localStorage.getItem('sync_info');
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+
+function setSyncInfo(info) {
+  localStorage.setItem('sync_info', JSON.stringify(info));
+}
+
+function ladeSyncUI() {
+  const info = getSyncInfo();
+  const statusEl = document.getElementById('sync-datei-status');
+  const aktionenEl = document.getElementById('sync-aktionen');
+  const letzterEl = document.getElementById('sync-letzter-stand');
+  const letzterText = document.getElementById('sync-letzter-text');
+  if (!statusEl) return;
+
+  if (info) {
+    statusEl.textContent = `📄 ${info.dateiname}`;
+    if (aktionenEl) aktionenEl.style.display = '';
+    if (letzterEl) letzterEl.style.display = '';
+    if (letzterText) {
+      const d = info.letzter_sync ? new Date(info.letzter_sync).toLocaleString('de-DE') : '–';
+      letzterText.textContent = `Letzter Sync: ${d}`;
+    }
+  } else {
+    statusEl.textContent = 'Kein Speicherort festgelegt';
+    if (aktionenEl) aktionenEl.style.display = 'none';
+    if (letzterEl) letzterEl.style.display = 'none';
+  }
+}
+
+function zeigeSyncModal(modus) {
+  const modal = document.getElementById('sync-modal');
+  const inhalt = document.getElementById('sync-modal-inhalt');
+  if (!modal || !inhalt) return;
+
+  if (!SYNC_UNTERSTUETZT) {
+    // Safari / nicht unterstützt → manueller Fallback
+    document.getElementById('sync-modal-titel').textContent = '🔄 Synchronisierung';
+    inhalt.innerHTML = `
+      <div style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5">
+        Automatische Synchronisierung ist in diesem Browser nicht verfügbar (z.B. Safari/iPhone).<br><br>
+        Du kannst deine Daten manuell sichern und auf anderen Geräten wiederherstellen:
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
+        <button class="btn btn-secondary" onclick="exportiereAllesDaten(); schliesseSyncModal()">
+          ↓ Backup herunterladen
+        </button>
+        <button class="btn btn-secondary" onclick="schliesseSyncModal(); document.getElementById('import-file').click()">
+          ↑ Backup einspielen
+        </button>
+      </div>
+      <button class="btn btn-primary btn-block" onclick="schliesseSyncModal()">Schließen</button>`;
+    modal.classList.add('open');
+    return;
+  }
+
+  if (modus === 'einrichten') {
+    document.getElementById('sync-modal-titel').textContent = '🔄 Sync einrichten';
+    inhalt.innerHTML = `
+      <div style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5">
+        Wähle einen Speicherort für deine Sync-Datei – am besten in einem Cloud-Ordner (OneDrive, Google Drive, Dropbox).
+      </div>
+      <div style="background:var(--bg2);border-radius:8px;padding:12px;margin-bottom:16px;font-size:12px;color:var(--text2);line-height:1.6">
+        <strong>So funktioniert es:</strong><br>
+        1. Speicherort einmalig festlegen<br>
+        2. Nach jeder Nutzung „↑ Speichern" drücken<br>
+        3. Auf anderem Gerät: App öffnen → „↓ Laden"<br>
+        4. Deine Daten sind überall verfügbar ✓
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
+        <button class="btn btn-primary" onclick="syncDateiNeuErstellen()">
+          📁 Neuen Speicherort wählen
+        </button>
+        <button class="btn btn-secondary" onclick="syncDateiOeffnen()">
+          📂 Vorhandene Sync-Datei öffnen
+        </button>
+      </div>
+      <button class="btn btn-secondary btn-block" onclick="schliesseSyncModal()">Abbrechen</button>`;
+  }
+  modal.classList.add('open');
+}
+
+function schliesseSyncModal() {
+  document.getElementById('sync-modal')?.classList.remove('open');
+}
+
+async function syncDateiNeuErstellen() {
+  try {
+    const handle = await window.showSaveFilePicker({
+      suggestedName: 'innenpause-sync.json',
+      types: [{ description: 'JSON Backup', accept: { 'application/json': ['.json'] } }]
+    });
+    syncFileHandle = handle;
+    setSyncInfo({ dateiname: handle.name, letzter_sync: null });
+    // Sofort speichern
+    await syncSchreibeDatei(handle);
+    schliesseSyncModal();
+    ladeSyncUI();
+    zeigToast('✓ Sync-Datei erstellt und gespeichert');
+  } catch(e) {
+    if (e.name !== 'AbortError') zeigToast('❌ Fehler beim Erstellen');
+  }
+}
+
+async function syncDateiOeffnen() {
+  try {
+    const [handle] = await window.showOpenFilePicker({
+      types: [{ description: 'JSON Backup', accept: { 'application/json': ['.json'] } }]
+    });
+    syncFileHandle = handle;
+    setSyncInfo({ dateiname: handle.name, letzter_sync: new Date().toISOString() });
+    // Sofort laden
+    await syncLeseDatei(handle);
+    schliesseSyncModal();
+    ladeSyncUI();
+    zeigToast('✓ Sync-Datei geladen');
+  } catch(e) {
+    if (e.name !== 'AbortError') zeigToast('❌ Fehler beim Öffnen');
+  }
+}
+
+async function syncSchreibeDatei(handle) {
+  const backup = {
+    version: 1,
+    exportiert_am: new Date().toISOString(),
+    sync_geraet: navigator.userAgent.includes('Mobile') ? 'Mobil' : 'Desktop',
+    exercises:         ls('exercises', []),
+    checkins:          ls('checkins', {}),
+    journal:           ls('journal', {}),
+    daily_exercises:   ls('daily_exercises', {}),
+    daily_summary:     ls('daily_summary', {}),
+    daily_suggestions: ls('daily_suggestions', {}),
+    exercise_rotation: ls('exercise_rotation', {}),
+  };
+  const writable = await handle.createWritable();
+  await writable.write(JSON.stringify(backup, null, 2));
+  await writable.close();
+  const info = getSyncInfo() || {};
+  info.letzter_sync = new Date().toISOString();
+  setSyncInfo(info);
+}
+
+async function syncLeseDatei(handle) {
+  const file = await handle.getFile();
+  const text = await file.text();
+  const data = JSON.parse(text);
+  if (!data.version) throw new Error('Ungültiges Format');
+  if (data.exercises)         lsSet('exercises', data.exercises);
+  if (data.checkins)          lsSet('checkins', data.checkins);
+  if (data.journal)           lsSet('journal', data.journal);
+  if (data.daily_exercises)   lsSet('daily_exercises', data.daily_exercises);
+  if (data.daily_summary)     lsSet('daily_summary', data.daily_summary);
+  if (data.daily_suggestions) lsSet('daily_suggestions', data.daily_suggestions);
+  if (data.exercise_rotation) lsSet('exercise_rotation', data.exercise_rotation);
+  const info = getSyncInfo() || {};
+  info.letzter_sync = new Date().toISOString();
+  setSyncInfo(info);
+}
+
+async function syncSpeichern() {
+  if (!SYNC_UNTERSTUETZT) { exportiereAllesDaten(); return; }
+  try {
+    if (!syncFileHandle) {
+      // Kein Handle in dieser Session → neu auswählen
+      const [handle] = await window.showOpenFilePicker({
+        types: [{ description: 'JSON Backup', accept: { 'application/json': ['.json'] } }]
+      });
+      syncFileHandle = handle;
+    }
+    await syncSchreibeDatei(syncFileHandle);
+    ladeSyncUI();
+    zeigToast('✓ Daten gespeichert');
+  } catch(e) {
+    if (e.name !== 'AbortError') zeigToast('❌ Fehler beim Speichern');
+  }
+}
+
+async function syncLaden() {
+  if (!SYNC_UNTERSTUETZT) {
+    document.getElementById('import-file').click();
+    return;
+  }
+  try {
+    if (!syncFileHandle) {
+      const [handle] = await window.showOpenFilePicker({
+        types: [{ description: 'JSON Backup', accept: { 'application/json': ['.json'] } }]
+      });
+      syncFileHandle = handle;
+      setSyncInfo({ dateiname: handle.name, letzter_sync: null });
+    }
+    await syncLeseDatei(syncFileHandle);
+    ladeSyncUI();
+    zeigToast('✓ Daten geladen – lade neu...');
+    setTimeout(() => location.reload(), 1500);
+  } catch(e) {
+    if (e.name !== 'AbortError') zeigToast('❌ Fehler beim Laden');
+  }
+}
+
+// Start-Erinnerung
+function zeigeSyncErinnerung() {
+  const info = getSyncInfo();
+  if (!info) return; // Kein Sync eingerichtet → keine Erinnerung
+  // Max. 1x pro Tag erinnern
+  const heute = heuteString();
+  const letzteErinnerung = localStorage.getItem('sync_erinnerung_datum');
+  if (letzteErinnerung === heute) return;
+  localStorage.setItem('sync_erinnerung_datum', heute);
+
+  const el = document.getElementById('sync-erinnerung');
+  const infoEl = document.getElementById('sync-erinnerung-info');
+  if (!el) return;
+  if (infoEl && info.letzter_sync) {
+    const d = new Date(info.letzter_sync).toLocaleString('de-DE');
+    infoEl.textContent = `Sync-Datei: ${info.dateiname} · Letzter Sync: ${d}`;
+  }
+  el.style.display = 'flex';
+}
+
+function schliesseSyncErinnerung() {
+  document.getElementById('sync-erinnerung').style.display = 'none';
+}
+
+async function syncLadenUndSchliesse() {
+  schliesseSyncErinnerung();
+  await syncLaden();
+}
+
+async function syncSpeichernUndSchliesse() {
+  schliesseSyncErinnerung();
+  await syncSpeichern();
+}
+
+
 // ============================================================
 // Wie ein Update eingespielt wird:
 // 1. APP_VERSION hochzählen (z.B. "1.0" → "1.1")
@@ -2591,7 +2889,7 @@ function setzeTageszeitDefaults() {
 // Die Migration läuft automatisch beim nächsten Seitenaufruf.
 // ============================================================
 
-const APP_VERSION = '1.4';
+const APP_VERSION = '1.5';
 
 const APP_UPDATES = [
   {
@@ -2641,6 +2939,16 @@ const APP_UPDATES = [
     changelog: [
       'Bewertungssterne: ⭐ Emoji statt ★ Symbol',
       'Inaktive Sterne besser erkennbar (transparenter Hintergrund)',
+    ],
+    migration: (state) => state
+  },
+  {
+    version: '1.5',
+    changelog: [
+      'Sync-System: Daten in eigener Cloud-Datei (OneDrive, Google Drive etc.) speichern',
+      'Geführter Einrichtungsprozess für Synchronisierung',
+      'Start-Erinnerung: tägliche Abfrage ob Sync gewünscht',
+      'Fallback auf manuellen Export für Safari/iPhone',
     ],
     migration: (state) => state
   },
@@ -2808,8 +3116,9 @@ function ladeApp() {
   setzeTageszeitDefaults();
   ladeHeuteTab();
   ladeVorschlaege();
-  // Update-Check beim Start (still, kein Popup beim ersten Mal)
+  // Update-Check und Sync-Erinnerung beim Start
   setTimeout(() => pruefeUpdate(false), 2000);
+  setTimeout(() => zeigeSyncErinnerung(), 3500);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
