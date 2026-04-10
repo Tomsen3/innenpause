@@ -539,6 +539,42 @@
 
   /* Daten-Verwaltung */
   .daten-info { font-size: 12px; color: var(--text3); padding: 8px 0; }
+
+  /* UPDATE BANNER */
+  #update-banner {
+    display: none;
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #3a5a3a, #4a7a4a);
+    color: #f5f0e8;
+    border-radius: 14px;
+    padding: 14px 18px;
+    max-width: 340px;
+    width: calc(100% - 32px);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+    z-index: 250;
+    animation: slideUp 0.4s ease;
+  }
+  #update-banner.show { display: block; }
+  @keyframes slideUp {
+    from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+    to   { transform: translateX(-50%) translateY(0); opacity: 1; }
+  }
+  .update-banner-titel { font-family: 'Lora', serif; font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+  .update-banner-sub { font-size: 12px; opacity: 0.85; margin-bottom: 12px; line-height: 1.4; }
+  .update-banner-btn { display: inline-block; padding: 8px 16px; border-radius: 8px; border: none; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; margin-right: 8px; }
+  .update-btn-ja { background: #f5f0e8; color: #3a5a3a; }
+  .update-btn-sp { background: rgba(255,255,255,0.15); color: #f5f0e8; }
+
+  /* UPDATE MODAL */
+  #update-modal { display: none; position: fixed; inset: 0; background: rgba(44,36,22,0.6); z-index: 400; align-items: center; justify-content: center; padding: 24px; }
+  #update-modal.open { display: flex; }
+  .update-modal-box { background: var(--card); border-radius: 16px; padding: 24px; max-width: 380px; width: 100%; box-shadow: var(--shadow-lg); }
+  .update-changelog { background: var(--bg2); border-radius: 8px; padding: 12px 14px; margin: 12px 0 16px; font-size: 13px; color: var(--text2); line-height: 1.6; max-height: 200px; overflow-y: auto; }
+  .update-changelog li { margin-bottom: 4px; list-style: none; padding-left: 4px; }
+  .update-changelog li::before { content: "✦ "; color: var(--accent2); }
 </style>
 </head>
 <body>
@@ -865,6 +901,17 @@
       </div>
     </div>
 
+    <div class="section-label">Version</div>
+    <div class="card">
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">App-Version</div>
+          <div class="setting-sub" id="version-anzeige">–</div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="pruefeUpdate(true)">Prüfen</button>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -956,6 +1003,30 @@
     <div style="display:flex;gap:8px">
       <button class="btn btn-secondary" style="flex:1" onclick="schliesseUebungModal()">Abbrechen</button>
       <button class="btn btn-primary" style="flex:1" onclick="speichereUebung()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<!-- UPDATE BANNER -->
+<div id="update-banner">
+  <div class="update-banner-titel">🆕 Update verfügbar</div>
+  <div class="update-banner-sub" id="update-banner-sub">Eine neue Version ist bereit.</div>
+  <button class="update-banner-btn update-btn-ja" onclick="zeigeUpdateModal()">Details ansehen</button>
+  <button class="update-banner-btn update-btn-sp" onclick="spaeterErinnern()">Später</button>
+</div>
+
+<!-- UPDATE MODAL -->
+<div id="update-modal">
+  <div class="update-modal-box">
+    <div class="modal-titel">🆕 App-Update</div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:4px" id="update-version-info"></div>
+    <div class="update-changelog" id="update-changelog"></div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:16px">
+      Deine Einträge, Bewertungen und Einstellungen bleiben vollständig erhalten.
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-secondary" style="flex:1" onclick="schliesseUpdateModal()">Später</button>
+      <button class="btn btn-primary" style="flex:1" onclick="fuehreUpdateAus()">✓ Update einspielen</button>
     </div>
   </div>
 </div>
@@ -2045,7 +2116,15 @@ function ladeEinstellungenUI() {
   if (tfEl) tfEl.checked = tf;
   if (aaEl) aaEl.checked = autoAkk;
 
-  // Datengröße anzeigen
+  // Versionsanzeige
+  const vEl = document.getElementById('version-anzeige');
+  if (vEl) {
+    const gespeichert = getGespeicherteVersion();
+    const aktuell = APP_VERSION;
+    vEl.textContent = vergleicheVersionen(gespeichert, aktuell) < 0
+      ? `Installiert: ${gespeichert} · Neu: ${aktuell} ⚠️`
+      : `Version ${aktuell} · aktuell ✓`;
+  }
   let total = 0;
   for (let k in localStorage) {
     if (localStorage.hasOwnProperty(k)) total += (localStorage[k].length * 2); // UTF-16
@@ -2303,10 +2382,209 @@ function setzeTageszeitDefaults() {
 }
 
 // ============================================================
+// VERSIONS- UND UPDATE-SYSTEM
+// ============================================================
+// Wie ein Update eingespielt wird:
+// 1. APP_VERSION hochzählen (z.B. "1.0" → "1.1")
+// 2. Einen Eintrag in APP_UPDATES hinzufügen mit:
+//    - version: die neue Versionsnummer
+//    - changelog: Liste der Änderungen (wird dem Nutzer angezeigt)
+//    - migration: Funktion die die Datenmigration durchführt
+// 3. index.html auf GitHub pushen – fertig.
+// Die Migration läuft automatisch beim nächsten Seitenaufruf.
+// ============================================================
+
+const APP_VERSION = '1.2';
+
+const APP_UPDATES = [
+  {
+    version: '1.1',
+    changelog: [
+      'Bewertungssystem: 5 Sterne direkt in den Vorschlagskarten',
+      'Bewertungen werden bei jeder Übung gespeichert (Durchschnitt)',
+      'Übungen-Tab: Sortierung nach Bewertung, Name',
+      'Feedback-Modal lädt vorhandene Bewertung vor',
+    ],
+    migration: (state) => {
+      // Keine Datenmigration nötig – nur neue Felder werden ergänzt
+      // bewertung_schnitt / bewertung_anzahl entstehen beim ersten Bewerten
+      return state;
+    }
+  },
+  {
+    version: '1.2',
+    changelog: [
+      'Update-System: App informiert automatisch über neue Versionen',
+      'Versionsanzeige in den Einstellungen',
+      'Datenmigration: bestehende Nutzerdaten bleiben bei Updates erhalten',
+    ],
+    migration: (state) => {
+      // Beispiel: neues Feld 'aktiv' bei exercises sicherstellen
+      if (state.exercises) {
+        state.exercises = state.exercises.map(u => ({
+          aktiv: true,
+          ...u
+        }));
+      }
+      return state;
+    }
+  }
+  // VORLAGE FÜR NÄCHSTES UPDATE:
+  // {
+  //   version: '1.3',
+  //   changelog: [
+  //     'Neue Kategorie: Kreativität',
+  //     '10 neue Übungen hinzugefügt',
+  //   ],
+  //   migration: (state) => {
+  //     // Neue Übungen einspielen ohne Duplikate
+  //     const neueUebungen = [ /* ... */ ];
+  //     neueUebungen.forEach(u => {
+  //       if (!state.exercises.find(x => x.titel === u.titel)) {
+  //         state.exercises.push({ id: genId(), ...u, aktiv: true });
+  //       }
+  //     });
+  //     return state;
+  //   }
+  // }
+];
+
+function getGespeicherteVersion() {
+  return localStorage.getItem('app_version') || '1.0';
+}
+
+function vergleicheVersionen(a, b) {
+  // Gibt -1, 0 oder 1 zurück (wie sort-Funktion)
+  const pa = a.split('.').map(Number);
+  const pb = b.split('.').map(Number);
+  for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+    const na = pa[i] || 0;
+    const nb = pb[i] || 0;
+    if (na < nb) return -1;
+    if (na > nb) return 1;
+  }
+  return 0;
+}
+
+function pruefeUpdate(manuell = false) {
+  const gespeichert = getGespeicherteVersion();
+  const updateVerfuegbar = vergleicheVersionen(gespeichert, APP_VERSION) < 0;
+
+  // Versionsanzeige in Einstellungen
+  const vEl = document.getElementById('version-anzeige');
+  if (vEl) vEl.textContent = `Installiert: ${gespeichert} · Aktuell: ${APP_VERSION}`;
+
+  if (!updateVerfuegbar) {
+    if (manuell) zeigToast('✓ App ist bereits aktuell');
+    return;
+  }
+
+  // Später-Logik: max. 1x pro Tag erinnern (außer manuell)
+  if (!manuell) {
+    const letzteErinnerung = localStorage.getItem('update_spaeter');
+    if (letzteErinnerung === heuteString()) return;
+  }
+
+  // Pending-Updates sammeln
+  const pendingUpdates = APP_UPDATES.filter(u =>
+    vergleicheVersionen(gespeichert, u.version) < 0
+  );
+
+  // Banner befüllen und anzeigen
+  const banner = document.getElementById('update-banner');
+  const bannerSub = document.getElementById('update-banner-sub');
+  if (bannerSub) {
+    bannerSub.textContent = `Version ${APP_VERSION} ist bereit (${pendingUpdates.length} Update${pendingUpdates.length !== 1 ? 's' : ''}).`;
+  }
+  if (banner) {
+    banner.classList.add('show');
+    // Banner nach 10 Sek. automatisch ausblenden (bleibt als Erinnerung im Einstellungs-Tab)
+    setTimeout(() => banner.classList.remove('show'), 10000);
+  }
+}
+
+function zeigeUpdateModal() {
+  document.getElementById('update-banner')?.classList.remove('show');
+  const gespeichert = getGespeicherteVersion();
+  const pendingUpdates = APP_UPDATES.filter(u =>
+    vergleicheVersionen(gespeichert, u.version) < 0
+  );
+
+  document.getElementById('update-version-info').textContent =
+    `Von Version ${gespeichert} auf ${APP_VERSION}`;
+
+  const changelog = pendingUpdates.flatMap(u =>
+    u.changelog.map(c => `<li>${c}</li>`)
+  ).join('');
+  document.getElementById('update-changelog').innerHTML = `<ul>${changelog}</ul>`;
+
+  document.getElementById('update-modal').classList.add('open');
+}
+
+function schliesseUpdateModal() {
+  document.getElementById('update-modal').classList.remove('open');
+}
+
+function spaeterErinnern() {
+  document.getElementById('update-banner')?.classList.remove('show');
+  localStorage.setItem('update_spaeter', heuteString());
+}
+
+function fuehreUpdateAus() {
+  const gespeichert = getGespeicherteVersion();
+  const pendingUpdates = APP_UPDATES.filter(u =>
+    vergleicheVersionen(gespeichert, u.version) < 0
+  ).sort((a, b) => vergleicheVersionen(a.version, b.version));
+
+  // Alle Nutzerdaten laden
+  let state = {
+    exercises:        ls('exercises', []),
+    checkins:         ls('checkins', {}),
+    journal:          ls('journal', {}),
+    daily_exercises:  ls('daily_exercises', {}),
+    daily_summary:    ls('daily_summary', {}),
+    daily_suggestions:ls('daily_suggestions', {}),
+    exercise_rotation:ls('exercise_rotation', {}),
+  };
+
+  // Migrationen der Reihe nach durchlaufen
+  for (const update of pendingUpdates) {
+    try {
+      state = update.migration(state);
+    } catch(e) {
+      console.warn(`Migration ${update.version} fehlgeschlagen:`, e);
+    }
+  }
+
+  // Migrierten State zurückschreiben
+  lsSet('exercises',         state.exercises);
+  lsSet('checkins',          state.checkins);
+  lsSet('journal',           state.journal);
+  lsSet('daily_exercises',   state.daily_exercises);
+  lsSet('daily_summary',     state.daily_summary);
+  lsSet('daily_suggestions', state.daily_suggestions);
+  lsSet('exercise_rotation', state.exercise_rotation);
+
+  // Neue Version speichern
+  localStorage.setItem('app_version', APP_VERSION);
+  localStorage.removeItem('update_spaeter');
+
+  schliesseUpdateModal();
+  zeigToast(`✓ Update auf Version ${APP_VERSION} eingespielt`);
+
+  // Versionsanzeige aktualisieren
+  const vEl = document.getElementById('version-anzeige');
+  if (vEl) vEl.textContent = `Installiert: ${APP_VERSION} · Aktuell: ${APP_VERSION}`;
+
+  // App neu laden um neue Oberfläche zu aktivieren
+  setTimeout(() => location.reload(), 1500);
+}
+
+// ============================================================
 // INIT
 // ============================================================
 function ladeApp() {
-  importiereStandardPoolStill(); // Erster Start: Pool laden
+  importiereStandardPoolStill();
   ladeImpuls();
   ladeAppTitel();
   baueCheckinFormular('morgen');
@@ -2315,6 +2593,8 @@ function ladeApp() {
   setzeTageszeitDefaults();
   ladeHeuteTab();
   ladeVorschlaege();
+  // Update-Check beim Start (still, kein Popup beim ersten Mal)
+  setTimeout(() => pruefeUpdate(false), 2000);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
