@@ -816,6 +816,9 @@
           <option value="Stille & Meditation">Stille & Meditation</option>
           <option value="Kontakt & Verbindung">Kontakt & Verbindung</option>
           <option value="Energie & Lebendigkeit">Energie & Lebendigkeit</option>
+          <option value="Ressourcen & Möglichkeiten">Ressourcen & Möglichkeiten</option>
+          <option value="Schreiben & Ausdruck">Schreiben & Ausdruck</option>
+          <option value="Schwierige Momente">Schwierige Momente</option>
         </select>
         <select id="filter-zeit" onchange="ladeUebungen()" style="flex:1;min-width:100px">
           <option value="">Alle Zeiten</option>
@@ -831,6 +834,16 @@
           <option value="name_asc">A–Z</option>
           <option value="name_desc">Z–A</option>
         </select>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+        <select id="filter-dauer" onchange="ladeUebungen()" style="flex:1">
+          <option value="">⏱ Alle Dauern</option>
+          <option value="2">⏱ Max. 2 Min.</option>
+          <option value="3">⏱ Max. 3 Min.</option>
+          <option value="5">⏱ Max. 5 Min.</option>
+          <option value="10">⏱ Max. 10 Min.</option>
+        </select>
+        <button class="btn btn-secondary btn-sm" onclick="resetFilters()" title="Alle Filter zurücksetzen">✕ Reset</button>
       </div>
     </div>
     <div id="uebungen-container"><div class="loading">Lade Übungen...</div></div>
@@ -1116,14 +1129,19 @@
       <!-- ÜBUNGEN -->
       <div class="hilfe-sektion" id="hilfe-uebungen">
         <div class="hilfe-h2">Übungen – dein persönlicher Pool</div>
-        <div class="hilfe-p">Hier findest du alle verfügbaren Übungen. Beim ersten Start wird automatisch ein Pool mit 120 Übungen geladen.</div>
+        <div class="hilfe-p">Hier findest du alle verfügbaren Übungen. Beim ersten Start wird automatisch ein Pool mit über 140 Übungen in 13 Kategorien geladen.</div>
 
         <div class="hilfe-h3">Filtern & Sortieren</div>
         <div class="hilfe-box info">
-          <strong>Kategorie:</strong> Atem, Körperwahrnehmung, Stimme & Singen, GfK, Selbstmitgefühl u.v.m.<br>
+          <strong>Kategorie:</strong> Atem · Körperwahrnehmung · Stimme & Singen · GfK & Bedürfnisse · Selbstmitgefühl · Polyvagal & Regulation · Bewegung & Rhythmus · Stille & Meditation · Kontakt & Verbindung · Energie & Lebendigkeit · Ressourcen & Möglichkeiten · Schreiben & Ausdruck · Schwierige Momente<br>
           <strong>Tageszeit:</strong> Nur Übungen für Morgen / Mittag / Abend anzeigen<br>
-          <strong>Sortierung:</strong> ⭐ Favoriten · Beste zuerst · Schlechteste zuerst · A–Z · Z–A
+          <strong>⏱ Dauer-Filter:</strong> Nur Übungen bis max. 2 / 3 / 5 / 10 Minuten anzeigen – ideal für knappe Pausen<br>
+          <strong>Sortierung:</strong> ⭐ Favoriten · Beste zuerst · Schlechteste zuerst · A–Z · Z–A<br>
+          <strong>✕ Reset:</strong> Alle Filter auf einmal zurücksetzen
         </div>
+
+        <div class="hilfe-h3">⏸ Übung pausieren</div>
+        <div class="hilfe-p">In jeder Übungskarte gibt es einen ⏸-Button. Damit kannst du den Timer anhalten und später weitermachen – nützlich bei Unterbrechungen. Mit ▶ läuft die Zeit wieder.</div>
 
         <div class="hilfe-h3">Bewertung</div>
         <div class="hilfe-p">In den Übungsvorschlägen (Heute-Tab) kannst du jede Übung mit 1–5 Sternen bewerten. Der Durchschnitt aller Bewertungen wird in der Übungskarte angezeigt (⭐ 4.2 · 3×).</div>
@@ -1133,6 +1151,13 @@
 
         <div class="hilfe-h3">Eigene Übungen</div>
         <div class="hilfe-p">Mit „+ Neue Übung hinzufügen" kannst du eigene Übungen erstellen. Bestehende Übungen lassen sich mit ✏️ bearbeiten oder mit 🗑 löschen (werden nur deaktiviert, nicht dauerhaft entfernt).</div>
+
+        <div class="hilfe-h3">Neue Kategorien (Version 1.7)</div>
+        <div class="hilfe-box tipp">
+          <strong>Schwierige Momente:</strong> Übungen für akuten Stress, Trigger und Überwältigung – 5-4-3-2-1 Grounding, STOP-Pause, Sicherheitsanker u.a.<br>
+          <strong>Schreiben & Ausdruck:</strong> Strukturiertes Schreiben – Briefe an sich selbst, Ich-Botschaften nach GfK, freies Schreiben<br>
+          <strong>Ressourcen & Möglichkeiten:</strong> Ressourcenaktivierung, Zustandsarbeit, Lösungsfokus – Wunderfrage, Skalenfrage, Möglichkeitsräume
+        </div>
       </div>
 
       <!-- VERLAUF -->
@@ -1346,10 +1371,10 @@
           <option value="Stille & Meditation">Stille & Meditation</option>
           <option value="Kontakt & Verbindung">Kontakt & Verbindung</option>
           <option value="Energie & Lebendigkeit">Energie & Lebendigkeit</option>
+          <option value="Ressourcen & Möglichkeiten">Ressourcen & Möglichkeiten</option>
+          <option value="Schreiben & Ausdruck">Schreiben & Ausdruck</option>
+          <option value="Schwierige Momente">Schwierige Momente</option>
         </select>
-      </div>
-      <div>
-        <label style="font-size:13px;color:var(--text2)">Dauer (Min)</label>
         <input type="number" id="uebung-dauer-input" value="3" min="1" max="30" style="margin-top:4px">
       </div>
     </div>
@@ -1529,16 +1554,16 @@ const IMPULSE_POOL = [
   { text: "Ich darf Nein sagen, ohne mich zu erklären.", kategorie: "GfK & innere Haltung" },
   { text: "Empathie beginnt mit Neugier, nicht mit Ratschlägen.", kategorie: "GfK & innere Haltung" },
   { text: "Was möchte ich heute wirklich ausdrücken?", kategorie: "GfK & innere Haltung" },
-  { text: "Welche Version von mir möchte heute auftauchen?", kategorie: "Hypnosystemik" },
-  { text: "Ich kann wählen, welche Geschichte ich erzähle.", kategorie: "Hypnosystemik" },
-  { text: "Was wäre, wenn es leichter ginge?", kategorie: "Hypnosystemik" },
-  { text: "Ressourcen sind immer schon da – ich darf sie suchen.", kategorie: "Hypnosystemik" },
-  { text: "Heute ist ein neuer Kontext.", kategorie: "Hypnosystemik" },
-  { text: "Jede Stimmung ist ein Zustand – kein Dauerzustand.", kategorie: "Hypnosystemik" },
-  { text: "Was würde die ressourcevolle Version von mir jetzt tun?", kategorie: "Hypnosystemik" },
-  { text: "Ich bin mehr als mein aktuelles Erleben.", kategorie: "Hypnosystemik" },
-  { text: "Veränderung beginnt mit einer anderen Frage.", kategorie: "Hypnosystemik" },
-  { text: "Welche Möglichkeit sehe ich, die ich gestern noch nicht gesehen habe?", kategorie: "Hypnosystemik" },
+  { text: "Welche Version von mir möchte heute auftauchen?", kategorie: "Ressourcen & Möglichkeiten" },
+  { text: "Ich kann wählen, welche Geschichte ich erzähle.", kategorie: "Ressourcen & Möglichkeiten" },
+  { text: "Was wäre, wenn es leichter ginge?", kategorie: "Ressourcen & Möglichkeiten" },
+  { text: "Ressourcen sind immer schon da – ich darf sie suchen.", kategorie: "Ressourcen & Möglichkeiten" },
+  { text: "Heute ist ein neuer Kontext.", kategorie: "Ressourcen & Möglichkeiten" },
+  { text: "Jede Stimmung ist ein Zustand – kein Dauerzustand.", kategorie: "Ressourcen & Möglichkeiten" },
+  { text: "Was würde die ressourcevolle Version von mir jetzt tun?", kategorie: "Ressourcen & Möglichkeiten" },
+  { text: "Ich bin mehr als mein aktuelles Erleben.", kategorie: "Ressourcen & Möglichkeiten" },
+  { text: "Veränderung beginnt mit einer anderen Frage.", kategorie: "Ressourcen & Möglichkeiten" },
+  { text: "Welche Möglichkeit sehe ich, die ich gestern noch nicht gesehen habe?", kategorie: "Ressourcen & Möglichkeiten" },
   { text: "Die Wunde ist der Ort, durch den das Licht in dich eindringt.", kategorie: "Rumi & Weisheit" },
   { text: "Verkaufe deine Klugheit und kauf Staunen.", kategorie: "Rumi & Weisheit" },
   { text: "Du bist nicht ein Tropfen im Ozean – du bist der ganze Ozean in einem Tropfen.", kategorie: "Rumi & Weisheit" },
@@ -1729,6 +1754,40 @@ const STANDARD_UEBUNGEN = [
   { titel: "Natur-Kontakt", beschreibung: "Geh kurz nach draußen – oder öffne zumindest ein Fenster. Spür die Luft auf der Haut, hör die Außengeräusche, schau in den Himmel. Auch 2 Minuten Naturkontakt heben das Energielevel messbar.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
   { titel: "Lied das trägt", beschreibung: "Spiele ein Lied ab, das dich trägt – nicht beruhigt, sondern aufrecht hält. Das Lied das sagt: Du bist hier, du bist lebendig, es geht weiter. Hör es bewusst, nicht nebenbei.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 5, tageszeit: ["morgen", "mittag"] },
   { titel: "Wozu bin ich heute lebendig?", beschreibung: "Wofür bin ich heute lebendig? Nicht „was muss ich tun\" – sondern: Was in mir will heute leben, wirken, begegnen? Eine Frage als Tagesstart, keine Antwort nötig.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["morgen"] },
+
+  // ── Körperwahrnehmung: PMR & Body-Scan ──────────────────────────────────
+  { titel: "Progressive Muskelentspannung (kurz)", beschreibung: "Spanne nacheinander einzelne Muskelgruppen an – Hände, Arme, Schultern, Gesicht, Bauch, Beine – halte 5 Sekunden, dann loslassen. Spür den Unterschied zwischen Spannung und Entspannung. Diese Technik nach Jacobson ist wissenschaftlich gut belegt.", kategorie: "Körperwahrnehmung", dauer_minuten: 7, tageszeit: ["abend"] },
+  { titel: "PMR – Hände und Arme", beschreibung: "Balle die Fäuste fest – spür die Spannung in Händen und Unterarmen – halte 7 Sekunden – und lass dann mit einem Ausatem alles los. Wiederhole mit angehobenen Unterarmen (Bizeps). PMR ist besonders wirksam bei anhaltender Anspannung.", kategorie: "Körperwahrnehmung", dauer_minuten: 5, tageszeit: ["mittag", "abend"] },
+  { titel: "Geführter Body-Scan", beschreibung: "Lege dich hin oder sitze bequem. Wandere mit der Aufmerksamkeit langsam vom Scheitel bis zu den Zehen: Stirn, Kiefer, Hals, Schultern, Brust, Bauch, Hüften, Oberschenkel, Waden, Füße. Bei jeder Station: kurz ankommen, wahrnehmen, loslassen.", kategorie: "Körperwahrnehmung", dauer_minuten: 10, tageszeit: ["abend"] },
+  { titel: "5-Punkte-Entspannung", beschreibung: "Fünf Körperstellen nacheinander bewusst entspannen: Stirn – Kiefer – Schultern – Hände – Bauch. Bei jeder: einatmen, kurz anspannen, beim Ausatmen loslassen. Fünf Runden, fünf Minuten, fühlbarer Effekt.", kategorie: "Körperwahrnehmung", dauer_minuten: 5, tageszeit: ["mittag", "abend"] },
+
+  // ── Ressourcen & Möglichkeiten ──────────────────────────────────────────
+  { titel: "Ressource aktivieren", beschreibung: "Denk an einen Moment, in dem du dich wirksam, lebendig und verbunden gefühlt hast. Wo warst du? Was hast du getan? Lass das Bild, den Klang, das Körpergefühl zurückkommen. Ressourcen sind immer abrufbar – sie müssen nur eingeladen werden.", kategorie: "Ressourcen & Möglichkeiten", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "Welche Version von mir ist heute gefragt?", beschreibung: "Stell dir vor, es gibt verschiedene Versionen von dir – die Ruhige, die Entschlossene, die Neugierige. Welche wäre heute hilfreich? Wie würde sie stehen, sprechen, atmen? Probiere es kurz aus.", kategorie: "Ressourcen & Möglichkeiten", dauer_minuten: 3, tageszeit: ["morgen"] },
+  { titel: "Was wäre, wenn es leichter ginge?", beschreibung: "Wähle etwas, das sich gerade schwer anfühlt. Frage dich: Was wäre, wenn es leichter ginge? Nicht als Verneinung der Schwere – sondern als Öffnung. Was würde ich anders tun? Welche Option sehe ich dann?", kategorie: "Ressourcen & Möglichkeiten", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "Zustand benennen und wählen", beschreibung: "Welchen inneren Zustand erlebe ich gerade – erschöpft, angespannt, neugierig, ruhig? Benenne ihn ohne Wertung. Dann frage: Welcher Zustand wäre heute hilfreich? Was bräuchte es, um einen Schritt dorthin zu gehen?", kategorie: "Ressourcen & Möglichkeiten", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "Ausnahmen suchen", beschreibung: "Wenn etwas schwierig ist: Wann war es das zuletzt weniger? Was war dann anders? Wer war dabei? Was habe ich getan? Ausnahmen sind Beweise für Handlungsspielraum – auch wenn sie selten vorkommen.", kategorie: "Ressourcen & Möglichkeiten", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
+  { titel: "Wunderfrage", beschreibung: "Stell dir vor: Heute Nacht geschieht ein Wunder – und morgen früh ist das, was dich belastet, gelöst. Was wäre das erste, das du bemerken würdest? Was würden andere an dir bemerken? Was würdest du anders tun?", kategorie: "Ressourcen & Möglichkeiten", dauer_minuten: 5, tageszeit: ["abend"] },
+  { titel: "Skalenfrage", beschreibung: "Auf einer Skala von 0 bis 10: Wo stehe ich gerade mit dem, was mich beschäftigt? Was hat mich bisher auf diesem Wert gehalten – nicht darunter? Was wäre ein kleiner Schritt hin zur nächsten Zahl?", kategorie: "Ressourcen & Möglichkeiten", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
+  { titel: "Möglichkeitsraum öffnen", beschreibung: "Nimm eine Situation, die sich festgefahren anfühlt. Schreibe oder denke: Drei mögliche Wege – auch verrückte, unrealistische. Nicht um sie umzusetzen, sondern um den inneren Raum zu weiten. Möglichkeiten existieren oft schon, bevor wir sie sehen.", kategorie: "Ressourcen & Möglichkeiten", dauer_minuten: 5, tageszeit: ["abend"] },
+
+  // ── Schreiben & Ausdruck ─────────────────────────────────────────────────
+  { titel: "Brief an mich selbst", beschreibung: "Schreibe einen kurzen Brief an dich selbst – so, wie du einem guten Freund schreiben würdest. Was würdest du dir sagen wollen? Was brauchst du gerade zu hören? Kein Muss, keine richtige Form. Nur ehrlicher Kontakt zu dir selbst.", kategorie: "Schreiben & Ausdruck", dauer_minuten: 7, tageszeit: ["abend"] },
+  { titel: "Ich-Botschaft formulieren", beschreibung: "Wähle eine Situation, die dich bewegt. Formuliere sie als Ich-Botschaft nach GfK: Beobachtung – Gefühl – Bedürfnis – Bitte. Schreibe die vier Schritte auf. Nicht um sie abzuschicken – sondern um Klarheit zu gewinnen.", kategorie: "Schreiben & Ausdruck", dauer_minuten: 5, tageszeit: ["abend"] },
+  { titel: "Drei-Sätze-Tagebuch", beschreibung: "Beende den Tag mit exakt drei Sätzen: Was war heute da? Was hat mich bewegt? Was nehme ich mit? Keine langen Texte – nur drei ehrliche Sätze. Regelmäßiges Kurzschreiben stärkt das Selbstgewahrsein nachweislich.", kategorie: "Schreiben & Ausdruck", dauer_minuten: 3, tageszeit: ["abend"] },
+  { titel: "Ungesendeter Brief", beschreibung: "Gibt es etwas, das du jemandem sagen möchtest – aber (noch) nicht kannst oder willst? Schreibe es auf – ohne es abzuschicken. Allein das Schreiben entlädt. Du kannst den Brief danach zerreißen, aufbewahren oder verändern.", kategorie: "Schreiben & Ausdruck", dauer_minuten: 10, tageszeit: ["abend"] },
+  { titel: "Satzanfänge vollenden", beschreibung: "Schreibe spontan weiter: „Ich merke, dass ich… / Ich brauche gerade… / Was mich überrascht… / Was ich mir wünsche… / Was ich loslassen darf…\" Kein Nachdenken – einfach schreiben, was als erstes kommt. Freies Schreiben umgeht den inneren Zensor.", kategorie: "Schreiben & Ausdruck", dauer_minuten: 5, tageszeit: ["morgen", "abend"] },
+  { titel: "Das Gute festhalten", beschreibung: "Schreibe heute Abend drei konkrete Momente auf, die gut waren – auch kleine: ein Lächeln, ein Atemzug Frischluft, ein erledigter Satz. Nicht um schönzureden – sondern um das Positive im Gehirn zu verankern. Positive Neuroplastizität braucht bewusste Aufmerksamkeit.", kategorie: "Schreiben & Ausdruck", dauer_minuten: 3, tageszeit: ["abend"] },
+
+  // ── Schwierige Momente ───────────────────────────────────────────────────
+  { titel: "5-4-3-2-1 Grounding", beschreibung: "Benenne laut oder innerlich: 5 Dinge, die du siehst – 4, die du hörst – 3, die du spürst – 2, die du riechst – 1, das du schmeckst. Diese Technik unterbricht akuten Stress zuverlässig durch Aktivierung aller Sinne.", kategorie: "Schwierige Momente", dauer_minuten: 2, tageszeit: ["morgen", "mittag", "abend"] },
+  { titel: "STOP-Pause", beschreibung: "S – Stoppe, was du tust. T – Take a breath: ein tiefer Atemzug. O – Observe: Was nehme ich gerade wahr – im Körper, im Kopf, in der Situation? P – Proceed: Was ist jetzt der nächste sinnvolle Schritt? Eine Minute, die alles verändert.", kategorie: "Schwierige Momente", dauer_minuten: 2, tageszeit: ["morgen", "mittag", "abend"] },
+  { titel: "Atem verlängern bei Stress", beschreibung: "Wenn du dich angespannt oder getriggert fühlst: Atme 4 Sekunden ein – 2 halten – 6 Sekunden aus. Der verlängerte Ausatem aktiviert sofort den Parasympathikus. Wiederhole 5 mal. Auch in schwierigen Gesprächen unbemerkt möglich.", kategorie: "Schwierige Momente", dauer_minuten: 2, tageszeit: ["morgen", "mittag", "abend"] },
+  { titel: "Sicherheitsanker aktivieren", beschreibung: "Denke an einen Ort, eine Person oder einen Gegenstand, bei dem du dich sicher fühlst. Vergegenwärtige ihn so konkret wie möglich – Bild, Geruch, Klang, Gefühl. Lass den Körper ankommen. Dieser innere Anker ist immer verfügbar.", kategorie: "Schwierige Momente", dauer_minuten: 2, tageszeit: ["morgen", "mittag", "abend"] },
+  { titel: "Gefühl benennen entschärft es", beschreibung: "Wenn ein starkes Gefühl auftaucht: Benenne es innerlich so genau wie möglich. Nicht „schlecht\" – sondern: Angst? Scham? Ohnmacht? Wut? Neurobiologisch reduziert das präzise Benennen von Gefühlen deren Intensität – der präfrontale Kortex reguliert die Amygdala.", kategorie: "Schwierige Momente", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
+  { titel: "Körper erden bei Überwältigung", beschreibung: "Drücke fest beide Füße in den Boden. Lege die Hände flach auf die Oberschenkel. Spür das Gewicht des eigenen Körpers. Atme langsam aus. Wiederhole: drücken, spüren, ausatmen. Erdung stoppt die Eskalation des Nervensystems.", kategorie: "Schwierige Momente", dauer_minuten: 2, tageszeit: ["morgen", "mittag", "abend"] },
+  { titel: "Trigger-Pause einlegen", beschreibung: "Wenn du merkst, dass du getriggert bist: Geh kurz aus der Situation heraus – einen Schritt zurücktreten, Wasser holen, Fenster öffnen. Signalisiere dir selbst: Ich bin in Sicherheit. Was ist hier wirklich gerade los – und was ist alte Geschichte?", kategorie: "Schwierige Momente", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
+  { titel: "Selbst-Mitgefühl im Schmerz", beschreibung: "Wenn es gerade schwer ist: Leg eine Hand aufs Herz. Sag dir innerlich: „Das ist ein schwieriger Moment. Schmerz gehört zum Menschsein. Ich bin nicht allein damit.\" Drei Sätze. Drei Atemzüge. Mitgefühl mit sich selbst ist keine Schwäche.", kategorie: "Schwierige Momente", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
 ];
 
 // ============================================================
@@ -1941,12 +2000,14 @@ function getUebungen() {
 }
 
 function ladeUebungen() {
-  const kat  = document.getElementById('filter-kat')?.value  || '';
-  const zeit = document.getElementById('filter-zeit')?.value || '';
-  const sort = document.getElementById('sort-uebungen')?.value || '';
-  let alle = getUebungen().filter(u => u.aktiv !== false);
-  if (kat)  alle = alle.filter(u => u.kategorie === kat);
-  if (zeit) alle = alle.filter(u => !u.tageszeit || u.tageszeit.length === 0 || u.tageszeit.includes(zeit));
+  const kat   = document.getElementById('filter-kat')?.value  || '';
+  const zeit  = document.getElementById('filter-zeit')?.value || '';
+  const sort  = document.getElementById('sort-uebungen')?.value || '';
+  const dauer = parseInt(document.getElementById('filter-dauer')?.value || '0');
+  let alle = getUebungen(); // alle inkl. inaktive anzeigen
+  if (kat)   alle = alle.filter(u => u.kategorie === kat);
+  if (zeit)  alle = alle.filter(u => !u.tageszeit || u.tageszeit.length === 0 || u.tageszeit.includes(zeit));
+  if (dauer) alle = alle.filter(u => u.dauer_minuten <= dauer);
   if (sort === 'favoriten') {
     // Nur Übungen die mindestens einmal als Favorit markiert wurden
     // Favorit-Info steckt in daily_exercises → alle Tage durchsuchen
@@ -1990,9 +2051,14 @@ function uebungCardHTML(u) {
   const sterneAnzeige = bewertung
     ? `<span style="color:var(--accent2);font-size:13px">⭐ ${bewertung}</span><span style="color:var(--text3);font-size:11px"> (${bewertungAnzahl}×)</span>`
     : '';
+  const inaktiv = u.aktiv === false;
+  const cardStyle = inaktiv ? 'opacity:0.45;border-style:dashed;' : '';
+  const inaktivBadge = inaktiv ? '<span class="badge" style="background:#f0e8d8;color:#9e8f7a;margin-left:6px">⏸ Pausiert</span>' : '';
+  const toggleIcon  = inaktiv ? '▶' : '⏸';
+  const toggleTitle = inaktiv ? 'Übung wieder aktivieren' : 'Übung pausieren';
   return `
-    <div class="uebung-card" id="uebung-${u.id}">
-      <div class="uebung-titel">${u.titel}</div>
+    <div class="uebung-card" id="uebung-${u.id}" style="${cardStyle}">
+      <div class="uebung-titel">${u.titel}${inaktivBadge}</div>
       <div class="uebung-meta">
         <span class="badge badge-kat">${u.kategorie}</span>
         <span>⏱ ${u.dauer_minuten} Min</span>
@@ -2001,8 +2067,9 @@ function uebungCardHTML(u) {
       </div>
       ${u.beschreibung ? `<div class="uebung-desc">${u.beschreibung}</div>` : ''}
       <div class="uebung-actions">
-        <button class="btn btn-primary btn-sm" onclick="uebungZuHeuteHinzufuegen('${u.id}')">+ Heute machen</button>
+        ${!inaktiv ? `<button class="btn btn-primary btn-sm" onclick="uebungZuHeuteHinzufuegen('${u.id}')">+ Heute machen</button>` : ''}
         <button class="btn btn-secondary btn-sm" onclick="bearbeiteUebung('${u.id}')">✏️</button>
+        <button class="btn btn-secondary btn-sm" onclick="toggleUebungAktiv('${u.id}')" title="${toggleTitle}">${toggleIcon}</button>
         <button class="btn btn-secondary btn-sm" onclick="loescheUebung('${u.id}')">🗑</button>
       </div>
     </div>`;
@@ -2618,6 +2685,30 @@ function loescheUebung(id) {
   ladeUebungen();
 }
 
+function toggleUebungAktiv(id) {
+  let alle = getUebungen();
+  const idx = alle.findIndex(u => u.id === id);
+  if (idx === -1) return;
+  const warAktiv = alle[idx].aktiv !== false;
+  alle[idx].aktiv = !warAktiv;
+  lsSet('exercises', alle);
+  zeigToast(warAktiv ? '⏸ Übung pausiert' : '▶ Übung wieder aktiv');
+  ladeUebungen();
+}
+
+function resetFilters() {
+  const fk = document.getElementById('filter-kat');
+  const fz = document.getElementById('filter-zeit');
+  const fd = document.getElementById('filter-dauer');
+  const so = document.getElementById('sort-uebungen');
+  if (fk) fk.value = '';
+  if (fz) fz.value = '';
+  if (fd) fd.value = '';
+  if (so) so.value = '';
+  ladeUebungen();
+  zeigToast('Filter zurückgesetzt');
+}
+
 // ============================================================
 // EINSTELLUNGEN
 // ============================================================
@@ -3199,7 +3290,7 @@ async function syncSpeichernUndSchliesse() {
 // Die Migration läuft automatisch beim nächsten Seitenaufruf.
 // ============================================================
 
-const APP_VERSION = '1.6';
+const APP_VERSION = '1.7';
 
 const APP_UPDATES = [
   {
@@ -3268,6 +3359,17 @@ const APP_UPDATES = [
       '„?"-Hilfe-Button im Header',
       'Vollständige Anleitung für alle Reiter integriert',
       'Troubleshooting: Installation, Updates, Sync, Datenverlust',
+    ],
+    migration: (state) => state
+  },
+  {
+    version: '1.7',
+    changelog: [
+      'Neue Kategorie: „Schwierige Momente" – 8 Übungen für akuten Stress, Trigger und schwierige Situationen',
+      'Neue Kategorie: „Schreiben & Ausdruck" – 6 Übungen (Briefe, Ich-Botschaften, freies Schreiben)',
+      'Neue Kategorie: „Ressourcen & Möglichkeiten" – 8 Übungen (Ressourcenaktivierung, Zustandsarbeit, Lösungsfokus)',
+      'PMR & Body-Scan in „Körperwahrnehmung" integriert – 4 neue Tiefenentspannungsübungen',
+      '„Hypnosystemik" umbenannt in „Ressourcen & Möglichkeiten"',
     ],
     migration: (state) => state
   },
