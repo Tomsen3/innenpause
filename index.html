@@ -3290,7 +3290,7 @@ async function syncSpeichernUndSchliesse() {
 // Die Migration läuft automatisch beim nächsten Seitenaufruf.
 // ============================================================
 
-const APP_VERSION = '1.7';
+const APP_VERSION = '1.8';
 
 const APP_UPDATES = [
   {
@@ -3372,6 +3372,36 @@ const APP_UPDATES = [
       '„Hypnosystemik" umbenannt in „Ressourcen & Möglichkeiten"',
     ],
     migration: (state) => state
+  },
+  {
+    version: '1.8',
+    changelog: [
+      'Neue Übungen automatisch einspielt: Schwierige Momente, Schreiben & Ausdruck, Ressourcen & Möglichkeiten, PMR & Body-Scan',
+      'Pool-Merge: Neue Standard-Übungen werden ohne Duplikate zu bestehenden hinzugefügt',
+      '„Hypnosystemik"-Einträge werden automatisch in „Ressourcen & Möglichkeiten" umbenannt',
+    ],
+    migration: (state) => {
+      // 1. Kategorie umbenennen (Altdaten bereinigen)
+      if (state.exercises) {
+        state.exercises = state.exercises.map(u => ({
+          ...u,
+          kategorie: u.kategorie === 'Hypnosystemik' ? 'Ressourcen & Möglichkeiten' : u.kategorie
+        }));
+      }
+
+      // 2. Neue Übungen einspiele ohne Duplikate (Vergleich per Titel)
+      const neueUebungen = STANDARD_UEBUNGEN.filter(u =>
+        ['Schwierige Momente', 'Schreiben & Ausdruck', 'Ressourcen & Möglichkeiten'].includes(u.kategorie) ||
+        ['Progressive Muskelentspannung (kurz)', 'PMR – Hände und Arme', 'Geführter Body-Scan', '5-Punkte-Entspannung'].includes(u.titel)
+      );
+      neueUebungen.forEach(u => {
+        if (!state.exercises.find(x => x.titel === u.titel)) {
+          state.exercises.push({ id: genId(), ...u, aktiv: true });
+        }
+      });
+
+      return state;
+    }
   },
   // VORLAGE FÜR NÄCHSTES UPDATE:
   // {
