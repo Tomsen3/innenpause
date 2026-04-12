@@ -1275,8 +1275,8 @@
         <div class="hilfe-h3">Übungsvorschläge erscheinen nicht</div>
         <div class="hilfe-p">Die Vorschläge erscheinen erst ab der in den Einstellungen festgelegten Uhrzeit. Standard: Morgen ab 5 Uhr. Prüfe unter Einstellungen → Tageszeiten-Grenzen ob die Zeiten passen.</div>
 
-        <div class="hilfe-h3">Sync-Datei kann nicht gefunden werden</div>
-        <div class="hilfe-p">Nach jedem Browser-Neustart muss die Sync-Datei einmalig neu ausgewählt werden – das ist eine Sicherheitsbeschränkung des Browsers. Tippe auf „↓ Laden" oder „↑ Speichern" und wähle die Datei erneut aus.</div>
+        <div class="hilfe-h3">Warum muss ich die Sync-Datei immer wieder auswählen?</div>
+        <div class="hilfe-p">Das ist eine Sicherheitsbeschränkung aller Browser: Eine Webseite darf sich keinen dauerhaften Zugriff auf Dateien merken. Nach jedem Neustart der App (oder nach dem Schließen des Browsertabs) muss die Sync-Datei einmalig pro Sitzung erneut ausgewählt werden – dann funktioniert „↑ Speichern" und „↓ Laden" ohne weitere Dialoge, solange der Tab geöffnet ist.</div>
       </div>
 
     </div><!-- /hilfe-body -->
@@ -1296,7 +1296,7 @@
   <div style="background:var(--card);border-radius:20px 20px 0 0;padding:24px;width:100%;max-width:600px;box-shadow:var(--shadow-lg)">
     <div style="font-family:'Lora',serif;font-size:17px;font-weight:500;margin-bottom:8px">🔄 Sync-Erinnerung</div>
     <div style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5">
-      Du hast eine Sync-Datei hinterlegt. Möchtest du deine Daten jetzt aktualisieren?
+      Du hast eine Sync-Datei hinterlegt. Da der Browser den Speicherort nicht dauerhaft merken darf, musst du die Datei einmalig pro Sitzung erneut auswählen.
     </div>
     <div style="font-size:12px;color:var(--text3);margin-bottom:16px" id="sync-erinnerung-info"></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -3208,11 +3208,18 @@ async function syncSpeichern() {
   if (!SYNC_UNTERSTUETZT) { exportiereAllesDaten(); return; }
   try {
     if (!syncFileHandle) {
-      // Kein Handle in dieser Session → neu auswählen
-      const [handle] = await window.showOpenFilePicker({
+      // Kein Handle in dieser Session → Nutzer informieren und Datei neu wählen lassen
+      const info = getSyncInfo();
+      const dateiname = info ? info.dateiname : 'innenpause-sync.json';
+      // Hinweis anzeigen (nicht blockierend, nur Toast)
+      zeigToast('📂 Bitte Sync-Datei erneut auswählen…');
+      // showSaveFilePicker erlaubt Schreiben in bestehende oder neue Datei
+      const handle = await window.showSaveFilePicker({
+        suggestedName: dateiname,
         types: [{ description: 'JSON Backup', accept: { 'application/json': ['.json'] } }]
       });
       syncFileHandle = handle;
+      setSyncInfo({ dateiname: handle.name, letzter_sync: null });
     }
     await syncSchreibeDatei(syncFileHandle);
     ladeSyncUI();
@@ -3290,7 +3297,7 @@ async function syncSpeichernUndSchliesse() {
 // Die Migration läuft automatisch beim nächsten Seitenaufruf.
 // ============================================================
 
-const APP_VERSION = '1.8';
+const APP_VERSION = '1.9';
 
 const APP_UPDATES = [
   {
@@ -3421,6 +3428,15 @@ const APP_UPDATES = [
   //     return state;
   //   }
   // }
+  {
+    version: '1.9',
+    changelog: [
+      'Sync-Fix: „↑ Speichern" öffnet jetzt korrekt den Schreib-Dialog (statt Lese-Dialog)',
+      'Sync-Erinnerung: Erklärung warum die Datei pro Sitzung erneut gewählt werden muss',
+      'Hilfetext Sync: Klarere Erklärung der Browser-Sicherheitsbeschränkung',
+    ],
+    migration: (state) => state
+  },
 ];
 
 function getGespeicherteVersion() {
