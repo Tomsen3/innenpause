@@ -983,6 +983,13 @@
       <div class="setting-row">
         <div>
           <div class="setting-label">Übungen verwalten</div>
+      <div class="setting-row" style="border-top:1px solid var(--border);padding-top:12px;margin-top:4px">
+        <div>
+          <div class="setting-label">Übungen zurücksetzen</div>
+          <div class="setting-sub">Alle Übungen auf Standard-Pool zurücksetzen – persönliche Daten bleiben erhalten</div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="setzeUebungenZurueck()">Zurücksetzen</button>
+      </div>
           <div class="setting-sub">Bearbeiten, löschen, hinzufügen</div>
         </div>
         <button class="btn btn-secondary btn-sm" onclick="zeigeTab('uebungen')">Öffnen</button>
@@ -1248,7 +1255,7 @@
 // ============================================================
 // APP VERSION
 // ============================================================
-const APP_VERSION = '2.2';
+const APP_VERSION = '2.3';
 // ============================================================
 // MEHRSPRACHIGKEIT (i18n) – Punkt 12
 // Sprache wird in localStorage unter 'sprache' gespeichert.
@@ -1423,6 +1430,9 @@ const STRINGS = {
     einst_pool_laden: 'Standard-Pool laden',
     einst_pool_laden_sub: '120 Übungen als Startpunkt importieren',
     einst_pool_import_btn: 'Import',
+    einst_reset_pool: 'Übungen zurücksetzen',
+    einst_reset_pool_sub: 'Alle Übungen auf Standard-Pool zurücksetzen – persönliche Daten bleiben erhalten',
+    einst_reset_pool_btn: 'Zurücksetzen',
     einst_pool_en_laden: 'Standard-Pool (EN) laden',
     einst_pool_en_laden_sub: 'English exercise pool import',
     einst_pool_verwalten: 'Übungen verwalten',
@@ -1499,8 +1509,8 @@ const STRINGS = {
     sync_erklaerung: 'Wähle einen Speicherort für deine Sync-Datei – am besten in einem Cloud-Ordner (OneDrive, Google Drive, Dropbox).',
     sync_so_funktioniert: 'So funktioniert es:',
     sync_schritt1: '1. Speicherort einmalig festlegen',
-    sync_schritt2: '2. Nach jeder Nutzung „↑ Speichern" drücken',
-    sync_schritt3: '3. Auf anderem Gerät: App öffnen → „↓ Laden"',
+    sync_schritt2: '2. Nach jeder Nutzung \"↑ Speichern\" drücken',
+    sync_schritt3: '3. Auf anderem Gerät: App öffnen → \"↓ Laden\"',
     sync_schritt4: '4. Deine Daten sind überall verfügbar ✓',
     sync_neu: '📁 Neuen Speicherort wählen',
     sync_oeffnen: '📂 Vorhandene Sync-Datei öffnen',
@@ -1748,6 +1758,9 @@ const STRINGS = {
     einst_pool_laden: 'Load default pool (DE)',
     einst_pool_laden_sub: '120 German exercises as a starting point',
     einst_pool_import_btn: 'Import',
+    einst_reset_pool: 'Reset exercises',
+    einst_reset_pool_sub: 'Reset all exercises to the standard pool – personal data is kept',
+    einst_reset_pool_btn: 'Reset',
     einst_pool_en_laden: 'Load default pool (EN)',
     einst_pool_en_laden_sub: '120 English exercises as a starting point',
     einst_pool_verwalten: 'Manage exercises',
@@ -2131,11 +2144,6 @@ function pruefeeLizenz() {
   }
 }
 
-// Enter-Taste im Lizenz-Input
-document.getElementById('lizenz-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') pruefeeLizenz();
-});
-
 function zeigeHauptApp() {
   if (!localStorage.getItem(LIZENZ_KEY)) {
     document.getElementById('lizenz-screen').classList.add('show');
@@ -2371,52 +2379,52 @@ const STANDARD_UEBUNGEN_EN = [
   { titel: "Spinal Wave", beschreibung: "Sitting or standing: let your spine undulate gently – forward, back, side to side. Follow the movement without planning it. Your spine has its own intelligence.", kategorie: "Bewegung & Rhythmus", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
   { titel: "Clapping Rhythm", beschreibung: "Clap a rhythm – simple or complex. Speed it up, slow it down, play. Rhythm activates the right hemisphere and can interrupt ruminative thinking.", kategorie: "Bewegung & Rhythmus", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
   { titel: "Mindful Stretching", beschreibung: "Choose one area of your body that feels tight. Slowly stretch it, holding for 20–30 seconds, breathing. Not to achieve a pose – to notice what is there.", kategorie: "Bewegung & Rhythmus", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
-  { titel: "Movement for a Feeling", beschreibung: "Which feeling is present right now? Give it a movement – don't explain it, just move. How would exhaustion move? How would tension? Let the body find the gesture.", kategorie: "Movement & Rhythm", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
-  { titel: "Rhythmic Rocking", beschreibung: "Sit and gently rock forward and back – or side to side. Like a child soothing itself. This rhythmic movement regulates the nervous system and signals: I am safe.", kategorie: "Movement & Rhythm", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
+  { titel: "Movement for a Feeling", beschreibung: "Which feeling is present right now? Give it a movement – don't explain it, just move. How would exhaustion move? How would tension? Let the body find the gesture.", kategorie: "Bewegung & Rhythmus", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
+  { titel: "Rhythmic Rocking", beschreibung: "Sit and gently rock forward and back – or side to side. Like a child soothing itself. This rhythmic movement regulates the nervous system and signals: I am safe.", kategorie: "Bewegung & Rhythmus", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
   { titel: "Watching Thoughts Pass", beschreibung: "Imagine your thoughts are clouds passing across a sky. You are the sky – not the clouds. Watch them arise and dissolve without following any of them. Three to five minutes.", kategorie: "Stille & Meditation", dauer_minuten: 2, tageszeit: ["morgen", "abend"] },
   { titel: "Loving Attention on Breath", beschreibung: "Bring a quality of warmth and care to your breath – as if attending to something precious. No need to control it. Just be with it, gently and curiously.", kategorie: "Stille & Meditation", dauer_minuten: 3, tageszeit: ["abend"] },
   { titel: "Body of Water", beschreibung: "Imagine your body as a still body of water. With each breath, the surface settles a little more. Whatever is stirred up is allowed to gradually settle. You do not need to force stillness.", kategorie: "Stille & Meditation", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
-  { titel: "Mantra Breath", beschreibung: "Choose a short phrase – e.g. \"all is well\", \"I am here\", \"this too\". Inhale silently on the first half, exhale on the second. Repeat for three to five minutes.", kategorie: "Stille & Meditation", dauer_minuten: 3, tageszeit: ["morgen", "mittag", "abend"] },
+  { titel: "A Moment of Complete Presence", beschreibung: "Choose one moment today and be fully in it – not planning, not remembering, not evaluating. Just this. The sound, the light, the breath, the ground beneath you. Completely here.", kategorie: "Stille & Meditation", dauer_minuten: 3, tageszeit: ["morgen", "mittag", "abend"] },
   { titel: "Nothing to Do", beschreibung: "For three minutes, remind yourself: right now, there is nothing I need to do or be. Just this. Notice the resistance – and the relief. Both are information.", kategorie: "Stille & Meditation", dauer_minuten: 3, tageszeit: ["abend"] },
   { titel: "Inner Space", beschreibung: "Sense into the space inside your body – the space within your chest, belly, throat. It is not empty. It is alive. Rest your attention there for a few breaths.", kategorie: "Stille & Meditation", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
-  { titel: "Doing Nothing", beschreibung: "Allow yourself two minutes to achieve nothing, improve nothing, plan nothing. Simply: be here. No task. No technique. Just the quiet fact of existing.", kategorie: "Stillness & Meditation", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
-  { titel: "Finding Inner Stillness", beschreibung: "Imagine that deep inside you there is a place that is always still – untouched by the noise of the day. What would it feel like? Let your attention rest there, however briefly.", kategorie: "Stillness & Meditation", dauer_minuten: 3, tageszeit: ["abend"] },
-  { titel: "Sitting with Eyes Closed", beschreibung: "Close your eyes – and simply stay. No task. No technique. Just eyes closed, being inside. For as long as it feels right.", kategorie: "Stillness & Meditation", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
-  { titel: "Evening Stillness", beschreibung: "Before you sleep: five minutes without screens, without music, without conversation. Just stillness. Let the day settle. What remains when the noise falls away?", kategorie: "Stillness & Meditation", dauer_minuten: 5, tageszeit: ["abend"] },
+  { titel: "Doing Nothing", beschreibung: "Allow yourself two minutes to achieve nothing, improve nothing, plan nothing. Simply: be here. No task. No technique. Just the quiet fact of existing.", kategorie: "Stille & Meditation", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
+  { titel: "Finding Inner Stillness", beschreibung: "Imagine that deep inside you there is a place that is always still – untouched by the noise of the day. What would it feel like? Let your attention rest there, however briefly.", kategorie: "Stille & Meditation", dauer_minuten: 3, tageszeit: ["abend"] },
+  { titel: "Sitting with Eyes Closed", beschreibung: "Close your eyes – and simply stay. No task. No technique. Just eyes closed, being inside. For as long as it feels right.", kategorie: "Stille & Meditation", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
+  { titel: "Evening Stillness", beschreibung: "Before you sleep: five minutes without screens, without music, without conversation. Just stillness. Let the day settle. What remains when the noise falls away?", kategorie: "Stille & Meditation", dauer_minuten: 5, tageszeit: ["abend"] },
   { titel: "Tenderness Check", beschreibung: "Is there someone who could use a kind word or gesture from you today? And: is there a part of you that could use the same? Tenderness offered and received both matter.", kategorie: "Kontakt & Verbindung", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
   { titel: "Wider Circle", beschreibung: "Let your awareness extend beyond the room – to your street, your city, the country, the world. Humans everywhere are waking, working, struggling, loving. You are part of this. Let that land.", kategorie: "Kontakt & Verbindung", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
   { titel: "Nature Connection Pause", beschreibung: "Step outside, look out a window, or bring a plant to mind. Notice something alive that is not human. Let your nervous system register: I am part of a larger living world.", kategorie: "Kontakt & Verbindung", dauer_minuten: 3, tageszeit: ["abend"] },
   { titel: "Sending Kindness", beschreibung: "Think of three people: someone easy to love, someone neutral, someone difficult. Silently send each the same wish: may you be well, may you be happy, may you be at peace.", kategorie: "Kontakt & Verbindung", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
-  { titel: "Giving Presence", beschreibung: "Choose one encounter today and give it your full attention – the cashier, a colleague, a neighbour. No phone, no half-attention. Just: fully here, fully with them.", kategorie: "Contact & Connection", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
+  { titel: "Giving Presence", beschreibung: "Choose one encounter today and give it your full attention – the cashier, a colleague, a neighbour. No phone, no half-attention. Just: fully here, fully with them.", kategorie: "Kontakt & Verbindung", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
   { titel: "Joy Recall", beschreibung: "What brought you genuine joy recently – however small? Let the memory be vivid. Where do you feel it in your body? Savouring positive experience strengthens its lasting effect.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
   { titel: "Vitality Breath", beschreibung: "Take three quick energising breaths through the nose, then one long slow exhale. Repeat 3 times. Useful for low energy moments as a gentle activator – not a replacement for rest.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["mittag"] },
   { titel: "Play Invitation", beschreibung: "When did you last play – really play? For five minutes, do something purely for the fun of it: doodle, make a silly sound, throw something in the air, be ridiculous. Play is serious.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
   { titel: "Colour Your Day", beschreibung: "What colour is your mood today? What colour would you like to add? This is not analysis – it is gentle creative contact with your inner state.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["morgen"] },
-  { titel: "Activate a Resource", beschreibung: "Think of a moment when you felt alive, effective and connected. Where were you? What was carrying you? Let the memory become vivid – as a felt sense in your body, not just a thought. This state is real. It belongs to you.", kategorie: "Energy & Vitality", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
-  { titel: "Seeking Aliveness in the Body", beschreibung: "Where do you feel the most aliveness in your body right now? A tingling, warmth, lightness – even the smallest sensation counts. Let your attention rest there.", kategorie: "Energy & Vitality", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
-  { titel: "What Makes Me Light Up?", beschreibung: "Ask yourself: what has genuinely made me light up recently – even briefly? Not what should inspire me. What actually did? Let that answer be honest.", kategorie: "Energy & Vitality", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
-  { titel: "Activating Breath", beschreibung: "Short, vigorous breaths through the nose – in, out, in, out – fast and rhythmic, 20 times. Then one deep inhale, hold briefly, long exhale. Feel the activation in your body.", kategorie: "Energy & Vitality", dauer_minuten: 2, tageszeit: ["morgen"] },
-  { titel: "Tapping the Joy Store", beschreibung: "Recall a memory where you genuinely felt joy – not just nice, but truly alive. Let the image come. Where were you? Who was there? Let the feeling return, even briefly.", kategorie: "Energy & Vitality", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
-  { titel: "Play Impulse", beschreibung: "Do something playful for two minutes – hum a melody and invent spontaneous words, tap a rhythm, make up a rhyme. No goal. No audience. Just the pleasure of playing.", kategorie: "Energy & Vitality", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
-  { titel: "Inviting Laughter", beschreibung: "Think of something that genuinely made you laugh recently – or simply begin to laugh, even without reason. The body doesn't distinguish. The effect is real.", kategorie: "Energy & Vitality", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
-  { titel: "Stretching and Yawning", beschreibung: "Stretch as fully as possible – arms, legs, back. Yawn theatrically. Then shake everything out. This releases held tension and signals the nervous system: the coast is clear.", kategorie: "Energy & Vitality", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
-  { titel: "Nature Contact", beschreibung: "Step outside briefly – or at least open a window. Feel the air on your skin, listen to the sounds outside, look at the sky. Let the natural world register.", kategorie: "Energy & Vitality", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
-  { titel: "A Song That Carries You", beschreibung: "Play a song that carries you – not one that soothes you into passivity, but one that keeps you upright. Let it work without analysing it. Just let it carry you.", kategorie: "Energy & Vitality", dauer_minuten: 5, tageszeit: ["morgen", "mittag"] },
-  { titel: "What Am I Alive For Today?", beschreibung: "Not what must I do – but: what carries me today? What is allowed to matter? Let the answer be honest, even if it is small.", kategorie: "Energy & Vitality", dauer_minuten: 2, tageszeit: ["morgen"] },
-  { titel: "Progressive Muscle Relaxation (Short)", beschreibung: "Tense each muscle group in turn – hands, arms, shoulders, face, belly, legs – hold for 5 seconds, then release with a long exhale. Notice the contrast between tension and letting go.", kategorie: "Body Awareness", dauer_minuten: 7, tageszeit: ["abend"] },
-  { titel: "PMR – Hands and Arms", beschreibung: "Clench both fists tight – feel the tension in hands and forearms – hold for 7 seconds – then release with a long exhale. Repeat with upper arms. Notice the wave of relaxation.", kategorie: "Body Awareness", dauer_minuten: 5, tageszeit: ["mittag", "abend"] },
-  { titel: "Guided Body Scan", beschreibung: "Lie down or sit comfortably. Slowly guide your attention from the top of your head down to your toes – scalp, face, jaw, neck, shoulders, chest, belly, back, legs, feet. At each place: just notice. No need to change anything. Let the body be as it is.", kategorie: "Body Awareness", dauer_minuten: 10, tageszeit: ["abend"] },
-  { titel: "5-Point Relaxation", beschreibung: "Consciously relax five body points in sequence: brow – jaw – shoulders – hands – belly. At each: breathe in, gently tense, breathe out, release. Feel the difference.", kategorie: "Body Awareness", dauer_minuten: 5, tageszeit: ["mittag", "abend"] },
-  { titel: "Grounding in a Difficult Moment", beschreibung: "Name 5 things you can see, 4 you can touch, 3 you can hear, 2 you can smell, 1 you can taste. This 5-4-3-2-1 technique grounds the nervous system in the present moment.", kategorie: "Difficult Moments", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
-  { titel: "Which Version of Me Is Needed Today?", beschreibung: "Imagine there are different versions of you – the calm one, the decisive one, the curious one. Which one is called for today? How would they begin this morning?", kategorie: "Resources & Possibilities", dauer_minuten: 3, tageszeit: ["morgen"] },
-  { titel: "What If It Could Be Easier?", beschreibung: "Choose something that feels heavy right now. Ask yourself: what if it could be easier? Not as denial – as an opening. Let the question work without forcing an answer.", kategorie: "Resources & Possibilities", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
-  { titel: "Name Your State and Choose", beschreibung: "Which inner state am I experiencing right now – exhausted, tense, curious, calm? Name it without judgement. Then: which state would I like to choose? What would be one first step?", kategorie: "Resources & Possibilities", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
-  { titel: "Looking for Exceptions", beschreibung: "When something feels difficult: when was it last a little less so? What was different then? Who was there? What did you do? Exceptions point toward solutions.", kategorie: "Resources & Possibilities", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
-  { titel: "The Miracle Question", beschreibung: "Imagine: tonight, while you sleep, a miracle happens – and tomorrow morning, whatever has been weighing on you is resolved. How would your day begin? What would you notice first?", kategorie: "Resources & Possibilities", dauer_minuten: 5, tageszeit: ["abend"] },
-  { titel: "The Scaling Question", beschreibung: "On a scale of 0 to 10: where am I right now with what is on my mind? What has kept me at this number so far? What would one point higher look like?", kategorie: "Resources & Possibilities", dauer_minuten: 5, tageszeit: ["mittag", "abend"] },
-  { titel: "Opening the Space of Possibility", beschreibung: "Take a situation that feels stuck. Think or write: three possible paths – including wild ones, including small ones. Which feels most alive? What would a first step be?", kategorie: "Resources & Possibilities", dauer_minuten: 5, tageszeit: ["abend"] },
-  { titel: "Letter to Myself", beschreibung: "Write a short letter to yourself – as you would write to a good friend. What do you actually need right now? What would you want to hear?", kategorie: "Writing & Expression", dauer_minuten: 7, tageszeit: ["abend"] },
-  { titel: "Forming an I-Statement", beschreibung: "Choose a situation that moves you. Formulate it as an I-statement: Observation – Feeling – Need – Request. Clear, honest, yours.", kategorie: "Writing & Expression", dauer_minuten: 5, tageszeit: ["abend"] },
+  { titel: "Activate a Resource", beschreibung: "Think of a moment when you felt alive, effective and connected. Where were you? What was carrying you? Let the memory become vivid – as a felt sense in your body, not just a thought. This state is real. It belongs to you.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "Seeking Aliveness in the Body", beschreibung: "Where do you feel the most aliveness in your body right now? A tingling, warmth, lightness – even the smallest sensation counts. Let your attention rest there.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "What Makes Me Light Up?", beschreibung: "Ask yourself: what has genuinely made me light up recently – even briefly? Not what should inspire me. What actually did? Let that answer be honest.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
+  { titel: "Activating Breath", beschreibung: "Short, vigorous breaths through the nose – in, out, in, out – fast and rhythmic, 20 times. Then one deep inhale, hold briefly, long exhale. Feel the activation in your body.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["morgen"] },
+  { titel: "Tapping the Joy Store", beschreibung: "Recall a memory where you genuinely felt joy – not just nice, but truly alive. Let the image come. Where were you? Who was there? Let the feeling return, even briefly.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "Play Impulse", beschreibung: "Do something playful for two minutes – hum a melody and invent spontaneous words, tap a rhythm, make up a rhyme. No goal. No audience. Just the pleasure of playing.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
+  { titel: "Inviting Laughter", beschreibung: "Think of something that genuinely made you laugh recently – or simply begin to laugh, even without reason. The body doesn't distinguish. The effect is real.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
+  { titel: "Stretching and Yawning", beschreibung: "Stretch as fully as possible – arms, legs, back. Yawn theatrically. Then shake everything out. This releases held tension and signals the nervous system: the coast is clear.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
+  { titel: "Nature Contact", beschreibung: "Step outside briefly – or at least open a window. Feel the air on your skin, listen to the sounds outside, look at the sky. Let the natural world register.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "A Song That Carries You", beschreibung: "Play a song that carries you – not one that soothes you into passivity, but one that keeps you upright. Let it work without analysing it. Just let it carry you.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 5, tageszeit: ["morgen", "mittag"] },
+  { titel: "What Am I Alive For Today?", beschreibung: "Not what must I do – but: what carries me today? What is allowed to matter? Let the answer be honest, even if it is small.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["morgen"] },
+  { titel: "Progressive Muscle Relaxation (Short)", beschreibung: "Tense each muscle group in turn – hands, arms, shoulders, face, belly, legs – hold for 5 seconds, then release with a long exhale. Notice the contrast between tension and letting go.", kategorie: "Körperwahrnehmung", dauer_minuten: 7, tageszeit: ["abend"] },
+  { titel: "PMR – Hands and Arms", beschreibung: "Clench both fists tight – feel the tension in hands and forearms – hold for 7 seconds – then release with a long exhale. Repeat with upper arms. Notice the wave of relaxation.", kategorie: "Körperwahrnehmung", dauer_minuten: 5, tageszeit: ["mittag", "abend"] },
+  { titel: "Guided Body Scan", beschreibung: "Lie down or sit comfortably. Slowly guide your attention from the top of your head down to your toes – scalp, face, jaw, neck, shoulders, chest, belly, back, legs, feet. At each place: just notice. No need to change anything. Let the body be as it is.", kategorie: "Körperwahrnehmung", dauer_minuten: 10, tageszeit: ["abend"] },
+  { titel: "5-Point Relaxation", beschreibung: "Consciously relax five body points in sequence: brow – jaw – shoulders – hands – belly. At each: breathe in, gently tense, breathe out, release. Feel the difference.", kategorie: "Körperwahrnehmung", dauer_minuten: 5, tageszeit: ["mittag", "abend"] },
+  { titel: "Grounding in a Difficult Moment", beschreibung: "Name 5 things you can see, 4 you can touch, 3 you can hear, 2 you can smell, 1 you can taste. This 5-4-3-2-1 technique grounds the nervous system in the present moment.", kategorie: "Schwierige Momente", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
+  { titel: "Which Version of Me Is Needed Today?", beschreibung: "Imagine there are different versions of you – the calm one, the decisive one, the curious one. Which one is called for today? How would they begin this morning?", kategorie: "Ressourcen & Möglichkeiten", dauer_minuten: 3, tageszeit: ["morgen"] },
+  { titel: "What If It Could Be Easier?", beschreibung: "Choose something that feels heavy right now. Ask yourself: what if it could be easier? Not as denial – as an opening. Let the question work without forcing an answer.", kategorie: "Ressourcen & Möglichkeiten", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "Name Your State and Choose", beschreibung: "Which inner state am I experiencing right now – exhausted, tense, curious, calm? Name it without judgement. Then: which state would I like to choose? What would be one first step?", kategorie: "Ressourcen & Möglichkeiten", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "Looking for Exceptions", beschreibung: "When something feels difficult: when was it last a little less so? What was different then? Who was there? What did you do? Exceptions point toward solutions.", kategorie: "Ressourcen & Möglichkeiten", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
+  { titel: "The Miracle Question", beschreibung: "Imagine: tonight, while you sleep, a miracle happens – and tomorrow morning, whatever has been weighing on you is resolved. How would your day begin? What would you notice first?", kategorie: "Ressourcen & Möglichkeiten", dauer_minuten: 5, tageszeit: ["abend"] },
+  { titel: "The Scaling Question", beschreibung: "On a scale of 0 to 10: where am I right now with what is on my mind? What has kept me at this number so far? What would one point higher look like?", kategorie: "Ressourcen & Möglichkeiten", dauer_minuten: 5, tageszeit: ["mittag", "abend"] },
+  { titel: "Opening the Space of Possibility", beschreibung: "Take a situation that feels stuck. Think or write: three possible paths – including wild ones, including small ones. Which feels most alive? What would a first step be?", kategorie: "Ressourcen & Möglichkeiten", dauer_minuten: 5, tageszeit: ["abend"] },
+  { titel: "Letter to Myself", beschreibung: "Write a short letter to yourself – as you would write to a good friend. What do you actually need right now? What would you want to hear?", kategorie: "Schreiben & Ausdruck", dauer_minuten: 7, tageszeit: ["abend"] },
+  { titel: "Forming an I-Statement", beschreibung: "Choose a situation that moves you. Formulate it as an I-statement: Observation – Feeling – Need – Request. Clear, honest, yours.", kategorie: "Schreiben & Ausdruck", dauer_minuten: 5, tageszeit: ["abend"] },
 ,
   { titel: "Three-Sentence Journal", beschreibung: "End the day with exactly three sentences: What was present today? What moved me? What do I want to carry into tomorrow? No more, no less. Three sentences are enough.", kategorie: "Schreiben & Ausdruck", dauer_minuten: 3, tageszeit: ["abend"] },
   { titel: "Unsent Letter", beschreibung: "Is there something you want to say to someone – but can't or won't (yet)? Write it down – without sending it. Freely, honestly, without filter. Writing it out creates space and clarity, even without a reply.", kategorie: "Schreiben & Ausdruck", dauer_minuten: 10, tageszeit: ["abend"] },
@@ -2431,29 +2439,31 @@ const STANDARD_UEBUNGEN_EN = [
   { titel: "Take a Trigger Pause", beschreibung: "When you notice you've been triggered: step out of the situation briefly – a different room, fresh air, a few steps. Give yourself 5–10 minutes before reacting. Distance creates clarity.", kategorie: "Schwierige Momente", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
   { titel: "Self-Compassion in Pain", beschreibung: "When things are hard: place one hand on your heart. Say inwardly: 'This is a difficult moment. Difficulty is part of life. May I be kind to myself right now.' Repeat as often as you need.", kategorie: "Schwierige Momente", dauer_minuten: 5, tageszeit: ["morgen", "mittag", "abend"] }
 ,
-  { titel: "Stillness Minute", beschreibung: "Set a timer for one minute. Do absolutely nothing – no scrolling, no fidgeting, no task. Just be still. Notice what arises.", kategorie: "Stillness & Meditation", dauer_minuten: 1, tageszeit: ["morgen", "mittag", "abend"] },
-  { titel: "Open Awareness", beschreibung: "Let your attention expand to include everything in your experience – sounds near and far, sensations, the space around you. Nothing to hold, nothing to exclude.", kategorie: "Stillness & Meditation", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
-  { titel: "Warmth for a Difficult Person", beschreibung: "Bring to mind someone you find difficult. Without excusing their behaviour, try to see their suffering. Wish them peace – not for them, but as a practice for yourself.", kategorie: "Contact & Connection", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
-  { titel: "Gratitude for a Person", beschreibung: "Think of someone who has supported, taught or simply accompanied you. Let the gratitude arise. You do not need to tell them. It is enough to feel it.", kategorie: "Contact & Connection", dauer_minuten: 3, tageszeit: ["abend"] },
-  { titel: "Sense of Belonging", beschreibung: "Recall a moment when you felt you belonged – to a group, a place, a relationship. Let that memory become vivid. What carried that feeling?", kategorie: "Contact & Connection", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
-  { titel: "One Real Conversation", beschreibung: "Intend to have at least one genuine exchange today – not transactional, but real. Ask someone how they actually are. And listen.", kategorie: "Contact & Connection", dauer_minuten: 5, tageszeit: ["abend"] },
-  { titel: "Energy Inventory", beschreibung: "On a scale of 1–10: what is my energy level right now? What would give me one more point – a walk, water, a moment outside?", kategorie: "Energy & Vitality", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
-  { titel: "Strength as Resource", beschreibung: "Think of a strength, quality or capability you genuinely have. It can be small – patience, curiosity, warmth. Let it become concrete. Feel what it feels like.", kategorie: "Resources & Possibilities", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
-  { titel: "What Is Possible?", beschreibung: "Rather than asking what is wrong, ask: what is possible here? Even a small shift in framing can open new movement. Let the question work without forcing an answer.", kategorie: "Resources & Possibilities", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
-  { titel: "Solution Focus Pause", beschreibung: "Think of a current challenge. Now ask: when has this gone better, even a little? What was different then? What can I try today?", kategorie: "Resources & Possibilities", dauer_minuten: 2, tageszeit: ["morgen"] },
-  { titel: "Resource Network", beschreibung: "Who or what supports you? People, places, practices, memories, objects. Spend a moment mapping your resource network. Even the smallest counts.", kategorie: "Resources & Possibilities", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
-  { titel: "Future Self", beschreibung: "Imagine a version of yourself who has come through this period well. What do they know that you are still learning? What would they say to you today?", kategorie: "Resources & Possibilities", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
-  { titel: "Reframe Moment", beschreibung: "Take one difficult thing from today. Can you find a different way to look at it – not to deny its difficulty, but to see it from a different angle?", kategorie: "Resources & Possibilities", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
-  { titel: "What Has Worked Today?", beschreibung: "Name three things that functioned, that you managed, or that went well today – however small. Our attention is trained to find gaps. This practice trains the opposite.", kategorie: "Resources & Possibilities", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
-  { titel: "Strength Inventory", beschreibung: "List five genuine strengths you have. Evidence counts. Then ask: which of these strengths is most useful right now? How could I use it today?", kategorie: "Resources & Possibilities", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
-  { titel: "Stream of Consciousness", beschreibung: "Write freely for five minutes – without stopping, editing or re-reading. Whatever comes. Not for anyone. Not to be read.", kategorie: "Writing & Expression", dauer_minuten: 5, tageszeit: ["morgen", "mittag"] },
-  { titel: "I-Statement Practice", beschreibung: "Write two or three I-statements about something that mattered today: I noticed… I felt… I needed… Simple, honest, yours.", kategorie: "Writing & Expression", dauer_minuten: 2, tageszeit: ["morgen"] },
-  { titel: "Three Good Things", beschreibung: "Write down three things that went well today. For each one, write one sentence about why it went well. This practice trains attention toward what is working.", kategorie: "Writing & Expression", dauer_minuten: 5, tageszeit: ["mittag", "abend"] },
-  { titel: "Morning Pages (Mini)", beschreibung: "Three sentences before the day begins – anything, uncensored. Not poetry. Not planning. Just: what is in my head right now.", kategorie: "Writing & Expression", dauer_minuten: 5, tageszeit: ["mittag", "abend"] },
-  { titel: "STOP Practice", beschreibung: "S – Stop what you are doing. T – Take a breath. O – Observe what is happening in your body, thoughts and feelings. P – Proceed with intention.", kategorie: "Difficult Moments", dauer_minuten: 3, tageszeit: ["morgen"] },
-  { titel: "Naming the Storm", beschreibung: "When overwhelmed, try naming what is happening: I am feeling… because… and what I need is… Naming reduces the storm's power.", kategorie: "Difficult Moments", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
-  { titel: "Cold Water Reset", beschreibung: "Run cold water over your wrists for 30 seconds. Or splash your face. Cold water activates the dive reflex – heart rate slows, the nervous system calms.", kategorie: "Difficult Moments", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
-  { titel: "Trigger Pause", beschreibung: "If you notice you have been triggered: step briefly out of the situation – get water, open a window, take three long breaths. Then return.", kategorie: "Difficult Moments", dauer_minuten: 3, tageszeit: ["mittag", "abend"] }
+  { titel: "Stillness Minute", beschreibung: "Set a timer for one minute. Do absolutely nothing – no scrolling, no fidgeting, no task. Just be still. Notice what arises.", kategorie: "Stille & Meditation", dauer_minuten: 1, tageszeit: ["morgen", "mittag", "abend"] },
+  { titel: "Open Awareness", beschreibung: "Let your attention expand to include everything in your experience – sounds near and far, sensations, the space around you. Nothing to hold, nothing to exclude.", kategorie: "Stille & Meditation", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
+  { titel: "Warmth for a Difficult Person", beschreibung: "Bring to mind someone you find difficult. Without excusing their behaviour, try to see their suffering. Wish them peace – not for them, but as a practice for yourself.", kategorie: "Kontakt & Verbindung", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
+  { titel: "Gratitude for a Person", beschreibung: "Think of someone who has supported, taught or simply accompanied you. Let the gratitude arise. You do not need to tell them. It is enough to feel it.", kategorie: "Kontakt & Verbindung", dauer_minuten: 3, tageszeit: ["abend"] },
+  { titel: "Sense of Belonging", beschreibung: "Recall a moment when you felt you belonged – to a group, a place, a relationship. Let that memory become vivid. What carried that feeling?", kategorie: "Kontakt & Verbindung", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
+  { titel: "One Real Conversation", beschreibung: "Intend to have at least one genuine exchange today – not transactional, but real. Ask someone how they actually are. And listen.", kategorie: "Kontakt & Verbindung", dauer_minuten: 5, tageszeit: ["abend"] },
+  { titel: "Energy Inventory", beschreibung: "On a scale of 1–10: what is my energy level right now? What would give me one more point – a walk, water, a moment outside?", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
+  { titel: "Strength as Resource", beschreibung: "Think of a strength, quality or capability you genuinely have. It can be small – patience, curiosity, warmth. Let it become concrete. Feel what it feels like.", kategorie: "Ressourcen & Möglichkeiten", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "What Is Possible?", beschreibung: "Rather than asking what is wrong, ask: what is possible here? Even a small shift in framing can open new movement. Let the question work without forcing an answer.", kategorie: "Ressourcen & Möglichkeiten", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
+  { titel: "Solution Focus Pause", beschreibung: "Think of a current challenge. Now ask: when has this gone better, even a little? What was different then? What can I try today?", kategorie: "Ressourcen & Möglichkeiten", dauer_minuten: 2, tageszeit: ["morgen"] },
+  { titel: "Resource Network", beschreibung: "Who or what supports you? People, places, practices, memories, objects. Spend a moment mapping your resource network. Even the smallest counts.", kategorie: "Ressourcen & Möglichkeiten", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "Future Self", beschreibung: "Imagine a version of yourself who has come through this period well. What do they know that you are still learning? What would they say to you today?", kategorie: "Ressourcen & Möglichkeiten", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
+  { titel: "Reframe Moment", beschreibung: "Take one difficult thing from today. Can you find a different way to look at it – not to deny its difficulty, but to see it from a different angle?", kategorie: "Ressourcen & Möglichkeiten", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
+  { titel: "What Has Worked Today?", beschreibung: "Name three things that functioned, that you managed, or that went well today – however small. Our attention is trained to find gaps. This practice trains the opposite.", kategorie: "Ressourcen & Möglichkeiten", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
+  { titel: "Strength Inventory", beschreibung: "List five genuine strengths you have. Evidence counts. Then ask: which of these strengths is most useful right now? How could I use it today?", kategorie: "Ressourcen & Möglichkeiten", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "Stream of Consciousness", beschreibung: "Write freely for five minutes – without stopping, editing or re-reading. Whatever comes. Not for anyone. Not to be read.", kategorie: "Schreiben & Ausdruck", dauer_minuten: 5, tageszeit: ["morgen", "mittag"] },
+  { titel: "I-Statement Practice", beschreibung: "Write two or three I-statements about something that mattered today: I noticed… I felt… I needed… Simple, honest, yours.", kategorie: "Schreiben & Ausdruck", dauer_minuten: 2, tageszeit: ["morgen"] },
+  { titel: "Three Good Things", beschreibung: "Write down three things that went well today. For each one, write one sentence about why it went well. This practice trains attention toward what is working.", kategorie: "Schreiben & Ausdruck", dauer_minuten: 5, tageszeit: ["mittag", "abend"] },
+  { titel: "Morning Pages (Mini)", beschreibung: "Three sentences before the day begins – anything, uncensored. Not poetry. Not planning. Just: what is in my head right now.", kategorie: "Schreiben & Ausdruck", dauer_minuten: 5, tageszeit: ["mittag", "abend"] },
+  { titel: "STOP Practice", beschreibung: "S – Stop what you are doing. T – Take a breath. O – Observe what is happening in your body, thoughts and feelings. P – Proceed with intention.", kategorie: "Schwierige Momente", dauer_minuten: 3, tageszeit: ["morgen"] },
+  { titel: "Naming the Storm", beschreibung: "When overwhelmed, try naming what is happening: I am feeling… because… and what I need is… Naming reduces the storm's power.", kategorie: "Schwierige Momente", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "Cold Water Reset", beschreibung: "Run cold water over your wrists for 30 seconds. Or splash your face. Cold water activates the dive reflex – heart rate slows, the nervous system calms.", kategorie: "Schwierige Momente", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "Trigger Pause", beschreibung: "If you notice you have been triggered: step briefly out of the situation – get water, open a window, take three long breaths. Then return.", kategorie: "Schwierige Momente", dauer_minuten: 3, tageszeit: ["mittag", "abend"] }
+,
+  { titel: "Mantra Breath", beschreibung: "Choose a word or short phrase that carries you – I am here, all is well, peace. Link it to your breath: first syllable on the inhale, second on the exhale. Let the sound work inwardly.", kategorie: "Stille & Meditation", dauer_minuten: 5, tageszeit: ["morgen", "abend"] }
 ];
 
 // ============================================================
@@ -2496,11 +2506,11 @@ const STANDARD_UEBUNGEN_DE = [
   { titel: "4-7-8 Atem", beschreibung: "Atme 4 Sekunden ein, halte 7 Sekunden, atme 8 Sekunden aus. Wiederhole 3–4 mal. Diese verlängerte Ausatmung aktiviert den Parasympathikus und signalisiert dem Nervensystem: Sicherheit.", kategorie: "Atem", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
   { titel: "Seufzen dürfen", beschreibung: "Atme tief ein – und seufze beim Ausatmen hörbar aus. Kein stiller Atem, sondern ein echter, lauter Seufzer. Wiederhole 3 mal. Der physiologische Seufzer ist einer der schnellsten Regulationswege des Nervensystems.", kategorie: "Atem", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
   { titel: "Wellenatmung", beschreibung: "Stell dir vor, dein Atem ist eine Welle. Beim Einatmen baut sie sich auf – Bauch, Rippen, Brust. Beim Ausatmen zieht sie sich zurück – Brust, Rippen, Bauch. Lass drei Wellen durch dich hindurchgehen.", kategorie: "Atem", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
-  { titel: "Brummender Ausatem", beschreibung: "Atme ein – und beim Ausatmen brumme leise: „Hmmm.\" Spür die Vibration im Brustkorb. Wiederhole 5 mal. Das Brummen stimuliert den Vagusnerv direkt über die Kehle.", kategorie: "Atem", dauer_minuten: 3, tageszeit: ["morgen", "mittag", "abend"] },
+  { titel: "Brummender Ausatem", beschreibung: "Atme ein – und beim Ausatmen brumme leise: \"Hmmm.\" Spür die Vibration im Brustkorb. Wiederhole 5 mal. Das Brummen stimuliert den Vagusnerv direkt über die Kehle.", kategorie: "Atem", dauer_minuten: 3, tageszeit: ["morgen", "mittag", "abend"] },
   { titel: "Boxatmung", beschreibung: "4 Sekunden einatmen – 4 halten – 4 ausatmen – 4 halten. Ein Quadrat. Wiederhole 4 Runden. Besonders hilfreich bei innerer Unruhe oder Anspannung.", kategorie: "Atem", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
   { titel: "Atemraum finden", beschreibung: "Leg eine Hand auf den Bauch, eine auf die Brust. Spür: Welche Hand bewegt sich mehr? Lass beim nächsten Atemzug bewusst die Bauchhand steigen – und die Brusthand ruhig bleiben. Drei Atemzüge.", kategorie: "Atem", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
   { titel: "Ausatemverlängerung", beschreibung: "Atme normal ein – und zähl beim Ausatmen innerlich: 1, 2, 3, 4, 5, 6. Beim nächsten Ausatem: bis 7. Dann 8. Wie weit kannst du gehen, ohne Druck? Die verlängerte Ausatmung ist direkter Parasympathikus-Trigger.", kategorie: "Atem", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
-  { titel: "Atem und Wort", beschreibung: "Wähle ein einziges Wort, das sich heute richtig anfühlt – z.B. „Ruhe\", „Weite\", „Ja\", „Sanft\". Atme ein. Beim Ausatmen sage das Wort lautlos oder flüsternd. Wiederhole 5 mal.", kategorie: "Atem", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
+  { titel: "Atem und Wort", beschreibung: "Wähle ein einziges Wort, das sich heute richtig anfühlt – z.B. \"Ruhe\", \"Weite\", \"Ja\", \"Sanft\". Atme ein. Beim Ausatmen sage das Wort lautlos oder flüsternd. Wiederhole 5 mal.", kategorie: "Atem", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
   { titel: "Morgendlicher erster Atemzug", beschreibung: "Noch bevor du aufstehst: Nimm einen ganz bewussten ersten tiefen Atemzug. Stell dir vor, du atmest den neuen Tag ein. Kein Vorhaben, kein Plan – nur dieser eine Atemzug als Schwelle.", kategorie: "Atem", dauer_minuten: 1, tageszeit: ["morgen"] },
   { titel: "Body-Scan Light", beschreibung: "Wandere mit deiner Aufmerksamkeit langsam von den Füßen nach oben – Unterschenkel, Knie, Oberschenkel, Bauch, Brust, Schultern, Hals, Gesicht. Keine Bewertung, nur Wahrnehmung: Was ist gerade da?", kategorie: "Körperwahrnehmung", dauer_minuten: 5, tageszeit: ["morgen", "abend"] },
   { titel: "Füße auf dem Boden", beschreibung: "Steh oder sitz. Spür bewusst den Kontakt deiner Füße mit dem Boden. Drücke sie leicht in den Boden – und lass wieder los. Wiederhole dreimal. Erdung ist einer der einfachsten Wege aus dem Kopf in den Körper.", kategorie: "Körperwahrnehmung", dauer_minuten: 2, tageszeit: ["morgen", "mittag", "abend"] },
@@ -2518,40 +2528,40 @@ const STANDARD_UEBUNGEN_DE = [
   { titel: "Schattensingen", beschreibung: "Summe oder singe ganz leise – fast unhörbar. So leise, dass es sich anfühlt, als würdest du nur innerlich singen. Diese Qualität des Leisen hat eine eigene Kraft: Sie lädt ein, statt zu fordern.", kategorie: "Stimme & Singen", dauer_minuten: 3, tageszeit: ["abend"] },
   { titel: "Körperklopfen mit Ton", beschreibung: "Klopfe mit den Fingerspitzen sanft auf Brust oder Oberschenkel und summe gleichzeitig. Lass Klopfen und Ton sich synchronisieren. Dann: lass das Klopfen los und spür nach, ob der Ton bleibt.", kategorie: "Stimme & Singen", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
   { titel: "Lied ohne Worte", beschreibung: "Nimm eine Melodie, die dir gerade einfällt – und summe sie ohne Text. Nur Melodie, nur Körper. Manchmal sagt eine Melodie mehr über den inneren Zustand als jedes Wort.", kategorie: "Stimme & Singen", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
-  { titel: "Ich bin schön, wenn ich singe", beschreibung: "Singe oder summe irgendetwas – und erlaube dir dabei, den Satz zu denken: „Ich bin schön, wenn ich singe.\" Nicht als Bewertung. Als Einladung. Was verändert sich?", kategorie: "Stimme & Singen", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
+  { titel: "Ich bin schön, wenn ich singe", beschreibung: "Singe oder summe irgendetwas – und erlaube dir dabei, den Satz zu denken: \"Ich bin schön, wenn ich singe.\" Nicht als Bewertung. Als Einladung. Was verändert sich?", kategorie: "Stimme & Singen", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
   { titel: "Töne für Gefühle", beschreibung: "Welches Gefühl ist gerade da? Gib ihm einen Ton – nicht in Worte fassen, sondern klingen lassen. Wie würde Erschöpfung klingen? Wie Dankbarkeit? Wie Unruhe? Lass es einfach heraus.", kategorie: "Stimme & Singen", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
   { titel: "Abendlied", beschreibung: "Zum Tagesabschluss: Sing oder summe leise ein Lied, das dich begleitet – aus der Kindheit, aus der Reha, selbst erfunden. Keine Leistung. Nur Klang als Hülle für den Tag.", kategorie: "Stimme & Singen", dauer_minuten: 3, tageszeit: ["abend"] },
-  { titel: "Call and Response mit dir selbst", beschreibung: "Summe einen kurzen Ton oder eine Phrase – mach dann eine Pause und „höre\", was dein Körper antwortet. Singe erneut. Antworte wieder. Ein inneres Gespräch aus Tönen.", kategorie: "Stimme & Singen", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
+  { titel: "Call and Response mit dir selbst", beschreibung: "Summe einen kurzen Ton oder eine Phrase – mach dann eine Pause und \"höre\", was dein Körper antwortet. Singe erneut. Antworte wieder. Ein inneres Gespräch aus Tönen.", kategorie: "Stimme & Singen", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
   { titel: "Was ist jetzt gerade da?", beschreibung: "Halte inne und frage dich: Was nehme ich gerade wahr – in mir, um mich herum? Ohne Bewertung. Nur Beobachtung. Was ist Beobachtung, was ist schon Interpretation?", kategorie: "GfK & Bedürfnisse", dauer_minuten: 2, tageszeit: ["morgen", "mittag", "abend"] },
-  { titel: "Gefühl benennen", beschreibung: "Wie fühle ich mich gerade – wirklich? Nicht „gut\" oder „okay\", sondern genauer: Müde? Angespannt? Froh? Traurig? Unruhig? Leicht? Nimm dir eine Minute, das Gefühl zu benennen ohne es zu verändern.", kategorie: "GfK & Bedürfnisse", dauer_minuten: 2, tageszeit: ["morgen", "mittag", "abend"] },
+  { titel: "Gefühl benennen", beschreibung: "Wie fühle ich mich gerade – wirklich? Nicht \"gut\" oder \"okay\", sondern genauer: Müde? Angespannt? Froh? Traurig? Unruhig? Leicht? Nimm dir eine Minute, das Gefühl zu benennen ohne es zu verändern.", kategorie: "GfK & Bedürfnisse", dauer_minuten: 2, tageszeit: ["morgen", "mittag", "abend"] },
   { titel: "Welches Bedürfnis steckt dahinter?", beschreibung: "Wenn du ein Gefühl benannt hast: Welches Bedürfnis könnte dahinterstecken? Ruhe? Kontakt? Anerkennung? Sinn? Selbstbestimmung? Spür nach – das Bedürfnis ist nie falsch.", kategorie: "GfK & Bedürfnisse", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
   { titel: "Die Bitte an mich selbst", beschreibung: "Was könntest du heute für dich selbst tun, um einem wichtigen Bedürfnis ein wenig näher zu kommen? Keine große Geste nötig. Eine kleine, konkrete Bitte an dich selbst.", kategorie: "GfK & Bedürfnisse", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
-  { titel: "Innerer Kritiker übersetzen", beschreibung: "Wenn eine kritische innere Stimme auftaucht: Was würde sie sagen, wenn sie als Bedürfnis sprechen würde statt als Vorwurf? „Du bist zu langsam\" → Bedürfnis nach Wirksamkeit. Übe die Übersetzung.", kategorie: "GfK & Bedürfnisse", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
+  { titel: "Innerer Kritiker übersetzen", beschreibung: "Wenn eine kritische innere Stimme auftaucht: Was würde sie sagen, wenn sie als Bedürfnis sprechen würde statt als Vorwurf? \"Du bist zu langsam\" → Bedürfnis nach Wirksamkeit. Übe die Übersetzung.", kategorie: "GfK & Bedürfnisse", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
   { titel: "Dankbarkeit und Bedürfnis", beschreibung: "Wofür bist du heute – auch wenn der Tag schwer war – dankbar? Was sagt diese Dankbarkeit darüber, was dir wichtig ist? Welches Bedürfnis wurde erfüllt?", kategorie: "GfK & Bedürfnisse", dauer_minuten: 3, tageszeit: ["abend"] },
   { titel: "Nein als Selbstfürsorge", beschreibung: "Gab es heute etwas, bei dem du Ja gesagt hast, obwohl ein Nein stimmiger gewesen wäre? Was hätte das Nein geschützt? Welches Bedürfnis wäre damit gehört worden?", kategorie: "GfK & Bedürfnisse", dauer_minuten: 3, tageszeit: ["abend"] },
   { titel: "Bedürfnis-Check Mittag", beschreibung: "Mitten im Tag: Pause. Eine Minute. Frage dich: Was brauche ich gerade wirklich – Bewegung? Stille? Essen? Kontakt? Luft? Und: Kann ich mir das jetzt geben – auch nur ein bisschen?", kategorie: "GfK & Bedürfnisse", dauer_minuten: 2, tageszeit: ["mittag"] },
   { titel: "Gefühls-Körper-Verbindung", beschreibung: "Benenne ein Gefühl, das gerade da ist. Dann: Wo spürst du es im Körper? Welche Qualität hat es – eng, weit, warm, schwer, prickelnd? Gefühle sind immer auch körperlich.", kategorie: "GfK & Bedürfnisse", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
-  { titel: "Brief an ein Bedürfnis", beschreibung: "Schreib zwei bis drei Sätze an ein Bedürfnis, das heute zu kurz gekommen ist – als würdest du ihm einen Brief schreiben. „Liebes Bedürfnis nach Ruhe, ich höre dich…\" Kein Muss, aber oft überraschend wirkungsvoll.", kategorie: "GfK & Bedürfnisse", dauer_minuten: 5, tageszeit: ["abend"] },
+  { titel: "Brief an ein Bedürfnis", beschreibung: "Schreib zwei bis drei Sätze an ein Bedürfnis, das heute zu kurz gekommen ist – als würdest du ihm einen Brief schreiben. \"Liebes Bedürfnis nach Ruhe, ich höre dich…\" Kein Muss, aber oft überraschend wirkungsvoll.", kategorie: "GfK & Bedürfnisse", dauer_minuten: 5, tageszeit: ["abend"] },
   { titel: "Wie würde ich mit einem Freund sprechen?", beschreibung: "Wenn ein guter Freund das durchmachen würde, was du gerade durchmachst – was würdest du ihm sagen? Kannst du dir selbst dasselbe sagen?", kategorie: "Selbstmitgefühl", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
   { titel: "Die drei Türen des Selbstmitgefühls", beschreibung: "Erinnere dich kurz: Ich leide gerade (Achtsamkeit). Leiden gehört zum Menschsein dazu (geteilte Menschlichkeit). Ich bin gut zu mir (Freundlichkeit). Drei Sätze, drei Atemzüge.", kategorie: "Selbstmitgefühl", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
   { titel: "Innerer freundlicher Beobachter", beschreibung: "Stell dir vor, ein wohlwollender Zeuge schaut auf deinen Tag – nicht urteilend, nur beobachtend. Was würde er sagen? Was würde er anerkennen?", kategorie: "Selbstmitgefühl", dauer_minuten: 3, tageszeit: ["abend"] },
   { titel: "Was habe ich heute gut gemacht?", beschreibung: "Nicht was war perfekt – sondern: Was habe ich heute versucht? Was ist mir trotz allem gelungen? Auch Kleines zählt. Besonders Kleines.", kategorie: "Selbstmitgefühl", dauer_minuten: 3, tageszeit: ["abend"] },
   { titel: "Inneres Kind grüßen", beschreibung: "Stell dir kurz das Kind vor, das du warst – jünger, vielleicht verletzlicher. Schau es freundlich an. Was bräuchte es gerade von dir? Was könntest du ihm sagen?", kategorie: "Selbstmitgefühl", dauer_minuten: 3, tageszeit: ["abend"] },
-  { titel: "Selbst-Berührung als Fürsorge", beschreibung: "Leg eine Hand auf dein Herz. Spür die Wärme. Sag dir innerlich einen Satz – z.B. „Ich bin für mich da.\" Oder einfach nur: „Ja.\" Körperlicher Selbstkontakt aktiviert das Bindungssystem.", kategorie: "Selbstmitgefühl", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
+  { titel: "Selbst-Berührung als Fürsorge", beschreibung: "Leg eine Hand auf dein Herz. Spür die Wärme. Sag dir innerlich einen Satz – z.B. \"Ich bin für mich da.\" Oder einfach nur: \"Ja.\" Körperlicher Selbstkontakt aktiviert das Bindungssystem.", kategorie: "Selbstmitgefühl", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
   { titel: "Was darf bleiben, wie es ist?", beschreibung: "Manchmal ist Akzeptanz die tiefste Form der Fürsorge. Frage dich: Was darf heute einfach so sein, wie es ist – ohne dass ich es verändern, reparieren oder verstehen muss?", kategorie: "Selbstmitgefühl", dauer_minuten: 3, tageszeit: ["abend"] },
   { titel: "Innerer Kritiker und innerer Fürsorger", beschreibung: "Wenn eine selbstkritische Stimme laut wird: Welche andere innere Stimme könnte antworten – fürsorglich, weise, sanft? Was würde sie sagen? Gib ihr Raum.", kategorie: "Selbstmitgefühl", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
   { titel: "Fehler als Menschlichkeit", beschreibung: "Gab es heute einen Moment, in dem du dir gegenüber hart warst? Frage dich: Wäre das auch einem anderen Menschen passiert? Was würde ich ihm sagen? Fehler sind kein Defekt – sie sind Menschlichkeit.", kategorie: "Selbstmitgefühl", dauer_minuten: 3, tageszeit: ["abend"] },
-  { titel: "Abendlicher Segen für dich selbst", beschreibung: "Zum Tagesabschluss: Formuliere einen kurzen Satz, der sich wie ein Segen für dich anfühlt – z.B. „Möge ich heute Nacht wirklich ausruhen.\" Oder: „Ich habe genug getan.\" Kein Muss – eine Einladung.", kategorie: "Selbstmitgefühl", dauer_minuten: 2, tageszeit: ["abend"] },
-  { titel: "Orientierung im Raum", beschreibung: "Drehe langsam den Kopf von links nach rechts – ganz langsam, wie eine Kamera, die den Raum scannt. Lass die Augen folgen. Spür, wie das Nervensystem sich beruhigt, wenn es „Alarm? Nein.\" registriert.", kategorie: "Polyvagal & Regulation", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
+  { titel: "Abendlicher Segen für dich selbst", beschreibung: "Zum Tagesabschluss: Formuliere einen kurzen Satz, der sich wie ein Segen für dich anfühlt – z.B. \"Möge ich heute Nacht wirklich ausruhen.\" Oder: \"Ich habe genug getan.\" Kein Muss – eine Einladung.", kategorie: "Selbstmitgefühl", dauer_minuten: 2, tageszeit: ["abend"] },
+  { titel: "Orientierung im Raum", beschreibung: "Drehe langsam den Kopf von links nach rechts – ganz langsam, wie eine Kamera, die den Raum scannt. Lass die Augen folgen. Spür, wie das Nervensystem sich beruhigt, wenn es \"Alarm? Nein.\" registriert.", kategorie: "Polyvagal & Regulation", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
   { titel: "Vagus-Summen", beschreibung: "Summe mit geschlossenem Mund laut genug, dass du die Vibration in Brust und Kehle spürst. Mindestens eine Minute. Der Vagusnerv verläuft durch die Kehle – Summen ist direkter Zugang.", kategorie: "Polyvagal & Regulation", dauer_minuten: 2, tageszeit: ["morgen", "mittag", "abend"] },
   { titel: "Kaltes Wasser – Tauchreflex", beschreibung: "Halte kurz die Handgelenke unter kaltes Wasser – oder spritz dir etwas Wasser ins Gesicht. Der Tauchreflex aktiviert sofort den Parasympathikus. Einfach, schnell, wirksam.", kategorie: "Polyvagal & Regulation", dauer_minuten: 1, tageszeit: ["mittag"] },
   { titel: "Sicherheitssignale suchen", beschreibung: "Schau dich im Raum um: Was signalisiert dir Sicherheit? Ein vertrautes Objekt, ein bestimmtes Licht, ein Geruch? Bleib einen Moment dabei. Das Nervensystem lernt durch Wiederholung von Sicherheit.", kategorie: "Polyvagal & Regulation", dauer_minuten: 2, tageszeit: ["morgen", "mittag", "abend"] },
   { titel: "Soziale Verbindung als Regulation", beschreibung: "Denke an einen Menschen, bei dem du dich wirklich sicher fühlst. Stelle dir ihr/sein Gesicht vor – besonders den freundlichen Gesichtsausdruck. Das soziale Nervensystem reagiert auch auf Vorstellung.", kategorie: "Polyvagal & Regulation", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
-  { titel: "Voo-Übung", beschreibung: "Atme tief ein – und beim Ausatmen mache einen langen, tiefen „Voooo\"-Laut, wie ein Schiff in der Ferne. Spür die Vibration im Bauch. Wiederhole 5 mal. Diese Übung stammt direkt aus der Polyvagalforschung.", kategorie: "Polyvagal & Regulation", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
+  { titel: "Voo-Übung", beschreibung: "Atme tief ein – und beim Ausatmen mache einen langen, tiefen \"Voooo\"-Laut, wie ein Schiff in der Ferne. Spür die Vibration im Bauch. Wiederhole 5 mal. Diese Übung stammt direkt aus der Polyvagalforschung.", kategorie: "Polyvagal & Regulation", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
   { titel: "Zittern erlauben", beschreibung: "Wenn du eine leichte Anspannung spürst: Erlaube deinem Körper, leicht zu zittern oder zu vibrieren – Hände, Beine, Kiefer. Tiere entladen Stress über Zittern. Wir haben verlernt, es zu erlauben.", kategorie: "Polyvagal & Regulation", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
   { titel: "Pendeln zwischen Ressource und Belastung", beschreibung: "Denke kurz an etwas Schwieriges – dann wechsle bewusst zu einer Ressource (ein schöner Ort, ein gutes Gefühl, ein Mensch). Pendele mehrmals. Das Nervensystem lernt: Ich kann wechseln.", kategorie: "Polyvagal & Regulation", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
   { titel: "Selbstmassage Kiefer", beschreibung: "Massiere sanft deinen Kiefer – Schläfen, Kiefergelenke, Unterkiefer. Öffne den Mund leicht und lass ihn wieder schließen. Der Kiefer ist eine der zentralen Spannungsspeicherstellen.", kategorie: "Polyvagal & Regulation", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
-  { titel: "Langer Ausatem mit Ton", beschreibung: "Atme ein – und beim langen Ausatem lasse einen beliebigen Ton heraus: „Aaaa\", „Oooo\", „Haaaa\". So lang wie möglich. Dann Stille. Dann wieder. Die Kombination aus Ausatmung und Ton ist einer der stärksten Vagus-Aktivatoren.", kategorie: "Polyvagal & Regulation", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
+  { titel: "Langer Ausatem mit Ton", beschreibung: "Atme ein – und beim langen Ausatem lasse einen beliebigen Ton heraus: \"Aaaa\", \"Oooo\", \"Haaaa\". So lang wie möglich. Dann Stille. Dann wieder. Die Kombination aus Ausatmung und Ton ist einer der stärksten Vagus-Aktivatoren.", kategorie: "Polyvagal & Regulation", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
   { titel: "Ausschütteln", beschreibung: "Steh auf und schüttele den ganzen Körper aus – Hände, Arme, Beine, Kopf, Schultern. 60 Sekunden. Keine Technik, nur Ausschütteln. Rhythmische Selbststimulation reguliert das Nervensystem sofort.", kategorie: "Bewegung & Rhythmus", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
   { titel: "Klopfen auf Körperrhythmus", beschreibung: "Klopfe mit den Handflächen abwechselnd auf Oberschenkel – links, rechts, links, rechts – in deinem eigenen Tempo. Variiere: schneller, langsamer. Spür, welcher Rhythmus sich heute richtig anfühlt.", kategorie: "Bewegung & Rhythmus", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
   { titel: "Gehen als Meditation", beschreibung: "Gehe fünf Minuten – bewusst langsamer als sonst. Spür jeden Schritt: Ferse, Sohle, Zehen. Kein Ziel, kein Tempo. Nur Gehen als vollständige Handlung.", kategorie: "Bewegung & Rhythmus", dauer_minuten: 5, tageszeit: ["morgen", "mittag"] },
@@ -2568,30 +2578,30 @@ const STANDARD_UEBUNGEN_DE = [
   { titel: "Ein Moment vollständiger Gegenwart", beschreibung: "Benenne innerlich: Was sehe ich? Was höre ich? Was spüre ich? Was rieche ich? Nur jetzt, nur hier. Dieser Moment ist vollständig – auch wenn er unspektakulär ist.", kategorie: "Stille & Meditation", dauer_minuten: 3, tageszeit: ["morgen", "mittag", "abend"] },
   { titel: "Stille nach dem Ton", beschreibung: "Summe einen Ton – und dann: Stille. Lausche in die Stille nach dem Ton. Was bleibt? Diese Stille nach dem Klang ist eine besondere Qualität – Resonanz klingt nach.", kategorie: "Stille & Meditation", dauer_minuten: 3, tageszeit: ["abend"] },
   { titel: "Atemstille finden", beschreibung: "Atme aus – und bleibe kurz in der Pause zwischen Ausatmen und Einatmen. Nicht anhalten, nur warten. Diese Schwelle ist ein Moment vollständiger Stille im Körper.", kategorie: "Stille & Meditation", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
-  { titel: "Nichts leisten", beschreibung: "Erlaube dir für zwei Minuten, nichts zu leisten, nichts zu verbessern, nichts zu planen. Einfach: Hier sein. Wenn die innere Stimme sagt „Du solltest…\" – freundlich nicken und bleiben.", kategorie: "Stille & Meditation", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
+  { titel: "Nichts leisten", beschreibung: "Erlaube dir für zwei Minuten, nichts zu leisten, nichts zu verbessern, nichts zu planen. Einfach: Hier sein. Wenn die innere Stimme sagt \"Du solltest…\" – freundlich nicken und bleiben.", kategorie: "Stille & Meditation", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
   { titel: "Innere Stille aufsuchen", beschreibung: "Stell dir vor, tief in dir gibt es einen Ort, der immer still ist – unberührt vom Lärm des Tages. Wie würde er aussehen, sich anfühlen? Besuche ihn kurz.", kategorie: "Stille & Meditation", dauer_minuten: 3, tageszeit: ["abend"] },
   { titel: "Mit geschlossenen Augen sitzen", beschreibung: "Schließe die Augen – und bleibe einfach. Keine Aufgabe. Keine Technik. Nur Augen zu, Innen sein. So lange wie es sich richtig anfühlt.", kategorie: "Stille & Meditation", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
   { titel: "Abend-Stille", beschreibung: "Bevor du schläfst: fünf Minuten ohne Bildschirm, ohne Musik, ohne Gespräch. Nur Stille. Lass den Tag sacken. Du musst ihn nicht verstehen – nur loslassen.", kategorie: "Stille & Meditation", dauer_minuten: 5, tageszeit: ["abend"] },
   { titel: "Kontakt-Moment bewusst gestalten", beschreibung: "Wähle heute ein Gespräch und sei darin vollständig präsent – kein Handy, kein Hintergedanke. Nur dieser Mensch, dieser Moment. Echte Verbindung braucht keine Zeit, nur Präsenz.", kategorie: "Kontakt & Verbindung", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
-  { titel: "Dankbarkeit aussprechen", beschreibung: "Sag oder schreibe heute jemandem etwas, wofür du dankbar bist – konkret und ehrlich. Nicht „danke für alles\", sondern „danke für genau diesen Moment, diesen Satz, diese Geste.\"", kategorie: "Kontakt & Verbindung", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
+  { titel: "Dankbarkeit aussprechen", beschreibung: "Sag oder schreibe heute jemandem etwas, wofür du dankbar bist – konkret und ehrlich. Nicht \"danke für alles\", sondern \"danke für genau diesen Moment, diesen Satz, diese Geste.\"", kategorie: "Kontakt & Verbindung", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
   { titel: "Verbindung in der Erinnerung", beschreibung: "Denke an einen Menschen, der dir gutgetan hat – auch wenn er nicht mehr da ist oder weit weg lebt. Spür die Verbindung. Verbundenheit existiert auch über Zeit und Raum.", kategorie: "Kontakt & Verbindung", dauer_minuten: 3, tageszeit: ["abend"] },
   { titel: "Eine ehrliche Nachricht", beschreibung: "Schreibe jemandem heute eine kurze, echte Nachricht – nicht Pflicht, sondern Kontakt. Was möchtest du wirklich sagen? Was hast du schon zu lange nicht gesagt?", kategorie: "Kontakt & Verbindung", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
   { titel: "Präsenz verschenken", beschreibung: "Wähle heute eine Begegnung und schenke ihr deine volle Aufmerksamkeit – dem Kassierer, dem Kollegen, der Nachbarin. Kein großer Aufwand. Nur: wirklich da sein.", kategorie: "Kontakt & Verbindung", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
   { titel: "Energie-Check", beschreibung: "Auf einer Skala von 0–10: Wie ist mein Energielevel gerade? Ohne Wertung. Dann: Was würde es um einen Punkt heben – realistisch und jetzt umsetzbar?", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
   { titel: "Powerpause", beschreibung: "Steh auf, strecke dich, atme dreimal tief durch – und dann: eine Minute Pause vom Bildschirm. Raus aus dem Modus. Kurze Aktivierungspausen verhindern Erschöpfungsakkumulation.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["mittag"] },
   { titel: "Freude aufspüren", beschreibung: "Was macht dir Freude – auch kleines? Ein Geruch, ein Bild, ein Gedanke, ein Lied? Bleibe kurz dabei. Freude ist kein Luxus – sie ist Nahrung für das Nervensystem.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
-  { titel: "Morgenaktivierung mit Stimme", beschreibung: "Gähne laut und ausgiebig – übertrieben, theatralisch. Dann ein kräftiges „Ha!\" Dann Arme strecken. Diese Sequenz weckt Körper und Stimme gleichzeitig.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["morgen"] },
+  { titel: "Morgenaktivierung mit Stimme", beschreibung: "Gähne laut und ausgiebig – übertrieben, theatralisch. Dann ein kräftiges \"Ha!\" Dann Arme strecken. Diese Sequenz weckt Körper und Stimme gleichzeitig.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["morgen"] },
   { titel: "Ressource aktivieren", beschreibung: "Denke an einen Moment, in dem du dich lebendig, wirksam und verbunden gefühlt hast. Wo warst du? Was hast du getan? Spür kurz nach, was das in deinem Körper macht.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
   { titel: "Lebendigkeit im Körper suchen", beschreibung: "Wo spürst du gerade am meisten Lebendigkeit in deinem Körper? Ein Kribbeln, Wärme, Leichtigkeit – auch das Kleinste zählt. Leg die Hand dorthin. Lass es sich ausbreiten.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
   { titel: "Was lässt mich aufleuchten?", beschreibung: "Frage dich: Was hat mich in der letzten Zeit – auch kurz – wirklich aufleuchten lassen? Nicht was sollte mich freuen, sondern was hat es tatsächlich getan? Bleib einen Moment bei diesem Bild.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 3, tageszeit: ["morgen", "abend"] },
   { titel: "Aktivierungsatem", beschreibung: "Kurze, kräftige Atemzüge durch die Nase – ein, aus, ein, aus – schnell und rhythmisch, 20 Mal. Dann tief einatmen, kurz halten, langsam ausatmen. Wach und lebendig im Körper.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["morgen"] },
-  { titel: "Freudenspeicher anzapfen", beschreibung: "Ruf dir eine Erinnerung auf, bei der du wirklich Freude gespürt hast – nicht „nett\", sondern lebendig. Was war es? Lass das Bild, den Klang, das Körpergefühl zurückkommen.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
+  { titel: "Freudenspeicher anzapfen", beschreibung: "Ruf dir eine Erinnerung auf, bei der du wirklich Freude gespürt hast – nicht \"nett\", sondern lebendig. Was war es? Lass das Bild, den Klang, das Körpergefühl zurückkommen.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
   { titel: "Spielimpuls", beschreibung: "Tu für zwei Minuten etwas Spielerisches – summe eine Melodie und erfinde spontan einen Text, klopfe einen Rhythmus, zeichne Kritzeleien, spring einmal hoch. Spielen ist keine Belohnung – es ist Grundnahrungsmittel.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
   { titel: "Lachen einladen", beschreibung: "Denke an etwas, das dich zuletzt wirklich zum Lachen gebracht hat – oder beginne einfach zu lachen, auch ohne Grund. Künstliches Lachen wird nach wenigen Sekunden fast immer echt. Der Körper weiß nicht, ob es gespielt ist.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
   { titel: "Strecken und Gähnen", beschreibung: "Strecke dich so ausgiebig wie möglich – Arme, Beine, Rücken. Gähne dabei theatralisch. Dann schüttle alles aus. Diese Kombination aktiviert den Körper und signalisiert gleichzeitig Entspannung – ein paradoxer Lebendigkeit-Booster.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["morgen", "mittag"] },
   { titel: "Natur-Kontakt", beschreibung: "Geh kurz nach draußen – oder öffne zumindest ein Fenster. Spür die Luft auf der Haut, hör die Außengeräusche, schau in den Himmel. Auch 2 Minuten Naturkontakt heben das Energielevel messbar.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
   { titel: "Lied das trägt", beschreibung: "Spiele ein Lied ab, das dich trägt – nicht beruhigt, sondern aufrecht hält. Das Lied das sagt: Du bist hier, du bist lebendig, es geht weiter. Hör es bewusst, nicht nebenbei.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 5, tageszeit: ["morgen", "mittag"] },
-  { titel: "Wozu bin ich heute lebendig?", beschreibung: "Wofür bin ich heute lebendig? Nicht „was muss ich tun\" – sondern: Was in mir will heute leben, wirken, begegnen? Eine Frage als Tagesstart, keine Antwort nötig.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["morgen"] },
+  { titel: "Wozu bin ich heute lebendig?", beschreibung: "Wofür bin ich heute lebendig? Nicht \"was muss ich tun\" – sondern: Was in mir will heute leben, wirken, begegnen? Eine Frage als Tagesstart, keine Antwort nötig.", kategorie: "Energie & Lebendigkeit", dauer_minuten: 2, tageszeit: ["morgen"] },
 
   // ── Körperwahrnehmung: PMR & Body-Scan ──────────────────────────────────
   { titel: "Progressive Muskelentspannung (kurz)", beschreibung: "Spanne nacheinander einzelne Muskelgruppen an – Hände, Arme, Schultern, Gesicht, Bauch, Beine – halte 5 Sekunden, dann loslassen. Spür den Unterschied zwischen Spannung und Entspannung. Diese Technik nach Jacobson ist wissenschaftlich gut belegt.", kategorie: "Körperwahrnehmung", dauer_minuten: 7, tageszeit: ["abend"] },
@@ -2614,7 +2624,7 @@ const STANDARD_UEBUNGEN_DE = [
   { titel: "Ich-Botschaft formulieren", beschreibung: "Wähle eine Situation, die dich bewegt. Formuliere sie als Ich-Botschaft nach GfK: Beobachtung – Gefühl – Bedürfnis – Bitte. Schreibe die vier Schritte auf. Nicht um sie abzuschicken – sondern um Klarheit zu gewinnen.", kategorie: "Schreiben & Ausdruck", dauer_minuten: 5, tageszeit: ["abend"] },
   { titel: "Drei-Sätze-Tagebuch", beschreibung: "Beende den Tag mit exakt drei Sätzen: Was war heute da? Was hat mich bewegt? Was nehme ich mit? Keine langen Texte – nur drei ehrliche Sätze. Regelmäßiges Kurzschreiben stärkt das Selbstgewahrsein nachweislich.", kategorie: "Schreiben & Ausdruck", dauer_minuten: 3, tageszeit: ["abend"] },
   { titel: "Ungesendeter Brief", beschreibung: "Gibt es etwas, das du jemandem sagen möchtest – aber (noch) nicht kannst oder willst? Schreibe es auf – ohne es abzuschicken. Allein das Schreiben entlädt. Du kannst den Brief danach zerreißen, aufbewahren oder verändern.", kategorie: "Schreiben & Ausdruck", dauer_minuten: 10, tageszeit: ["abend"] },
-  { titel: "Satzanfänge vollenden", beschreibung: "Schreibe spontan weiter: „Ich merke, dass ich… / Ich brauche gerade… / Was mich überrascht… / Was ich mir wünsche… / Was ich loslassen darf…\" Kein Nachdenken – einfach schreiben, was als erstes kommt. Freies Schreiben umgeht den inneren Zensor.", kategorie: "Schreiben & Ausdruck", dauer_minuten: 5, tageszeit: ["morgen", "abend"] },
+  { titel: "Satzanfänge vollenden", beschreibung: "Schreibe spontan weiter: \"Ich merke, dass ich… / Ich brauche gerade… / Was mich überrascht… / Was ich mir wünsche… / Was ich loslassen darf…\" Kein Nachdenken – einfach schreiben, was als erstes kommt. Freies Schreiben umgeht den inneren Zensor.", kategorie: "Schreiben & Ausdruck", dauer_minuten: 5, tageszeit: ["morgen", "abend"] },
   { titel: "Das Gute festhalten", beschreibung: "Schreibe heute Abend drei konkrete Momente auf, die gut waren – auch kleine: ein Lächeln, ein Atemzug Frischluft, ein erledigter Satz. Nicht um schönzureden – sondern um das Positive im Gehirn zu verankern. Positive Neuroplastizität braucht bewusste Aufmerksamkeit.", kategorie: "Schreiben & Ausdruck", dauer_minuten: 3, tageszeit: ["abend"] },
 
   // ── Schwierige Momente ───────────────────────────────────────────────────
@@ -2622,11 +2632,10 @@ const STANDARD_UEBUNGEN_DE = [
   { titel: "STOP-Pause", beschreibung: "S – Stoppe, was du tust. T – Take a breath: ein tiefer Atemzug. O – Observe: Was nehme ich gerade wahr – im Körper, im Kopf, in der Situation? P – Proceed: Was ist jetzt der nächste sinnvolle Schritt? Eine Minute, die alles verändert.", kategorie: "Schwierige Momente", dauer_minuten: 2, tageszeit: ["morgen", "mittag", "abend"] },
   { titel: "Atem verlängern bei Stress", beschreibung: "Wenn du dich angespannt oder getriggert fühlst: Atme 4 Sekunden ein – 2 halten – 6 Sekunden aus. Der verlängerte Ausatem aktiviert sofort den Parasympathikus. Wiederhole 5 mal. Auch in schwierigen Gesprächen unbemerkt möglich.", kategorie: "Schwierige Momente", dauer_minuten: 2, tageszeit: ["morgen", "mittag", "abend"] },
   { titel: "Sicherheitsanker aktivieren", beschreibung: "Denke an einen Ort, eine Person oder einen Gegenstand, bei dem du dich sicher fühlst. Vergegenwärtige ihn so konkret wie möglich – Bild, Geruch, Klang, Gefühl. Lass den Körper ankommen. Dieser innere Anker ist immer verfügbar.", kategorie: "Schwierige Momente", dauer_minuten: 2, tageszeit: ["morgen", "mittag", "abend"] },
-  { titel: "Gefühl benennen entschärft es", beschreibung: "Wenn ein starkes Gefühl auftaucht: Benenne es innerlich so genau wie möglich. Nicht „schlecht\" – sondern: Angst? Scham? Ohnmacht? Wut? Neurobiologisch reduziert das präzise Benennen von Gefühlen deren Intensität – der präfrontale Kortex reguliert die Amygdala.", kategorie: "Schwierige Momente", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
+  { titel: "Gefühl benennen entschärft es", beschreibung: "Wenn ein starkes Gefühl auftaucht: Benenne es innerlich so genau wie möglich. Nicht \"schlecht\" – sondern: Angst? Scham? Ohnmacht? Wut? Neurobiologisch reduziert das präzise Benennen von Gefühlen deren Intensität – der präfrontale Kortex reguliert die Amygdala.", kategorie: "Schwierige Momente", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
   { titel: "Körper erden bei Überwältigung", beschreibung: "Drücke fest beide Füße in den Boden. Lege die Hände flach auf die Oberschenkel. Spür das Gewicht des eigenen Körpers. Atme langsam aus. Wiederhole: drücken, spüren, ausatmen. Erdung stoppt die Eskalation des Nervensystems.", kategorie: "Schwierige Momente", dauer_minuten: 2, tageszeit: ["morgen", "mittag", "abend"] },
   { titel: "Trigger-Pause einlegen", beschreibung: "Wenn du merkst, dass du getriggert bist: Geh kurz aus der Situation heraus – einen Schritt zurücktreten, Wasser holen, Fenster öffnen. Signalisiere dir selbst: Ich bin in Sicherheit. Was ist hier wirklich gerade los – und was ist alte Geschichte?", kategorie: "Schwierige Momente", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
-  { titel: "Selbst-Mitgefühl im Schmerz", beschreibung: "Wenn es gerade schwer ist: Leg eine Hand aufs Herz. Sag dir innerlich: „Das ist ein schwieriger Moment. Schmerz gehört zum Menschsein. Ich bin nicht allein damit.\" Drei Sätze. Drei Atemzüge. Mitgefühl mit sich selbst ist keine Schwäche.", kategorie: "Schwierige Momente", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
-,
+  { titel: "Selbst-Mitgefühl im Schmerz", beschreibung: "Wenn es gerade schwer ist: Leg eine Hand aufs Herz. Sag dir innerlich: \"Das ist ein schwieriger Moment. Schmerz gehört zum Menschsein. Ich bin nicht allein damit.\" Drei Sätze. Drei Atemzüge. Mitgefühl mit sich selbst ist keine Schwäche.", kategorie: "Schwierige Momente", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
   { titel: "Stille-Minute", beschreibung: "Stelle einen Timer auf eine Minute. Tu absolut nichts – kein Scrollen, kein Zappeln, keine Aufgabe. Einfach still sein. Beobachte, was auftaucht.", kategorie: "Stille & Meditation", dauer_minuten: 1, tageszeit: ["morgen", "mittag", "abend"] },
   { titel: "Offenes Gewahrsein", beschreibung: "Lass deine Aufmerksamkeit sich weiten – Geräusche nah und fern, Körperempfindungen, den Raum um dich herum. Nichts festhalten, nichts ausschließen. Einfach alles sein lassen, wie es ist.", kategorie: "Stille & Meditation", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
   { titel: "Wärme für eine schwierige Person", beschreibung: "Denke an jemanden, mit dem es gerade schwierig ist. Ohne sein Verhalten zu entschuldigen: Kannst du sein Leiden sehen? Wünsche ihm innerlich Frieden – nicht für ihn, sondern als Übung für dich.", kategorie: "Kontakt & Verbindung", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
@@ -2649,7 +2658,8 @@ const STANDARD_UEBUNGEN_DE = [
   { titel: "STOP-Übung", beschreibung: "S – Stoppe, was du gerade tust. T – Atme tief ein. O – Beobachte: Was passiert gerade in deinem Körper, deinen Gedanken, deinen Gefühlen? P – Fahre mit Absicht fort.", kategorie: "Schwierige Momente", dauer_minuten: 3, tageszeit: ["morgen"] },
   { titel: "Den Sturm benennen", beschreibung: "Wenn du dich überwältigt fühlst: Benenne, was gerade passiert – Ich fühle… weil… und was ich brauche ist… Das Benennen nimmt dem Sturm seine Kraft.", kategorie: "Schwierige Momente", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
   { titel: "Kaltwasser-Reset", beschreibung: "Halte die Handgelenke 30 Sekunden unter kaltes Wasser. Oder benetze dein Gesicht. Kaltes Wasser aktiviert den Tauchreflex – die Herzrate verlangsamt sich, das Nervensystem beruhigt sich.", kategorie: "Schwierige Momente", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
-  { titel: "Trigger-Pause", beschreibung: "Wenn du merkst, dass du getriggert bist: Tritt kurz aus der Situation heraus – hol Wasser, öffne ein Fenster, atme drei Mal lang aus. Dann kehre zurück.", kategorie: "Schwierige Momente", dauer_minuten: 3, tageszeit: ["mittag", "abend"] }
+  { titel: "Trigger-Pause", beschreibung: "Wenn du merkst, dass du getriggert bist: Tritt kurz aus der Situation heraus – hol Wasser, öffne ein Fenster, atme drei Mal lang aus. Dann kehre zurück.", kategorie: "Schwierige Momente", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
+  { titel: "Mantra-Atem", beschreibung: "Wähle ein Wort oder einen kurzen Satz, der dich trägt – \"Ich bin hier\", \"Alles ist gut\", \"Frieden\". Verbinde es mit deinem Atem: beim Einatmen die erste Silbe, beim Ausatmen die zweite. Lass den Klang innen wirken.", kategorie: "Stille & Meditation", dauer_minuten: 5, tageszeit: ["morgen", "abend"] }
 ];
 
 // Aktive Pools je nach Sprache
@@ -3218,6 +3228,28 @@ function holeOderErstelleVorschlagLokal(tageszeit, alleUebungen) {
   rotation[tageszeit] = [...(rotation[tageszeit] || []), gewaehlt.id];
   lsSet('exercise_rotation', rotation);
   return { exerciseId: gewaehlt.id, kommentar: '', uebung: gewaehlt };
+}
+
+
+function setzeUebungenZurueck() {
+  const msg = SPRACHE === 'en'
+    ? 'This will reset all exercises to the current standard pool.\n\nYour personal data (check-ins, journal, streaks) will be kept.\n\nContinue?'
+    : 'Dadurch werden alle Übungen auf den aktuellen Standard-Pool zurückgesetzt.\n\nDeine persönlichen Daten (Check-ins, Journal, Streaks) bleiben erhalten.\n\nFortfahren?';
+  if (!confirm(msg)) return;
+
+  const pool = SPRACHE === 'en' ? STANDARD_UEBUNGEN_EN : STANDARD_UEBUNGEN_DE;
+  const neu = pool.map((u, i) => ({
+    id: genId(), ...u, aktiv: true, reihenfolge: i
+  }));
+  lsSet('exercises', neu);
+  lsSet('exercise_rotation', { morgen: [], mittag: [], abend: [] });
+  lsSet('daily_suggestions', {});
+
+  const successMsg = SPRACHE === 'en'
+    ? '✓ Exercise pool reset. The app will reload now.'
+    : '✓ Übungspool zurückgesetzt. Die App wird neu geladen.';
+  zeigToast(successMsg);
+  setTimeout(() => location.reload(), 1200);
 }
 
 function speichereVorschlagKommentar(tageszeit) {
@@ -4056,8 +4088,8 @@ function zeigeSyncModal_ORIG(modus) {
       <div style="background:var(--bg2);border-radius:8px;padding:12px;margin-bottom:16px;font-size:12px;color:var(--text2);line-height:1.6">
         <strong>So funktioniert es:</strong><br>
         1. Speicherort einmalig festlegen<br>
-        2. Nach jeder Nutzung „↑ Speichern" drücken<br>
-        3. Auf anderem Gerät: App öffnen → „↓ Laden"<br>
+        2. Nach jeder Nutzung \"↑ Speichern\" drücken<br>
+        3. Auf anderem Gerät: App öffnen → \"↓ Laden\"<br>
         4. Deine Daten sind überall verfügbar ✓
       </div>
       <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
@@ -4404,7 +4436,7 @@ const APP_UPDATES = [
       'Streak-Anzeige: Tage in Folge mit 7-Tage-Punktereihe im Heute-Tab',
       'Übungsvorschläge: ↻ Button für neue Übung pro Tageszeit',
       'Verlauf: Wochenübersicht als Stimmungs-Balkengrafik',
-      'Übungen-Tab: Filter „⭐ Favoriten"',
+      'Übungen-Tab: Filter \"⭐ Favoriten\"',
     ],
     migration: (state) => state
   },
@@ -4429,7 +4461,7 @@ const APP_UPDATES = [
   {
     version: '1.6',
     changelog: [
-      '„?"-Hilfe-Button im Header',
+      '\"?\"-Hilfe-Button im Header',
       'Vollständige Anleitung für alle Reiter integriert',
       'Troubleshooting: Installation, Updates, Sync, Datenverlust',
     ],
@@ -4438,11 +4470,11 @@ const APP_UPDATES = [
   {
     version: '1.7',
     changelog: [
-      'Neue Kategorie: „Schwierige Momente" – 8 Übungen für akuten Stress, Trigger und schwierige Situationen',
-      'Neue Kategorie: „Schreiben & Ausdruck" – 6 Übungen (Briefe, Ich-Botschaften, freies Schreiben)',
-      'Neue Kategorie: „Ressourcen & Möglichkeiten" – 8 Übungen (Ressourcenaktivierung, Zustandsarbeit, Lösungsfokus)',
-      'PMR & Body-Scan in „Körperwahrnehmung" integriert – 4 neue Tiefenentspannungsübungen',
-      '„Hypnosystemik" umbenannt in „Ressourcen & Möglichkeiten"',
+      'Neue Kategorie: \"Schwierige Momente\" – 8 Übungen für akuten Stress, Trigger und schwierige Situationen',
+      'Neue Kategorie: \"Schreiben & Ausdruck\" – 6 Übungen (Briefe, Ich-Botschaften, freies Schreiben)',
+      'Neue Kategorie: \"Ressourcen & Möglichkeiten\" – 8 Übungen (Ressourcenaktivierung, Zustandsarbeit, Lösungsfokus)',
+      'PMR & Body-Scan in \"Körperwahrnehmung\" integriert – 4 neue Tiefenentspannungsübungen',
+      '\"Hypnosystemik\" umbenannt in \"Ressourcen & Möglichkeiten\"',
     ],
     migration: (state) => state
   },
@@ -4451,7 +4483,7 @@ const APP_UPDATES = [
     changelog: [
       'Neue Übungen automatisch einspielt: Schwierige Momente, Schreiben & Ausdruck, Ressourcen & Möglichkeiten, PMR & Body-Scan',
       'Pool-Merge: Neue Standard-Übungen werden ohne Duplikate zu bestehenden hinzugefügt',
-      '„Hypnosystemik"-Einträge werden automatisch in „Ressourcen & Möglichkeiten" umbenannt',
+      '\"Hypnosystemik\"-Einträge werden automatisch in \"Ressourcen & Möglichkeiten\" umbenannt',
     ],
     migration: (state) => {
       // 1. Kategorie umbenennen (Altdaten bereinigen)
@@ -4476,6 +4508,89 @@ const APP_UPDATES = [
       return state;
     }
   },
+  {
+    version: '2.1',
+    changelog: [
+      'Sprachumschaltung DE↔EN: Übungen werden jetzt zuverlässig übersetzt (Bugfix)',
+      'Alle 126 Übungspaare DE/EN sind jetzt vollständig synchronisiert',
+    ],
+    migration: (state) => state
+  },
+  {
+    version: '2.2',
+    changelog: [
+      '24 neue Übungen: Stille & Meditation, Kontakt & Verbindung, Ressourcen, Schreiben, Schwierige Momente',
+      'Darunter: Stille-Minute, Wärme für eine schwierige Person, Zukünftiges Ich, Drei gute Dinge, STOP-Übung, Mantra-Atem u.v.m.',
+      'DE/EN-Pool vollständig bereinigt: alle Übungspaare sind jetzt echte Übersetzungen',
+      'Sprachumschaltung funktioniert jetzt auch bei wiederholtem Wechsel korrekt',
+    ],
+    migration: (state) => {
+      const neueUebungen = STANDARD_UEBUNGEN.filter(u =>
+        [
+        'Stille-Minute',
+        'Offenes Gewahrsein',
+        'Wärme für eine schwierige Person',
+        'Dankbarkeit für eine Person',
+        'Zugehörigkeit spüren',
+        'Ein echtes Gespräch',
+        'Energie-Inventur',
+        'Stärke als Ressource',
+        'Was ist möglich?',
+        'Lösungsfokus-Pause',
+        'Ressourcen-Netzwerk',
+        'Zukünftiges Ich',
+        'Umdeuten',
+        'Was hat heute funktioniert?',
+        'Stärken-Inventur',
+        'Bewusstseinsstrom',
+        'Ich-Aussagen üben',
+        'Drei gute Dinge',
+        'Morgenseiten (Mini)',
+        'STOP-Übung',
+        'Den Sturm benennen',
+        'Kaltwasser-Reset',
+        'Trigger-Pause',
+        'Mantra-Atem'
+        ].includes(u.titel)
+      );
+      if (state.exercises) {
+        neueUebungen.forEach(u => {
+          if (!state.exercises.find(x => x.titel === u.titel)) {
+            state.exercises.push({ id: genId(), ...u, aktiv: true });
+          }
+        });
+      }
+      return state;
+    }
+  },
+  {
+    version: '2.3',
+    changelog: [
+      'Kategorie-Bug behoben: EN-Übungen hatten englische Kategorienamen als internen Schlüssel',
+      'Neue Funktion: Übungen zurücksetzen (Einstellungen → Daten) – persönliche Daten bleiben erhalten',
+      'Kategorie-Fix wird automatisch auf vorhandene Daten angewendet (Migration)',
+    ],
+    migration: (state) => {
+      const katFixMap = {
+        'Movement & Rhythm': 'Bewegung & Rhythmus',
+        'Movement & Vitality': 'Bewegung & Rhythmus',
+        'Stillness & Meditation': 'Stille & Meditation',
+        'Contact & Connection': 'Kontakt & Verbindung',
+        'Energy & Vitality': 'Energie & Lebendigkeit',
+        'Body Awareness': 'Körperwahrnehmung',
+        'Difficult Moments': 'Schwierige Momente',
+        'Resources & Possibilities': 'Ressourcen & Möglichkeiten',
+        'Writing & Expression': 'Schreiben & Ausdruck',
+      };
+      if (state.exercises) {
+        state.exercises = state.exercises.map(u => ({
+          ...u,
+          kategorie: katFixMap[u.kategorie] || u.kategorie
+        }));
+      }
+      return state;
+    }
+  },
   // VORLAGE FÜR NÄCHSTES UPDATE:
   // {
   //   version: '1.3',
@@ -4497,7 +4612,7 @@ const APP_UPDATES = [
   {
     version: '1.9',
     changelog: [
-      'Sync-Fix: „↑ Speichern" öffnet jetzt korrekt den Schreib-Dialog (statt Lese-Dialog)',
+      'Sync-Fix: \"↑ Speichern\" öffnet jetzt korrekt den Schreib-Dialog (statt Lese-Dialog)',
       'Sync-Erinnerung: Erklärung warum die Datei pro Sitzung erneut gewählt werden muss',
       'Hilfetext Sync: Klarere Erklärung der Browser-Sicherheitsbeschränkung',
     ],
@@ -4506,7 +4621,7 @@ const APP_UPDATES = [
   {
     version: '2.0',
     changelog: [
-      'Sync: „Zurücksetzen"-Button – Speicherort vergessen ohne Datei zu löschen',
+      'Sync: \"Zurücksetzen\"-Button – Speicherort vergessen ohne Datei zu löschen',
       'Verlauf: Hinweis wenn kein Sync eingerichtet und Tag leer ist',
       'Übungen: Filter-Zähler zeigt Anzahl gefilterter Übungen',
       'Verlauf: Tab springt beim Öffnen immer auf den heutigen Tag',
@@ -4561,18 +4676,18 @@ function renderHilfeInhalt() {
       <div class="hilfe-h3">💻 PC – Chrome ${de ? 'oder' : 'or'} Edge</div>
       <div class="hilfe-schritt"><div class="hilfe-schritt-nr">1</div><div>${de ? 'Öffne' : 'Open'} <strong>innenpause.singende-krankenhaeuser.de</strong> ${de ? 'im Browser' : 'in your browser'}</div></div>
       <div class="hilfe-schritt"><div class="hilfe-schritt-nr">2</div><div>${de
-        ? 'Klicke in der Adressleiste auf das <strong>Install-Symbol</strong> (⊕) oder über das Menü (⋮) → „App installieren"'
+        ? 'Klicke in der Adressleiste auf das <strong>Install-Symbol</strong> (⊕) oder über das Menü (⋮) → \"App installieren\"'
         : 'Click the <strong>install icon</strong> (⊕) in the address bar, or via the menu (⋮) → "Install app"'}</div></div>
       <div class="hilfe-schritt"><div class="hilfe-schritt-nr">3</div><div>${de
-        ? '„Installieren" bestätigen → App erscheint im Startmenü'
+        ? '\"Installieren\" bestätigen → App erscheint im Startmenü'
         : 'Confirm "Install" → app appears in the start menu'}</div></div>
 
       <div class="hilfe-h3">📱 Android – Chrome</div>
       <div class="hilfe-schritt"><div class="hilfe-schritt-nr">1</div><div>${de ? 'Öffne die App-Adresse in Chrome' : 'Open the app address in Chrome'}</div></div>
       <div class="hilfe-schritt"><div class="hilfe-schritt-nr">2</div><div>${de
-        ? 'Tippe auf das Menü (⋮) → „Zum Startbildschirm hinzufügen"'
+        ? 'Tippe auf das Menü (⋮) → \"Zum Startbildschirm hinzufügen\"'
         : 'Tap the menu (⋮) → "Add to Home screen"'}</div></div>
-      <div class="hilfe-schritt"><div class="hilfe-schritt-nr">3</div><div>${de ? '„Hinzufügen" bestätigen' : 'Confirm "Add"'}</div></div>
+      <div class="hilfe-schritt"><div class="hilfe-schritt-nr">3</div><div>${de ? '\"Hinzufügen\" bestätigen' : 'Confirm "Add"'}</div></div>
 
       <div class="hilfe-h3">🍎 iPhone / iPad – Safari</div>
       <div class="hilfe-schritt"><div class="hilfe-schritt-nr">1</div><div>${de
@@ -4582,7 +4697,7 @@ function renderHilfeInhalt() {
         ? 'Tippe auf das Teilen-Symbol <strong>⎦↑⎤</strong> unten in der Leiste'
         : 'Tap the Share icon <strong>⎦↑⎤</strong> at the bottom of the screen'}</div></div>
       <div class="hilfe-schritt"><div class="hilfe-schritt-nr">3</div><div>${de
-        ? '„Zum Home-Bildschirm" → „Hinzufügen"'
+        ? '\"Zum Home-Bildschirm\" → \"Hinzufügen\"'
         : '"Add to Home Screen" → "Add"'}</div></div>
       <div class="hilfe-box info">${de
         ? 'Auf dem iPhone muss zwingend Safari verwendet werden – Chrome unterstützt die PWA-Installation auf iOS nicht.'
@@ -4622,7 +4737,7 @@ function renderHilfeInhalt() {
         : 'For each time of day (morning, midday, evening) there is a collapsible suggestion. You can:'}</div>
       <div class="hilfe-box tipp">
         ${de
-          ? '• Die Übung mit ⭐ bewerten (1–5 Sterne)<br>• Mit <strong>↻</strong> eine andere Übung anfordern<br>• Die Übung mit „+ Heute planen" zum heutigen Tag hinzufügen'
+          ? '• Die Übung mit ⭐ bewerten (1–5 Sterne)<br>• Mit <strong>↻</strong> eine andere Übung anfordern<br>• Die Übung mit \"+ Heute planen\" zum heutigen Tag hinzufügen'
           : '• Rate the exercise with ⭐ (1–5 stars)<br>• Request a different exercise with <strong>↻</strong><br>• Add the exercise to today with "+ Plan for today"'}
       </div>
 
@@ -4663,7 +4778,7 @@ function renderHilfeInhalt() {
 
       <div class="hilfe-h3">${de ? 'Speichern' : 'Saving'}</div>
       <div class="hilfe-p">${de
-        ? 'Tippe auf „Speichern" am Ende des jeweiligen Formulars. Der Check-in kann jederzeit überschrieben werden – es zählt immer der letzte gespeicherte Stand.'
+        ? 'Tippe auf \"Speichern\" am Ende des jeweiligen Formulars. Der Check-in kann jederzeit überschrieben werden – es zählt immer der letzte gespeicherte Stand.'
         : 'Tap "Save" at the bottom of the form. A check-in can be overwritten at any time – only the last saved version counts.'}</div>
 
       <div class="hilfe-box tipp">${de
@@ -4692,7 +4807,7 @@ function renderHilfeInhalt() {
 
       <div class="hilfe-h3">${de ? 'Eigene Übungen' : 'Custom exercises'}</div>
       <div class="hilfe-p">${de
-        ? 'Mit „+ Neue Übung hinzufügen" kannst du eigene Übungen anlegen – mit Titel, Beschreibung, Kategorie, Dauer und Tageszeit-Zuordnung.'
+        ? 'Mit \"+ Neue Übung hinzufügen\" kannst du eigene Übungen anlegen – mit Titel, Beschreibung, Kategorie, Dauer und Tageszeit-Zuordnung.'
         : 'Use "+ Add new exercise" to create your own exercises – with title, description, category, duration and time-of-day assignment.'}</div>
 
       <div class="hilfe-h3">${de ? 'Favoriten & Bewertung' : 'Favourites & rating'}</div>
@@ -4753,7 +4868,7 @@ function renderHilfeInhalt() {
 
       <div class="hilfe-h3">${de ? 'Übungspool' : 'Exercise pool'}</div>
       <div class="hilfe-p">${de
-        ? '„Standard-Pool laden" importiert 120 vorgefertigte Übungen – ohne vorhandene zu überschreiben. Nützlich nach einem Neustart der App.'
+        ? '\"Standard-Pool laden\" importiert 120 vorgefertigte Übungen – ohne vorhandene zu überschreiben. Nützlich nach einem Neustart der App.'
         : '"Load default pool" imports 120 ready-made exercises – without overwriting existing ones. Useful after resetting the app.'}</div>
 
       <div class="hilfe-h3">${de ? 'Daten' : 'Data'}</div>
@@ -4765,12 +4880,12 @@ function renderHilfeInhalt() {
 
       <div class="hilfe-h3">${de ? 'Synchronisierung' : 'Synchronisation'}</div>
       <div class="hilfe-p">${de
-        ? '→ Siehe eigenen Hilfe-Bereich „🔄 Sync"'
+        ? '→ Siehe eigenen Hilfe-Bereich \"🔄 Sync\"'
         : '→ See the separate help section "🔄 Sync"'}</div>
 
       <div class="hilfe-h3">${de ? 'Version' : 'Version'}</div>
       <div class="hilfe-p">${de
-        ? 'Zeigt die aktuell installierte App-Version. Mit „Prüfen" kannst du manuell nach einem Update suchen.'
+        ? 'Zeigt die aktuell installierte App-Version. Mit \"Prüfen\" kannst du manuell nach einem Update suchen.'
         : 'Shows the currently installed app version. Use "Check" to manually search for an update.'}</div>
     </div>
 
@@ -4783,21 +4898,21 @@ function renderHilfeInhalt() {
 
       <div class="hilfe-h3">${de ? 'Einmalig einrichten' : 'Set up once'}</div>
       <div class="hilfe-schritt"><div class="hilfe-schritt-nr">1</div><div>${de
-        ? 'Einstellungen → Synchronisierung → „Einrichten"'
+        ? 'Einstellungen → Synchronisierung → \"Einrichten\"'
         : 'Settings → Synchronisation → "Set up"'}</div></div>
       <div class="hilfe-schritt"><div class="hilfe-schritt-nr">2</div><div>${de
-        ? '„Neuen Speicherort wählen" → navigiere zu deinem OneDrive-Ordner'
+        ? '\"Neuen Speicherort wählen\" → navigiere zu deinem OneDrive-Ordner'
         : '"Choose new location" → navigate to your OneDrive folder'}</div></div>
       <div class="hilfe-schritt"><div class="hilfe-schritt-nr">3</div><div>${de
-        ? 'Dateiname bestätigen (z.B. „innenpause-sync.json") → Speichern'
+        ? 'Dateiname bestätigen (z.B. \"innenpause-sync.json\") → Speichern'
         : 'Confirm the file name (e.g. "innenpause-sync.json") → Save'}</div></div>
       <div class="hilfe-schritt"><div class="hilfe-schritt-nr">4</div><div>${de
-        ? 'Auf dem zweiten Gerät: „Vorhandene Sync-Datei öffnen" → dieselbe Datei aus dem Cloud-Ordner wählen'
+        ? 'Auf dem zweiten Gerät: \"Vorhandene Sync-Datei öffnen\" → dieselbe Datei aus dem Cloud-Ordner wählen'
         : 'On the second device: "Open existing sync file" → select the same file from the cloud folder'}</div></div>
 
       <div class="hilfe-h3">${de ? 'Tägliche Nutzung' : 'Daily use'}</div>
       <div class="hilfe-p">${de
-        ? 'Beim App-Start erscheint einmal täglich eine Erinnerung: „Möchtest du laden oder speichern?" – ein Tipp reicht.'
+        ? 'Beim App-Start erscheint einmal täglich eine Erinnerung: \"Möchtest du laden oder speichern?\" – ein Tipp reicht.'
         : 'When the app starts, a reminder appears once a day: "Do you want to load or save?" – one tap is enough.'}</div>
       <div class="hilfe-box info">
         ${de
@@ -4810,7 +4925,7 @@ function renderHilfeInhalt() {
 
       <div class="hilfe-h3">iPhone / Safari</div>
       <div class="hilfe-p">${de
-        ? 'Auf dem iPhone steht die automatische Sync-Funktion nicht zur Verfügung (technische Einschränkung von Safari). Hier nutze bitte den manuellen Export/Import unter „Daten".'
+        ? 'Auf dem iPhone steht die automatische Sync-Funktion nicht zur Verfügung (technische Einschränkung von Safari). Hier nutze bitte den manuellen Export/Import unter \"Daten\".'
         : 'On iPhone, the automatic sync function is not available (technical limitation of Safari). Please use the manual export/import under "Data".'}</div>
     </div>
 
@@ -4824,7 +4939,7 @@ function renderHilfeInhalt() {
         : 'The browser has cached an older version. Solution:'}</div>
       <div class="hilfe-box info">
         ${de
-          ? '<strong>PC – Chrome/Edge:</strong><br><span class="hilfe-kbd">Strg</span> + <span class="hilfe-kbd">Shift</span> + <span class="hilfe-kbd">R</span> (Hard Refresh)<br><br>Falls das nicht hilft:<br><span class="hilfe-kbd">F12</span> → Anwendung → Service Worker → „Registrierung aufheben" → <span class="hilfe-kbd">F5</span><br><br><strong>Android – Chrome:</strong><br>Menü → Einstellungen → Datenschutz → Browserdaten löschen → nur „Cache" → Löschen<br><br><strong>iPhone – Safari:</strong><br>iOS-Einstellungen → Safari → „Verlauf und Websitedaten löschen"'
+          ? '<strong>PC – Chrome/Edge:</strong><br><span class="hilfe-kbd">Strg</span> + <span class="hilfe-kbd">Shift</span> + <span class="hilfe-kbd">R</span> (Hard Refresh)<br><br>Falls das nicht hilft:<br><span class="hilfe-kbd">F12</span> → Anwendung → Service Worker → \"Registrierung aufheben\" → <span class="hilfe-kbd">F5</span><br><br><strong>Android – Chrome:</strong><br>Menü → Einstellungen → Datenschutz → Browserdaten löschen → nur \"Cache\" → Löschen<br><br><strong>iPhone – Safari:</strong><br>iOS-Einstellungen → Safari → \"Verlauf und Websitedaten löschen\"'
           : '<strong>PC – Chrome/Edge:</strong><br><span class="hilfe-kbd">Ctrl</span> + <span class="hilfe-kbd">Shift</span> + <span class="hilfe-kbd">R</span> (Hard Refresh)<br><br>If that does not help:<br><span class="hilfe-kbd">F12</span> → Application → Service Worker → "Unregister" → <span class="hilfe-kbd">F5</span><br><br><strong>Android – Chrome:</strong><br>Menu → Settings → Privacy → Clear browsing data → Cache only → Clear<br><br><strong>iPhone – Safari:</strong><br>iOS Settings → Safari → "Clear History and Website Data"'}
       </div>
 
@@ -4850,13 +4965,13 @@ function renderHilfeInhalt() {
 
       <div class="hilfe-h3">${de ? 'App auf neuem Gerät einrichten' : 'Set up app on a new device'}</div>
       <div class="hilfe-schritt"><div class="hilfe-schritt-nr">1</div><div>${de
-        ? 'Auf dem alten Gerät: Einstellungen → Daten → „Exportieren" → Datei herunterladen'
+        ? 'Auf dem alten Gerät: Einstellungen → Daten → \"Exportieren\" → Datei herunterladen'
         : 'On the old device: Settings → Data → "Export" → download the file'}</div></div>
       <div class="hilfe-schritt"><div class="hilfe-schritt-nr">2</div><div>${de
         ? 'Datei per E-Mail, AirDrop oder Cloud-Speicher aufs neue Gerät übertragen'
         : 'Transfer the file to the new device via email, AirDrop or cloud storage'}</div></div>
       <div class="hilfe-schritt"><div class="hilfe-schritt-nr">3</div><div>${de
-        ? 'Auf dem neuen Gerät: App öffnen → Lizenzschlüssel eingeben → Einstellungen → Daten → „Importieren"'
+        ? 'Auf dem neuen Gerät: App öffnen → Lizenzschlüssel eingeben → Einstellungen → Daten → \"Importieren\"'
         : 'On the new device: Open app → enter licence key → Settings → Data → "Import"'}</div></div>
 
       <div class="hilfe-h3">${de ? 'Übungsvorschläge erscheinen nicht' : 'Exercise suggestions not appearing'}</div>
@@ -4868,7 +4983,7 @@ function renderHilfeInhalt() {
         ? 'Warum muss ich die Sync-Datei immer wieder auswählen?'
         : 'Why do I have to select the sync file every time?'}</div>
       <div class="hilfe-p">${de
-        ? 'Das ist eine Sicherheitsbeschränkung aller Browser: Eine Webseite darf sich keinen dauerhaften Zugriff auf Dateien merken. Nach jedem Neustart der App (oder nach dem Schließen des Browsertabs) muss die Sync-Datei einmalig pro Sitzung erneut ausgewählt werden – dann funktioniert „↑ Speichern" und „↓ Laden" ohne weitere Dialoge, solange der Tab geöffnet ist.'
+        ? 'Das ist eine Sicherheitsbeschränkung aller Browser: Eine Webseite darf sich keinen dauerhaften Zugriff auf Dateien merken. Nach jedem Neustart der App (oder nach dem Schließen des Browsertabs) muss die Sync-Datei einmalig pro Sitzung erneut ausgewählt werden – dann funktioniert \"↑ Speichern\" und \"↓ Laden\" ohne weitere Dialoge, solange der Tab geöffnet ist.'
         : 'This is a security restriction of all browsers: a website cannot retain permanent access to files. After every app restart (or after closing the browser tab), the sync file must be selected once per session – after that, "↑ Save" and "↓ Load" work without further dialogs as long as the tab is open.'}</div>
     </div>
 
@@ -5332,16 +5447,18 @@ function ladeApp() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  // i18n Labels setzen
   initialisiereSprache();
-
-  // App-Titel aus localStorage laden
   ladeAppTitel();
 
-  // Lizenz prüfen: zeigt Lizenz-Screen wenn nicht vorhanden, gibt false zurück
-  if (!zeigeHauptApp()) return;
+  // Enter-Taste im Lizenz-Input
+  const lizenzInput = document.getElementById('lizenz-input');
+  if (lizenzInput) {
+    lizenzInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') pruefeeLizenz();
+    });
+  }
 
-  // Lizenz vorhanden → App starten
+  if (!zeigeHauptApp()) return;
   ladeApp();
 });
 
