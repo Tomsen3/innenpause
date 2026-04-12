@@ -1,11 +1,11 @@
 // sw.js – Service Worker für Innenpause
 // ⚠️  WICHTIG: CACHE_VERSION bei jedem Deploy von index.html hochzählen!
 //     Gleiche Nummer wie APP_VERSION in index.html verwenden.
-//     Beispiel: index.html → APP_VERSION = '1.3'
-//               sw.js      → CACHE_VERSION = 'v1.3'
+//     Beispiel: index.html → APP_VERSION = '2.1'
+//               sw.js      → CACHE_VERSION = 'v2.1'
 //     Dann beide Dateien auf GitHub pushen.
 
-const CACHE_VERSION = 'v1.9';
+const CACHE_VERSION = 'v2.0';
 const CACHE_NAME = 'innenpause-' + CACHE_VERSION;
 
 // Ressourcen die sofort gecacht werden (App-Shell)
@@ -22,14 +22,13 @@ self.addEventListener('install', event => {
   // Neuen SW sofort aktivieren, ohne auf Tab-Schließung zu warten
   self.skipWaiting();
 });
-
 // ── Aktivierung (alle alten Caches löschen) ───────────────
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
       Promise.all(
         keys
-          .filter(k => k !== CACHE_NAME)  // alles außer aktuellem Cache löschen
+          .filter(k => k !== CACHE_NAME)
           .map(k => {
             console.log('[SW] Alter Cache gelöscht:', k);
             return caches.delete(k);
@@ -37,7 +36,6 @@ self.addEventListener('activate', event => {
       )
     )
   );
-  // SW übernimmt sofort alle offenen Tabs
   self.clients.claim();
 });
 
@@ -50,15 +48,11 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       fetch(event.request)
         .then(res => {
-          // Neue Version im Cache ablegen
           const clone = res.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
           return res;
         })
-        .catch(() => {
-          // Offline-Fallback: gecachte Version
-          return caches.match('./index.html');
-        })
+        .catch(() => caches.match('./index.html'))
     );
     return;
   }
