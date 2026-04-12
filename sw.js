@@ -2,10 +2,10 @@
 // ⚠️  WICHTIG: CACHE_VERSION bei jedem Deploy von index.html hochzählen!
 //     Gleiche Nummer wie APP_VERSION in index.html verwenden.
 //     Beispiel: index.html → APP_VERSION = '2.1'
-//               sw.js      → CACHE_VERSION = 'v2.1'
+//               sw.js      → CACHE_VERSION = 'v2.2'
 //     Dann beide Dateien auf GitHub pushen.
 
-const CACHE_VERSION = 'v2.1';
+const CACHE_VERSION = 'v2.2';
 const CACHE_NAME = 'innenpause-' + CACHE_VERSION;
 
 // Ressourcen die sofort gecacht werden (App-Shell)
