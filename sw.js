@@ -1,11 +1,11 @@
 // sw.js – Service Worker für Innenpause
 // ⚠️  WICHTIG: CACHE_VERSION bei jedem Deploy von index.html hochzählen!
 //     Gleiche Nummer wie APP_VERSION in index.html verwenden.
-//     Beispiel: index.html → APP_VERSION = '2.5'
-//               sw.js      → CACHE_VERSION = 'v2.5'
+//     Beispiel: index.html → APP_VERSION = '2.6'
+//               sw.js      → CACHE_VERSION = 'v2.6'
 //     Dann beide Dateien auf GitHub pushen.
 
-const CACHE_VERSION = 'v2.5';
+const CACHE_VERSION = 'v2.6';
 const CACHE_NAME = 'innenpause-' + CACHE_VERSION;
 
 // Ressourcen die sofort gecacht werden (App-Shell)
