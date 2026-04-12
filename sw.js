@@ -5,7 +5,7 @@
 //               sw.js      → CACHE_VERSION = 'v2.1'
 //     Dann beide Dateien auf GitHub pushen.
 
-const CACHE_VERSION = 'v2.0';
+const CACHE_VERSION = 'v2.1';
 const CACHE_NAME = 'innenpause-' + CACHE_VERSION;
 
 // Ressourcen die sofort gecacht werden (App-Shell)

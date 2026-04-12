@@ -1248,7 +1248,7 @@
 // ============================================================
 // APP VERSION
 // ============================================================
-const APP_VERSION = '2.0';
+const APP_VERSION = '2.1';
 // ============================================================
 // MEHRSPRACHIGKEIT (i18n) – Punkt 12
 // Sprache wird in localStorage unter 'sprache' gespeichert.
@@ -1258,9 +1258,25 @@ let SPRACHE = localStorage.getItem('sprache') || 'de';
 
 function setSprache(code) {
   localStorage.setItem('sprache', code);
-  const neuerPool = code === 'en' ? STANDARD_UEBUNGEN_EN : STANDARD_UEBUNGEN_DE;
-  const neueMitId = neuerPool.map((u, i) => ({ id: genId(), ...u, aktiv: true, reihenfolge: i }));
-  lsSet('exercises', neueMitId);
+
+  // Übungen übersetzen – IDs und Nutzerdaten (Bewertungen, Favoriten, etc.) bleiben erhalten.
+  // Standard-Übungen werden anhand des Titels in der Gegenrichtung gesucht und übersetzt.
+  // Eigene Übungen (nicht im Standard-Pool) bleiben unverändert.
+  const vonPool = code === 'en' ? STANDARD_UEBUNGEN_DE : STANDARD_UEBUNGEN_EN;
+  const zuPool  = code === 'en' ? STANDARD_UEBUNGEN_EN : STANDARD_UEBUNGEN_DE;
+
+  const gespeichert = getUebungen();
+  const uebersetzt = gespeichert.map(u => {
+    // Im Quell-Pool nach diesem Titel suchen
+    const vonIdx = vonPool.findIndex(p => p.titel === u.titel);
+    if (vonIdx === -1) return u; // eigene Übung → unverändert
+    const ziel = zuPool[vonIdx];
+    if (!ziel) return u; // kein Pendant → unverändert
+    // Nur Texte austauschen, Rest (id, aktiv, reihenfolge, bewertungen etc.) behalten
+    return { ...u, titel: ziel.titel, beschreibung: ziel.beschreibung };
+  });
+
+  lsSet('exercises', uebersetzt);
   location.reload();
 }
 
@@ -2393,6 +2409,19 @@ const STANDARD_UEBUNGEN_EN = [
   { titel: "PMR – Hands and Arms", beschreibung: "Clench your right fist (5 sec), release. Left fist (5 sec), release. Bend right arm at elbow, tense the bicep (5 sec), release. Left arm (5 sec), release. Notice the warmth and heaviness that follows.", kategorie: "Körperwahrnehmung", dauer_minuten: 5, tageszeit: ["abend"] },
   { titel: "Guided Body Scan", beschreibung: "Starting from the top of your head, slowly scan downward – scalp, face, jaw, neck, shoulders, chest, belly, back, hips, legs, feet. At each area: notice, breathe, release any holding.", kategorie: "Körperwahrnehmung", dauer_minuten: 10, tageszeit: ["abend"] },
   { titel: "5-Point Relaxation", beschreibung: "Consciously relax: (1) your jaw – unclench; (2) your shoulders – let them drop; (3) your hands – unclench and open; (4) your belly – allow it to soften; (5) your eyes – let them rest. Repeat.", kategorie: "Körperwahrnehmung", dauer_minuten: 2, tageszeit: ["mittag", "abend"] },
+,
+  { titel: "Three-Sentence Journal", beschreibung: "End the day with exactly three sentences: What was present today? What moved me? What do I want to carry into tomorrow? No more, no less. Three sentences are enough.", kategorie: "Schreiben & Ausdruck", dauer_minuten: 5, tageszeit: ["abend"] },
+  { titel: "Unsent Letter", beschreibung: "Is there something you want to say to someone – but can't or won't (yet)? Write it down – without sending it. Freely, honestly, without filter. Writing it out creates space and clarity, even without a reply.", kategorie: "Schreiben & Ausdruck", dauer_minuten: 10, tageszeit: ["abend"] },
+  { titel: "Complete the Sentence", beschreibung: "Write spontaneously: 'I notice that I… / Right now I need… / What moves me is… / I am grateful for…' Don't think too long – write what comes first.", kategorie: "Schreiben & Ausdruck", dauer_minuten: 5, tageszeit: ["morgen", "abend"] },
+  { titel: "Hold onto the Good", beschreibung: "Write down three specific moments that were good today – even small ones: a sip of tea, a smile, a quiet minute. The brain learns to notice what sustains us.", kategorie: "Schreiben & Ausdruck", dauer_minuten: 5, tageszeit: ["abend"] },
+  { titel: "5-4-3-2-1 Grounding", beschreibung: "Name aloud or silently: 5 things you see – 4 you hear – 3 you can touch – 2 you smell – 1 you taste. This exercise brings you back into the present moment through your senses.", kategorie: "Schwierige Momente", dauer_minuten: 3, tageszeit: ["morgen", "mittag", "abend"] },
+  { titel: "STOP Pause", beschreibung: "S – Stop what you're doing. T – Take a breath: one deep breath. O – Observe: What do I notice in my body, thoughts, feelings? P – Proceed mindfully. A small pause with a big effect.", kategorie: "Schwierige Momente", dauer_minuten: 3, tageszeit: ["morgen", "mittag", "abend"] },
+  { titel: "Extend the Breath under Stress", beschreibung: "When you feel tense or triggered: breathe in for 4 seconds – hold for 2 – breathe out for 6–8 seconds. Repeat 4–5 times. The extended exhale calms the nervous system.", kategorie: "Schwierige Momente", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
+  { titel: "Activate Your Safety Anchor", beschreibung: "Think of a place, a person, or an object where you feel safe. Visualise it clearly. Feel the safety in your body. This inner anchor is available to you at any time.", kategorie: "Schwierige Momente", dauer_minuten: 5, tageszeit: ["morgen", "mittag", "abend"] },
+  { titel: "Naming a Feeling Defuses It", beschreibung: "When a strong feeling arises: name it as precisely as possible – not just 'bad', but 'disappointed', 'overwhelmed', 'sad'. Naming activates the prefrontal cortex and reduces the intensity.", kategorie: "Schwierige Momente", dauer_minuten: 3, tageszeit: ["morgen", "mittag", "abend"] },
+  { titel: "Ground Your Body When Overwhelmed", beschreibung: "Press both feet firmly into the floor. Place your hands flat on your thighs. Feel the contact with the surface. Take three slow breaths. Your body is here – you are safe.", kategorie: "Schwierige Momente", dauer_minuten: 3, tageszeit: ["morgen", "mittag", "abend"] },
+  { titel: "Take a Trigger Pause", beschreibung: "When you notice you've been triggered: step out of the situation briefly – a different room, fresh air, a few steps. Give yourself 5–10 minutes before reacting. Distance creates clarity.", kategorie: "Schwierige Momente", dauer_minuten: 5, tageszeit: ["mittag", "abend"] },
+  { titel: "Self-Compassion in Pain", beschreibung: "When things are hard: place one hand on your heart. Say inwardly: 'This is a difficult moment. Difficulty is part of life. May I be kind to myself right now.' Repeat as often as you need.", kategorie: "Schwierige Momente", dauer_minuten: 5, tageszeit: ["morgen", "mittag", "abend"] }
 ];
 
 // ============================================================
