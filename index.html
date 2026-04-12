@@ -1255,7 +1255,7 @@
 // ============================================================
 // APP VERSION
 // ============================================================
-const APP_VERSION = '2.3';
+const APP_VERSION = '2.4';
 // ============================================================
 // MEHRSPRACHIGKEIT (i18n) – Punkt 12
 // Sprache wird in localStorage unter 'sprache' gespeichert.
@@ -1267,28 +1267,44 @@ function setSprache(code) {
   localStorage.setItem('sprache', code);
 
   // Übungen übersetzen – IDs und Nutzerdaten bleiben erhalten.
-  // Fix v2.1.1: Bidirektionale Lookup-Maps statt hardcodierter "vonPool"-Richtung.
-  // Funktioniert korrekt bei: gemischten Pools, Doppelklick, mehrfachem Wechsel.
+  // Fix v2.3: Dreistufige Lookup-Strategie für maximale Robustheit:
+  //   1. Titel-Lookup in Zielsprache (idempotent – schon korrekt)
+  //   2. Titel-Lookup in Quellsprache (Normalfall)
+  //   3. Positions-Fallback via reihenfolge (wenn Titel durch alte Version abweicht)
   const deMap = {};
   STANDARD_UEBUNGEN_DE.forEach((u, i) => { if (!(u.titel in deMap)) deMap[u.titel] = i; });
   const enMap = {};
   STANDARD_UEBUNGEN_EN.forEach((u, i) => { if (!(u.titel in enMap)) enMap[u.titel] = i; });
 
   const targetPool = code === 'en' ? STANDARD_UEBUNGEN_EN : STANDARD_UEBUNGEN_DE;
-  const sourceMap  = code === 'en' ? deMap : enMap; // aus welcher Sprache übersetzen
-  const targetMap  = code === 'en' ? enMap : deMap; // in welche Sprache übersetzen
+  const sourceMap  = code === 'en' ? deMap : enMap;
+  const targetMap  = code === 'en' ? enMap : deMap;
 
   const gespeichert = getUebungen();
   const uebersetzt = gespeichert.map(u => {
-    // Schon in Zielsprache? → unverändert lassen (idempotent bei Doppelklick)
+    // Stufe 1: Schon in Zielsprache? → unverändert (idempotent)
     if (targetMap[u.titel] !== undefined) return u;
-    // In Quellsprache? → übersetzen
+
+    // Stufe 2: Titel in Quellsprache gefunden → normal übersetzen
     const idx = sourceMap[u.titel];
-    if (idx === undefined) return u; // eigene Übung → unverändert
-    const ziel = targetPool[idx];
-    if (!ziel) return u; // kein Pendant → unverändert
-    // Nur Texte austauschen, Rest (id, aktiv, reihenfolge, bewertungen etc.) behalten
-    return { ...u, titel: ziel.titel, beschreibung: ziel.beschreibung };
+    if (idx !== undefined && targetPool[idx]) {
+      const ziel = targetPool[idx];
+      return { ...u, titel: ziel.titel, beschreibung: ziel.beschreibung };
+    }
+
+    // Stufe 3: Positions-Fallback – reihenfolge als Index nutzen
+    // Greift wenn Titel im Storage von aktueller Version abweicht (alte Daten)
+    const pos = u.reihenfolge;
+    if (typeof pos === 'number' && pos >= 0 && pos < targetPool.length) {
+      const ziel = targetPool[pos];
+      // Sicherheitscheck: Kategorie muss übereinstimmen
+      if (ziel && ziel.kategorie === u.kategorie) {
+        return { ...u, titel: ziel.titel, beschreibung: ziel.beschreibung };
+      }
+    }
+
+    // Kein Pendant gefunden → eigene/benutzerdefinierte Übung, unverändert lassen
+    return u;
   });
 
   lsSet('exercises', uebersetzt);
@@ -4564,11 +4580,12 @@ const APP_UPDATES = [
     }
   },
   {
-    version: '2.3',
+    version: '2.4',
     changelog: [
       'Kategorie-Bug behoben: EN-Übungen hatten englische Kategorienamen als internen Schlüssel',
       'Neue Funktion: Übungen zurücksetzen (Einstellungen → Daten) – persönliche Daten bleiben erhalten',
       'Kategorie-Fix wird automatisch auf vorhandene Daten angewendet (Migration)',
+      'Sprachwechsel DE↔EN robuster: Positions-Fallback wenn Titel aus alter Version abweicht',
     ],
     migration: (state) => {
       const katFixMap = {
