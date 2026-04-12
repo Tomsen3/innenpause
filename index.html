@@ -658,25 +658,184 @@
      ============================================================ */
   #print-bereich { display: none; }
 
+  /* PDF-Modal Checkbox-Labels */
+  .pdf-cb-label {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 12px; cursor: pointer;
+    font-size: 13px; transition: background 0.15s;
+  }
+  .pdf-cb-label:hover { background: var(--bg3); }
+  .pdf-cb-label input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--accent); flex-shrink: 0; }
+
   @media print {
     * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     body > *:not(#print-bereich) { display: none !important; }
-    #print-bereich { display: block !important; font-family: Georgia, 'Times New Roman', serif; color: #2c2416; background: #fff; margin: 0; padding: 0; }
-    .print-header { border-bottom: 2px solid #7a6d52; padding-bottom: 12px; margin-bottom: 20px; }
-    .print-header h1 { font-size: 22px; margin: 0 0 4px; }
-    .print-header .print-meta { font-size: 12px; color: #6b5f4e; font-family: Arial, sans-serif; }
-    .print-tag { page-break-inside: avoid; margin-bottom: 28px; }
-    .print-tag h2 { font-size: 16px; border-bottom: 1px solid #d4ccbc; padding-bottom: 6px; margin-bottom: 12px; }
+    #print-bereich {
+      display: block !important;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: #2c2416;
+      background: #fff;
+      margin: 0;
+      padding: 24px 28px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    /* Header */
+    .print-header {
+      border-bottom: 2.5px solid #7a6d52;
+      padding-bottom: 14px;
+      margin-bottom: 24px;
+    }
+    .print-header-logo {
+      font-size: 13px;
+      color: #9e8f7a;
+      margin-bottom: 4px;
+      letter-spacing: 0.5px;
+    }
+    .print-header h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 20px;
+      margin: 0 0 5px;
+      color: #2c2416;
+      font-weight: normal;
+    }
+    .print-meta { font-size: 11px; color: #9e8f7a; }
+
+    /* Tag-Block */
+    .print-tag {
+      page-break-inside: avoid;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #e2dace;
+    }
+    .print-tag:last-of-type { border-bottom: none; }
+    .print-tag h2 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 15px;
+      font-weight: normal;
+      color: #2c2416;
+      border-bottom: 1px solid #d4ccbc;
+      padding-bottom: 7px;
+      margin-bottom: 14px;
+    }
+
+    /* Sektionen */
     .print-sektion { margin-bottom: 14px; }
-    .print-sektion h3 { font-size: 12px; font-family: Arial, sans-serif; text-transform: uppercase; letter-spacing: 1px; color: #9e8f7a; margin-bottom: 6px; }
-    .print-zeile { font-size: 13px; font-family: Arial, sans-serif; display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px dotted #e2dace; }
+    .print-sektion h3 {
+      font-size: 10px;
+      font-family: Arial, sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: #9e8f7a;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    /* Check-in Block */
+    .print-ci-block {
+      background: #faf7f2;
+      border: 1px solid #e2dace;
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      page-break-inside: avoid;
+    }
+    .print-ci-titel {
+      font-size: 12px;
+      font-weight: 600;
+      color: #6b5f4e;
+      margin-bottom: 7px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Zeilen mit Balken */
+    .print-zeile {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 3px 0;
+      border-bottom: 1px dotted #e2dace;
+      font-size: 12px;
+    }
     .print-zeile:last-child { border-bottom: none; }
     .print-zeile-label { color: #6b5f4e; }
-    .print-zeile-wert { font-weight: 500; }
-    .print-text { font-size: 13px; font-family: Arial, sans-serif; color: #2c2416; line-height: 1.6; background: #f5f0e8; padding: 8px 10px; border-radius: 4px; margin-top: 4px; }
-    .print-badge { display: inline-block; font-size: 11px; background: #ede7d9; padding: 1px 6px; border-radius: 10px; margin: 2px 2px 2px 0; font-family: Arial, sans-serif; }
-    .print-footer { font-size: 10px; color: #9e8f7a; font-family: Arial, sans-serif; text-align: center; margin-top: 32px; border-top: 1px solid #d4ccbc; padding-top: 8px; }
-    .print-leer { font-size: 12px; color: #9e8f7a; font-style: italic; font-family: Arial, sans-serif; }
+    .print-zeile-wert { display: flex; align-items: center; gap: 6px; font-weight: 500; }
+
+    /* Balken-Grafik */
+    .print-balken-wrap {
+      display: inline-block;
+      width: 60px;
+      height: 6px;
+      background: #e2dace;
+      border-radius: 3px;
+      vertical-align: middle;
+      overflow: hidden;
+    }
+    .print-balken-fill {
+      display: block;
+      height: 100%;
+      background: #7a6d52;
+      border-radius: 3px;
+    }
+
+    /* Text-Blöcke */
+    .print-text {
+      font-size: 12px;
+      color: #2c2416;
+      line-height: 1.6;
+      background: #f5f0e8;
+      padding: 7px 10px;
+      border-radius: 4px;
+      margin-top: 5px;
+    }
+    .print-text-klein { font-size: 11px; color: #6b5f4e; }
+
+    /* Übungen */
+    .print-uebung-zeile {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 5px 0;
+      border-bottom: 1px dotted #e2dace;
+      font-size: 12px;
+    }
+    .print-uebung-zeile:last-child { border-bottom: none; }
+    .print-uebung-titel { flex: 1; color: #2c2416; }
+    .print-sterne { color: #b5956a; letter-spacing: 1px; font-size: 11px; }
+
+    /* Badges */
+    .print-badge {
+      display: inline-block;
+      font-size: 10px;
+      background: #ede7d9;
+      padding: 1px 7px;
+      border-radius: 10px;
+      font-family: Arial, sans-serif;
+      white-space: nowrap;
+    }
+    .print-badge-done { background: #d4e8c9; color: #3a6b2a; }
+
+    /* Notizen */
+    .print-notiz { margin-bottom: 8px; }
+    .print-notiz-time { font-size: 10px; color: #9e8f7a; margin-bottom: 2px; display: block; }
+
+    /* Leer-Hinweis */
+    .print-leer { font-size: 11px; color: #9e8f7a; font-style: italic; }
+
+    /* Footer */
+    .print-footer {
+      font-size: 10px;
+      color: #9e8f7a;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 32px;
+      border-top: 1px solid #d4ccbc;
+      padding-top: 10px;
+    }
   }
 </style>
 </head>
@@ -1255,7 +1414,7 @@
 // ============================================================
 // APP VERSION
 // ============================================================
-const APP_VERSION = '2.4';
+const APP_VERSION = '2.5';
 // ============================================================
 // MEHRSPRACHIGKEIT (i18n) – Punkt 12
 // Sprache wird in localStorage unter 'sprache' gespeichert.
@@ -3981,14 +4140,205 @@ function ladeVerlauf() {
 }
 
 // ============================================================
+// PDF-EXPORT
+// ============================================================
+
+function oeffrePdfExport() {
+  // Öffnet das PDF-Konfigurations-Modal
+  const datum = document.getElementById('verlauf-datum').value || heuteString();
+  document.getElementById('pdf-von').value = datum;
+  document.getElementById('pdf-bis').value = datum;
+  document.getElementById('pdf-modal').classList.add('open');
+}
+
+function schliessePdfModal() {
+  document.getElementById('pdf-modal').classList.remove('open');
+}
+
+function startepdfdruck() {
+  const von = document.getElementById('pdf-von').value;
+  const bis = document.getElementById('pdf-bis').value;
+  if (!von || !bis) { zeigeToast('Bitte Von- und Bis-Datum wählen.'); return; }
+  if (von > bis) { zeigeToast('Das Von-Datum muss vor dem Bis-Datum liegen.'); return; }
+
+  const mitCheckins    = document.getElementById('pdf-cb-checkins').checked;
+  const mitUebungen    = document.getElementById('pdf-cb-uebungen').checked;
+  const mitNotizen     = document.getElementById('pdf-cb-notizen').checked;
+  const mitAbschluss   = document.getElementById('pdf-cb-abschluss').checked;
+
+  if (!mitCheckins && !mitUebungen && !mitNotizen && !mitAbschluss) {
+    zeigeToast('Bitte mindestens einen Inhaltsbereich wählen.');
+    return;
+  }
+
+  // Datumsbereich aufbauen
+  const tage = [];
+  let cur = new Date(von + 'T12:00:00');
+  const end = new Date(bis + 'T12:00:00');
+  while (cur <= end) {
+    tage.push(cur.toISOString().slice(0, 10));
+    cur.setDate(cur.getDate() + 1);
+  }
+
+  const alleCheckins   = ls('checkins', {});
+  const alleDailyEx    = ls('daily_exercises', {});
+  const alleJournal    = ls('journal', {});
+  const alleSummary    = ls('daily_summary', {});
+  const alleUebungen   = getUebungen();
+
+  const locale = t('verlauf_datum_locale');
+  const optLang = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  const optKurz = { month: 'long', day: 'numeric', year: 'numeric' };
+
+  // Hilfsfunktion: Balken als CSS-Inline-Grafik
+  function balken(wert, max) {
+    const pct = Math.round((wert / max) * 100);
+    return `<span class="print-balken-wrap"><span class="print-balken-fill" style="width:${pct}%"></span></span>`;
+  }
+
+  let tageSektionen = '';
+  let tageMitDaten = 0;
+
+  tage.forEach(datum => {
+    const tagesDaten = alleCheckins[datum] || {};
+    const dailyEx    = alleDailyEx[datum] || [];
+    const journal    = alleJournal[datum] || [];
+    const summary    = alleSummary[datum] || null;
+
+    const hatDaten = (mitCheckins && Object.keys(tagesDaten).length > 0) ||
+                     (mitUebungen && dailyEx.length > 0) ||
+                     (mitNotizen  && journal.length > 0) ||
+                     (mitAbschluss && summary);
+
+    if (!hatDaten) return;
+    tageMitDaten++;
+
+    const datumText = new Date(datum + 'T12:00:00').toLocaleDateString(locale, optLang);
+    let tagHtml = `<div class="print-tag"><h2>📅 ${datumText}</h2>`;
+
+    // ── CHECK-INS ──────────────────────────────────────────
+    if (mitCheckins) {
+      const tzArr = ['morgen', 'mittag', 'abend'].filter(k => tagesDaten[k]);
+      if (tzArr.length > 0) {
+        const tzLabels = { morgen: t('pdf_tz_morgen'), mittag: t('pdf_tz_mittag'), abend: t('pdf_tz_abend') };
+        tagHtml += `<div class="print-sektion"><h3>${t('pdf_checkins')}</h3>`;
+        tzArr.forEach(tz => {
+          const ci = tagesDaten[tz];
+          tagHtml += `<div class="print-ci-block"><div class="print-ci-titel">${tzLabels[tz]}</div>`;
+          if (tz === 'morgen' && ci.schlaf_qualitaet) {
+            tagHtml += `<div class="print-zeile"><span class="print-zeile-label">${t('pdf_schlaf')}</span><span class="print-zeile-wert">${balken(ci.schlaf_qualitaet,10)} ${ci.schlaf_qualitaet}/10</span></div>`;
+          }
+          if (tz === 'morgen' && ci.schlaf_stunden) {
+            tagHtml += `<div class="print-zeile"><span class="print-zeile-label">${t('pdf_schlaf_std')}</span><span class="print-zeile-wert">${ci.schlaf_stunden} h</span></div>`;
+          }
+          [['stimmung', t('pdf_stimmung')],['energie', t('pdf_energie')],['koerper', t('pdf_koerper')],['verbundenheit', t('pdf_verbundenheit')]].forEach(([k, l]) => {
+            if (ci[k] != null) tagHtml += `<div class="print-zeile"><span class="print-zeile-label">${l}</span><span class="print-zeile-wert">${balken(ci[k],10)} ${ci[k]}/10</span></div>`;
+          });
+          if (ci.freitext) tagHtml += `<div class="print-text">${ci.freitext}</div>`;
+          if (ci.tagesfrage_antwort) tagHtml += `<div class="print-text print-text-klein"><em>${ci.tagesfrage_text}</em><br>${ci.tagesfrage_antwort}</div>`;
+          tagHtml += `</div>`;
+        });
+        tagHtml += `</div>`;
+      } else {
+        tagHtml += `<div class="print-sektion"><h3>${t('pdf_checkins')}</h3><div class="print-leer">${t('pdf_keine_checkins')}</div></div>`;
+      }
+    }
+
+    // ── ÜBUNGEN ────────────────────────────────────────────
+    if (mitUebungen) {
+      if (dailyEx.length > 0) {
+        tagHtml += `<div class="print-sektion"><h3>${t('pdf_uebungen')}</h3>`;
+        dailyEx.forEach(de => {
+          const u = alleUebungen.find(x => x.id === de.exerciseId);
+          const titel = u ? u.titel : t('pdf_uebungen');
+          const status = de.erledigt ? `<span class="print-badge print-badge-done">${t('pdf_erledigt')}</span>` : `<span class="print-badge">${t('pdf_offen')}</span>`;
+          tagHtml += `<div class="print-uebung-zeile"><span class="print-uebung-titel">${titel}</span>${status}`;
+          if (de.feedback) {
+            const fb = de.feedback;
+            if (fb.sterne) tagHtml += ` <span class="print-sterne">${'★'.repeat(fb.sterne)}${'☆'.repeat(5 - fb.sterne)}</span>`;
+            if (fb.notiz) tagHtml += `<div class="print-text print-text-klein">${t('pdf_notiz')}: ${fb.notiz}</div>`;
+          }
+          tagHtml += `</div>`;
+        });
+        tagHtml += `</div>`;
+      } else {
+        tagHtml += `<div class="print-sektion"><h3>${t('pdf_uebungen')}</h3><div class="print-leer">${t('pdf_keine_uebungen')}</div></div>`;
+      }
+    }
+
+    // ── NOTIZBUCH ──────────────────────────────────────────
+    if (mitNotizen) {
+      if (journal.length > 0) {
+        tagHtml += `<div class="print-sektion"><h3>${t('pdf_notizbuch')}</h3>`;
+        journal.forEach(e => {
+          tagHtml += `<div class="print-notiz"><span class="print-notiz-time">${e.time}</span><div class="print-text">${e.text}</div></div>`;
+        });
+        tagHtml += `</div>`;
+      } else {
+        tagHtml += `<div class="print-sektion"><h3>${t('pdf_notizbuch')}</h3><div class="print-leer">${t('pdf_keine_notizen')}</div></div>`;
+      }
+    }
+
+    // ── TAGESABSCHLUSS ─────────────────────────────────────
+    if (mitAbschluss) {
+      if (summary) {
+        tagHtml += `<div class="print-sektion"><h3>${t('pdf_tagesabschluss')}</h3>`;
+        if (summary.abschlusstext) tagHtml += `<div class="print-text">${summary.abschlusstext}</div>`;
+        if (summary.mitnahme) tagHtml += `<div class="print-zeile"><span class="print-zeile-label">${t('pdf_mitnahme')}</span><span class="print-zeile-wert">${summary.mitnahme}</span></div>`;
+        if (summary.highlight) tagHtml += `<div class="print-zeile"><span class="print-zeile-label">✨ ${t('pdf_highlight')}</span><span class="print-zeile-wert">${summary.highlight}</span></div>`;
+        if (summary.dankbarkeit) tagHtml += `<div class="print-zeile"><span class="print-zeile-label">🙏 ${t('pdf_dankbarkeit')}</span><span class="print-zeile-wert">${summary.dankbarkeit}</span></div>`;
+        tagHtml += `</div>`;
+      } else {
+        tagHtml += `<div class="print-sektion"><h3>${t('pdf_tagesabschluss')}</h3><div class="print-leer">${t('pdf_kein_abschluss')}</div></div>`;
+      }
+    }
+
+    tagHtml += `</div>`; // .print-tag
+    tageSektionen += tagHtml;
+  });
+
+  if (tageMitDaten === 0) {
+    zeigeToast('Keine Daten im gewählten Zeitraum gefunden.');
+    return;
+  }
+
+  // Zeitraumtext für Header
+  const vonText = new Date(von + 'T12:00:00').toLocaleDateString(locale, optKurz);
+  const bisText = new Date(bis + 'T12:00:00').toLocaleDateString(locale, optKurz);
+  const zeitraumText = von === bis ? vonText : `${vonText} – ${bisText}`;
+
+  const inhaltsBereiche = [
+    mitCheckins  ? t('pdf_checkins')      : '',
+    mitUebungen  ? t('pdf_uebungen')      : '',
+    mitNotizen   ? t('pdf_notizbuch')     : '',
+    mitAbschluss ? t('pdf_tagesabschluss'): ''
+  ].filter(Boolean).join(' · ');
+
+  const jetzt = new Date().toLocaleDateString(locale, optKurz);
+
+  const printHtml = `
+    <div class="print-header">
+      <div class="print-header-logo">🌿 Innenpause</div>
+      <h1>${zeitraumText}</h1>
+      <div class="print-meta">${inhaltsBereiche} &nbsp;·&nbsp; ${tageMitDaten} Tag${tageMitDaten !== 1 ? 'e' : ''} mit Einträgen</div>
+    </div>
+    ${tageSektionen}
+    <div class="print-footer">
+      ${t('pdf_erstellt')} Innenpause v${APP_VERSION} &nbsp;${t('pdf_lokal')} &nbsp;·&nbsp; ${jetzt}
+    </div>`;
+
+  document.getElementById('print-bereich').innerHTML = printHtml;
+  schliessePdfModal();
+  setTimeout(() => { window.print(); }, 120);
+}
+
+// ============================================================
 // TAGESZEIT-DEFAULTS
 // ============================================================
 function setzeTageszeitDefaults() {
-  const tz = getTageszeit();
-  const autoAkk = JSON.parse(localStorage.getItem('setting_autoAkk') ?? 'true');
-  if (autoAkk) {
-    document.getElementById('akk-' + tz)?.classList.add('open');
-  }
+  if (!localStorage.getItem('setting_startMorgen')) localStorage.setItem('setting_startMorgen', '5');
+  if (!localStorage.getItem('setting_startMittag')) localStorage.setItem('setting_startMittag', '11');
+  if (!localStorage.getItem('setting_startAbend'))  localStorage.setItem('setting_startAbend',  '17');
 }
 
 // ============================================================
@@ -4609,6 +4959,19 @@ const APP_UPDATES = [
     }
   },
   // VORLAGE FÜR NÄCHSTES UPDATE:
+  // {
+  //   version: '1.3',
+  //   changelog: [
+  {
+    version: '2.5',
+    changelog: [
+      'PDF-Export neu: Zeitraum frei wählbar (Von–Bis)',
+      'PDF-Export: Inhalte per Checkbox auswählbar (Check-ins, Übungen, Notizbuch, Tagesabschluss)',
+      'PDF-Layout überarbeitet: Balken-Grafiken, strukturierte Tages-Blöcke, sauberer Druck',
+    ],
+    migration: (state) => state
+  },
+  // VORLAGE FÜR NÄCHSTES UPDATE (wieder einkommentieren):
   // {
   //   version: '1.3',
   //   changelog: [
@@ -5480,6 +5843,60 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 </script>
+<!-- PDF-EXPORT MODAL -->
+<div class="modal-overlay" id="pdf-modal">
+  <div class="modal">
+    <div class="modal-titel">📄 PDF exportieren</div>
+
+    <div style="margin-bottom:16px">
+      <div style="font-size:13px;color:var(--text2);margin-bottom:10px;font-weight:500">Zeitraum</div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <div style="flex:1">
+          <label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px">Von</label>
+          <input type="date" id="pdf-von" style="width:100%">
+        </div>
+        <div style="color:var(--text3);padding-top:18px">–</div>
+        <div style="flex:1">
+          <label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px">Bis</label>
+          <input type="date" id="pdf-bis" style="width:100%">
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:20px">
+      <div style="font-size:13px;color:var(--text2);margin-bottom:10px;font-weight:500">Inhalte</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <label class="pdf-cb-label">
+          <input type="checkbox" id="pdf-cb-checkins" checked>
+          <span>🌤 Check-ins</span>
+        </label>
+        <label class="pdf-cb-label">
+          <input type="checkbox" id="pdf-cb-uebungen" checked>
+          <span>🧘 Übungen</span>
+        </label>
+        <label class="pdf-cb-label">
+          <input type="checkbox" id="pdf-cb-notizen" checked>
+          <span>📝 Notizbuch</span>
+        </label>
+        <label class="pdf-cb-label">
+          <input type="checkbox" id="pdf-cb-abschluss" checked>
+          <span>🌙 Tagesabschluss</span>
+        </label>
+      </div>
+    </div>
+
+    <div style="font-size:12px;color:var(--text3);margin-bottom:16px;line-height:1.5">
+      💡 Nach dem Klick öffnet sich der Druckdialog deines Browsers.<br>
+      Dort „Als PDF speichern" wählen.
+    </div>
+
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-secondary" style="flex:1" onclick="schliessePdfModal()">Abbrechen</button>
+      <button class="btn btn-primary" style="flex:1" onclick="startepdfdruck()">📄 PDF erstellen</button>
+    </div>
+  </div>
+</div>
+
 <!-- PRINT BEREICH (nur beim Drucken sichtbar) -->
 <div id="print-bereich"></div>
 
