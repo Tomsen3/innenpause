@@ -1,13 +1,13 @@
 {
-  "appVersion": "2.10",
+  "appVersion": "2.11",
   "released": "2026-04-28",
   "updates": [
     {
-      "version": "2.10",
+      "version": "2.11",
       "changelog": [
-        "Uebungspool wird beim Start automatisch an die gewaehlte Sprache angepasst",
-        "Deutsche Standarduebungen mit Grounding-Begriff auf Erdung umbenannt",
-        "Alte Uebungsvorschlaege werden nach Sprachkorrekturen neu erzeugt"
+        "Neuer Tab Halt finden als akute GfK-orientierte Unterstuetzung",
+        "Beobachtungs-Coach mit Satzstartern fuer bewertungsarme Beschreibungen",
+        "Klärung kann freiwillig als Notiz im heutigen Journal gespeichert werden"
       ]
     }
   ]

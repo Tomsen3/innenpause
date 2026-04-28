@@ -302,6 +302,31 @@
   .tab-btn.active .tab-icon { transform: scale(1.12); }
   .tab-icon { font-size: 18px; transition: transform 0.18s var(--ease-soft); }
 
+  /* HALT FINDEN */
+  .halt-card { margin-top: 12px; }
+  .halt-intro { color: var(--text2); font-size: 14px; line-height: 1.55; margin: 6px 0 14px; }
+  .halt-stepper { display: grid; grid-template-columns: repeat(5, 1fr); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: #fbfaf6; margin: 0 16px 12px; }
+  .halt-step { border: 0; border-right: 1px solid var(--border); background: transparent; color: var(--text3); padding: 8px 4px; font-size: 11px; cursor: pointer; }
+  .halt-step:last-child { border-right: 0; }
+  .halt-step.active { color: var(--text); background: linear-gradient(to top, rgba(197,122,61,0.18), transparent); box-shadow: inset 0 -3px 0 var(--accent2); }
+  .halt-step-nr { display:block; font-size: 9px; letter-spacing: 1.1px; text-transform: uppercase; font-weight: 700; }
+  .halt-step-label { display:block; margin-top: 2px; }
+  .halt-panel { padding: 2px 0 4px; }
+  .halt-title { font-family:'Lora', serif; font-size: 21px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .halt-note { margin: 12px 0; padding: 10px 12px; border-left: 4px solid var(--accent3); border-radius: 8px; background: rgba(143,166,122,0.14); color: var(--text2); font-size: 13px; line-height: 1.5; }
+  .halt-note.warn { border-left-color: var(--warm); background: #fff4ec; }
+  .halt-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 4px; }
+  .halt-chip { border: 1px solid var(--border); border-radius: 999px; background: #fffaf3; color: var(--text); padding: 7px 11px; font-size: 13px; cursor: pointer; }
+  .halt-chip.active { border-color: var(--success); background: rgba(79,122,92,0.14); color: var(--success); box-shadow: 0 0 0 3px rgba(79,122,92,0.12); }
+  .halt-starter-list, .halt-action-grid { display: grid; gap: 8px; margin-top: 10px; }
+  .halt-action-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .halt-starter, .halt-action { border: 1px solid var(--border); border-radius: 8px; background: #fffaf3; color: var(--text); padding: 10px 11px; cursor: pointer; text-align: left; font-size: 13px; line-height: 1.45; }
+  .halt-action strong { display:block; margin-bottom: 4px; color: var(--text); }
+  .halt-starter:hover, .halt-action:hover { border-color: var(--accent2); background: #fff; }
+  .halt-action.active { border-color: var(--success); background: rgba(79,122,92,0.12); }
+  .halt-actions { display: flex; justify-content: space-between; gap: 8px; margin-top: 16px; }
+  .halt-summary { white-space: pre-wrap; background: #fffaf3; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; min-height: 110px; color: var(--text); font-size: 13px; line-height: 1.5; }
+
   /* MAIN CONTENT */
   #main { padding: 0 0 100px; max-width: 600px; margin: 0 auto; }
   .tab-content { display: none; }
@@ -1032,6 +1057,9 @@
     #app-titel-anzeige { font-size: 17px; }
     .impuls-text { font-size: 15px; line-height: 1.42; }
     .tab-btn { padding: 10px 6px 8px; }
+    .halt-stepper { grid-template-columns: 1fr; }
+    .halt-step { display:flex; justify-content:space-between; border-right:0; border-bottom:1px solid var(--border); text-align:left; }
+    .halt-action-grid { grid-template-columns: 1fr; }
     .uebung-jetzt-card {
       margin: 8px 12px 5px;
       padding: 18px 15px 16px;
@@ -1342,6 +1370,9 @@
   <button class="tab-btn active" onclick="zeigeTab('heute')" id="tab-heute">
     <span class="tab-icon">☀️</span><span class="tab-label">Heute</span>
   </button>
+  <button class="tab-btn" onclick="zeigeTab('halt')" id="tab-halt">
+    <span class="tab-icon">🤲</span><span class="tab-label">Halt finden</span>
+  </button>
   <button class="tab-btn" onclick="zeigeTab('checkin')" id="tab-checkin">
     <span class="tab-icon">📊</span><span class="tab-label">Check-in</span>
   </button>
@@ -1420,6 +1451,19 @@
     <div class="section-label">Heutige Übungen</div>
     <div id="heute-uebungen-container"></div>
     <div id="begruessung-container"></div>
+  </div>
+
+  <!-- ===== TAB: HALT FINDEN ===== -->
+  <div id="content-halt" class="tab-content">
+    <div class="section-label">Halt finden</div>
+    <div class="card halt-card">
+      <div class="halt-title" id="halt-main-title">Was brauche ich jetzt?</div>
+      <div class="halt-intro" id="halt-intro">Ein Moment zum Sortieren: Was ist passiert, was fühle ich, was brauche ich, was könnte jetzt helfen?</div>
+    </div>
+    <div class="halt-stepper" id="halt-stepper"></div>
+    <div class="card halt-card">
+      <div class="halt-panel" id="halt-content"></div>
+    </div>
   </div>
 
   <!-- ===== TAB: CHECK-IN ===== -->
@@ -1724,6 +1768,7 @@
     <div class="hilfe-nav" id="hilfe-nav">
       <button class="hilfe-nav-btn active" onclick="zeigeHilfeSektion('start')">🚀 Start</button>
       <button class="hilfe-nav-btn" onclick="zeigeHilfeSektion('heute')">☀️ Heute</button>
+      <button class="hilfe-nav-btn" onclick="zeigeHilfeSektion('halt')">🤲 Halt finden</button>
       <button class="hilfe-nav-btn" onclick="zeigeHilfeSektion('checkin')">📊 Check-in</button>
       <button class="hilfe-nav-btn" onclick="zeigeHilfeSektion('uebungen')">🌿 Übungen</button>
       <button class="hilfe-nav-btn" onclick="zeigeHilfeSektion('verlauf')">📖 Verlauf</button>
@@ -1885,7 +1930,7 @@
 // ============================================================
 // APP VERSION
 // ============================================================
-let APP_VERSION = '2.10';
+let APP_VERSION = '2.11';
 let VERSION_UPDATES = [];
 let VERSION_JSON_STATUS = { ok: false, quelle: 'fallback', meldung: 'Noch nicht geladen', geladenAm: null };
 let APP_START_OK = false;
@@ -1985,6 +2030,7 @@ const STRINGS = {
     lizenz_fehler: '❌ Ungültiger Lizenzschlüssel. Bitte überprüfen.',
     // Tabs
     tab_heute: 'Heute',
+    tab_halt: 'Halt finden',
     tab_checkin: 'Check-in',
     tab_uebungen: 'Übungen',
     tab_verlauf: 'Verlauf',
@@ -2282,6 +2328,7 @@ const STRINGS = {
     hilfe_schliessen: '✕ Schließen',
     hilfe_nav_start: '🚀 Start',
     hilfe_nav_heute: '☀️ Heute',
+    hilfe_nav_halt: '🤲 Halt finden',
     hilfe_nav_checkin: '📊 Check-in',
     hilfe_nav_uebungen: '🌿 Übungen',
     hilfe_nav_verlauf: '📖 Verlauf',
@@ -2326,6 +2373,7 @@ const STRINGS = {
     lizenz_fehler: '❌ Invalid license key. Please check.',
     // Tabs
     tab_heute: 'Today',
+    tab_halt: 'Find support',
     tab_checkin: 'Check-in',
     tab_uebungen: 'Exercises',
     tab_verlauf: 'History',
@@ -2623,6 +2671,7 @@ const STRINGS = {
     hilfe_schliessen: '✕ Close',
     hilfe_nav_start: '🚀 Start',
     hilfe_nav_heute: '☀️ Today',
+    hilfe_nav_halt: '🤲 Find support',
     hilfe_nav_checkin: '📊 Check-in',
     hilfe_nav_uebungen: '🌿 Exercises',
     hilfe_nav_verlauf: '📖 History',
@@ -3489,6 +3538,7 @@ function zeigeTab(name) {
   if (name === 'verlauf') ladeVerlaufInit();
   if (name === 'uebungen') ladeUebungen();
   if (name === 'heute') ladeHeuteTab();
+  if (name === 'halt') renderHaltFinden();
   if (name === 'einstellungen') ladeEinstellungenUI();
 }
 
@@ -3928,15 +3978,19 @@ function speichereFeedback() {
 function speichereJournal() {
   const text = document.getElementById('journal-input').value.trim();
   if (!text) { zeigToast(t('toast_journal_leer')); return; }
+  fuegeJournalEintragHinzu(text);
+  document.getElementById('journal-input').value = '';
+  zeigToast(t('toast_journal_gespeichert'));
+  ladeHeuteJournal();
+  mikroFeedback('#journal-eintraege-heute .journal-entry');
+}
+
+function fuegeJournalEintragHinzu(text) {
   const heute = heuteString();
   const journal = ls('journal', {});
   if (!journal[heute]) journal[heute] = [];
   journal[heute].push({ id: genId(), time: zeitstempel(), text, erstellt_am: new Date().toISOString() });
   lsSet('journal', journal);
-  document.getElementById('journal-input').value = '';
-  zeigToast(t('toast_journal_gespeichert'));
-  ladeHeuteJournal();
-  mikroFeedback('#journal-eintraege-heute .journal-entry');
 }
 
 function ladeHeuteJournal() {
@@ -4181,6 +4235,226 @@ function escapeHtml(value) {
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#039;');
+}
+
+// ============================================================
+// HALT FINDEN
+// ============================================================
+const HALT_STEPS = ['ankommen', 'beobachtung', 'gefuehl', 'beduerfnis', 'handlung'];
+let haltStep = 0;
+let haltState = {
+  belastung: '',
+  beobachtung: '',
+  beobachtungsKategorie: '',
+  gefuehle: [],
+  beduerfnisse: [],
+  handlung: ''
+};
+
+function haltCfg() {
+  const de = SPRACHE !== 'en';
+  return {
+    stepLabels: de ? ['Ankommen','Beobachtung','Gefühl','Bedürfnis','Schritt'] : ['Arrive','Observation','Feeling','Need','Step'],
+    belastung: de ? ['sehr aufgewühlt','angespannt','traurig','wütend','erschöpft','ich weiß es nicht'] : ['very stirred up','tense','sad','angry','exhausted','I do not know'],
+    gefuehle: de ? ['angespannt','traurig','wütend','ängstlich','erschöpft','überfordert','einsam','beschämt','unsicher','taub','unruhig','verletzt'] : ['tense','sad','angry','afraid','exhausted','overwhelmed','lonely','ashamed','uncertain','numb','restless','hurt'],
+    beduerfnisse: de ? ['Sicherheit','Ruhe','Halt','Klarheit','Verbindung','Verständnis','Schutz','Raum','Unterstützung','Entlastung','Autonomie','Wertschätzung'] : ['Safety','Calm','Support','Clarity','Connection','Understanding','Protection','Space','Help','Relief','Autonomy','Appreciation'],
+    deutungsWoerter: de
+      ? ['immer','nie','ständig','dauernd','extrem','respektlos','unfair','falsch','übertrieben','egal','schuld','versagt','ignoriert','absichtlich','typisch','unter druck','druck gesetzt']
+      : ['always','never','constantly','extremely','disrespectful','unfair','wrong','exaggerated','ignored','on purpose','typical','pressured','under pressure'],
+    beobachtungKategorien: de ? [
+      { id:'gesagt', label:'Jemand sagte / fragte etwas', hinweis:'Hilfreich ist der ungefähre Wortlaut oder die konkrete Frage.', starter:['Die Person sagte: "..."','Die Person fragte mich: "..."','Der Wortlaut war ungefähr: "..."'] },
+      { id:'getan', label:'Jemand tat etwas', hinweis:'Beschreibe eine sichtbare Handlung, möglichst ohne Motiv zu vermuten.', starter:['Die Person hat ...','Ich habe gesehen, dass ...','Die Person kam / ging / schrieb / nahm ...'] },
+      { id:'ausgeblieben', label:'Etwas blieb aus', hinweis:'Manchmal ist nicht das Geschehene belastend, sondern was nicht passiert ist.', starter:['Ich hatte erwartet, dass ...','Bisher ist nicht passiert, dass ...','Ich habe keine Antwort / Rückmeldung / Unterstützung bekommen, nachdem ...'] },
+      { id:'ereignis', label:'Ein Ereignis passierte', hinweis:'Hier geht es um Umstände, Termine, Nachrichten, Aufgaben oder körperliche Tatsachen.', starter:['Heute ist passiert, dass ...','Ich habe wahrgenommen, dass ...','Es gab ...','Ich habe seit ... / bis ... / während ...'] }
+    ] : [
+      { id:'gesagt', label:'Someone said / asked something', hinweis:'The approximate wording or concrete question is helpful.', starter:['The person said: "..."','The person asked me: "..."','The wording was roughly: "..."'] },
+      { id:'getan', label:'Someone did something', hinweis:'Describe a visible action, if possible without guessing the motive.', starter:['The person ...','I saw that ...','The person came / left / wrote / took ...'] },
+      { id:'ausgeblieben', label:'Something did not happen', hinweis:'Sometimes what did not happen is the stressful part.', starter:['I had expected that ...','So far it has not happened that ...','I have not received a reply / feedback / support after ...'] },
+      { id:'ereignis', label:'An event happened', hinweis:'This can be about circumstances, appointments, messages, tasks or bodily facts.', starter:['Today it happened that ...','I noticed that ...','There was ...','I have since ... / until ... / while ...'] }
+    ],
+    handlungen: de ? {
+      Sicherheit: [['Orientierung im Raum','Benenne innerlich fünf Dinge, die du siehst. Spüre danach beide Füße am Boden.'],['Körperkontakt zum Boden','Drücke beide Füße langsam in den Boden und lass wieder los. Wiederhole das dreimal.'],['Vertraute Person','Schreibe einer vertrauten Person: Kannst du kurz da sein? Ich brauche gerade Halt.']],
+      Ruhe: [['Ausatmen verlängern','Atme normal ein und etwas länger aus. Nur für sechs Atemzüge.'],['Reize reduzieren','Lege das Handy weg, senke Licht oder Geräusch, und bleib für zwei Minuten still sitzen.'],['Pause markieren','Sage innerlich: Ich muss gerade nichts lösen. Ich mache nur eine kleine Pause.']],
+      Halt: [['Hand aufs Herz','Lege eine Hand auf Brust oder Bauch und sage: Das ist gerade schwer, und ich bin hier.'],['Stabiler Sitz','Setz dich so, dass Rücken und Füße Halt haben. Spüre drei Kontaktpunkte.'],['Ein Satz','Schreibe einen Satz: Gerade brauche ich Halt, weil ...']],
+      Klarheit: [['Ein beobachtbarer Satz','Schreibe nur einen Satz darüber, was konkret passiert ist.'],['Nächster Schritt','Notiere nur den nächsten machbaren Schritt. Nicht den ganzen Plan.'],['Vertagen','Wenn möglich: Entscheide bewusst später und schreibe auf, wann du wieder hinschaust.']],
+      Verbindung: [['Kontakt aufnehmen','Schreibe: Kannst du mir kurz zuhören, ohne direkt Lösungen vorzuschlagen?'],['Jemanden benennen','Nenne eine Person, bei der du dich nicht erklären musst. Vielleicht reicht ein kurzer Kontakt.'],['Selbstkontakt','Frag dich leise: Was würde ich gerade einer guten Freundin sagen?']],
+      Verständnis: [['Zuhören erbitten','Formuliere: Ich möchte kurz erzählen. Bist du bereit, nur zuzuhören?'],['Selbstklärung','Schreibe: Ich reagiere so, weil mir wichtig ist ...'],['Langsam werden','Lies deine Beobachtung noch einmal und frage: Was ist daran wirklich wichtig?']],
+      Schutz: [['Abstand','Wenn möglich, nimm räumlich oder zeitlich Abstand. Ein Schritt zurück darf sein.'],['Gespräch pausieren','Formuliere: Ich brauche kurz Zeit und melde mich später wieder.'],['Grenze','Schreibe einen klaren Satz: Ich bin gerade nicht bereit für ...']],
+      Raum: [['Unterbrechen','Beende für zwei Minuten die aktuelle Tätigkeit. Kein Erklären, nur Raum schaffen.'],['Freier Satz','Schreibe ungeordnet auf, was da ist. Danach markiere nur einen wichtigen Satz.'],['Atmen und warten','Setze einen Timer auf zwei Minuten und entscheide erst danach weiter.']],
+      Unterstützung: [['Konkrete Bitte','Bitte nicht allgemein um Hilfe, sondern konkret: Kannst du X bis Y für mich tun?'],['Begleitung','Frag: Kannst du zehn Minuten mit mir sortieren, was der nächste Schritt ist?'],['Praktische Entlastung','Wähle eine Sache, die jemand anderes übernehmen oder mittragen könnte.']],
+      Entlastung: [['Eine Sache weniger','Streiche oder verschiebe eine kleine Aufgabe für heute.'],['Körper entlasten','Trinke Wasser, setz dich, senke die Schultern. Erst der Körper, dann die Lösung.'],['Kurzliste','Schreibe drei Dinge auf und markiere nur das, was wirklich heute sein muss.']],
+      Autonomie: [['Wahlmöglichkeit','Nenne zwei Optionen, die du wirklich hast, auch wenn beide klein sind.'],['Nein prüfen','Frage: Wozu möchte ich gerade Nein sagen, um zu mir Ja zu sagen?'],['Eigener Rhythmus','Formuliere: Ich entscheide, wann und wie ich antworte.']],
+      Wertschätzung: [['Anerkennen','Benenne eine Sache, die du gerade gut oder ehrlich versucht hast.'],['Bitte um Rückmeldung','Formuliere: Mir wäre wichtig zu hören, was du an meinem Beitrag gesehen hast.'],['Selbstwürdigung','Schreibe: Auch wenn es schwer ist, habe ich ...']]
+    } : {},
+    txt: {
+      stepWord: de ? 'Schritt' : 'Step',
+      back: de ? 'Zurück' : 'Back',
+      next: de ? 'Weiter' : 'Next',
+      restart: de ? 'Neu beginnen' : 'Start again',
+      save: de ? 'Als Notiz speichern' : 'Save as note',
+      saved: de ? '✓ Als Notiz gespeichert' : '✓ Saved as note',
+      chooseStarter: de ? 'Wähle oben eine Richtung, wenn du Satzstarter möchtest. Du kannst auch frei schreiben.' : 'Choose a direction above if you want sentence starters. You can also write freely.',
+      emptyObs: de ? 'Du darfst diesen Schritt auch überspringen. Wenn du etwas einträgst, hilft ein möglichst konkreter Satz.' : 'You may skip this step. If you write something, a concrete sentence helps.',
+      obsOk: de ? 'Das klingt schon recht konkret. Wenn du magst, bleib bei dem, was gesagt, getan, nicht getan oder wahrnehmbar passiert ist.' : 'This already sounds fairly concrete. If you like, stay with what was said, done, not done, or observably happened.',
+      obsWarn: de ? 'Ich höre, dass dich das bewegt. Manche Wörter klingen eher nach Wirkung, Deutung oder Verstärkung. Für die Beobachtung frage: Was wurde konkret gesagt, getan, nicht getan oder was ist passiert?' : 'I hear that this affects you. Some words sound more like impact, interpretation or emphasis. For the observation ask: what was said, done, not done, or what happened?',
+      finalWarn: de ? 'Deine Beobachtung enthält vielleicht noch Wirkung, Deutung oder Verstärkung. Wenn du magst, geh noch einmal zurück und nutze die Satzstarter.' : 'Your observation may still contain impact, interpretation or emphasis. If you like, go back and use the sentence starters.',
+      journalTitle: de ? 'Was brauche ich jetzt?' : 'What do I need now?'
+    }
+  };
+}
+
+function haltActions(showBack = true, showNext = true) {
+  const cfg = haltCfg().txt;
+  return `<div class="halt-actions">
+    ${showBack ? `<button class="btn btn-secondary" onclick="haltGehe(-1)">${cfg.back}</button>` : '<span></span>'}
+    ${showNext ? `<button class="btn btn-primary" onclick="haltGehe(1)">${cfg.next}</button>` : `<button class="btn btn-secondary" onclick="haltReset()">${cfg.restart}</button><button class="btn btn-primary" onclick="haltSpeichern()">${cfg.save}</button>`}
+  </div>`;
+}
+
+function haltChip(label, active, group, value = label) {
+  return `<button class="halt-chip ${active ? 'active' : ''}" onclick="haltWaehle('${group}', '${escapeHtml(value)}')">${escapeHtml(label)}</button>`;
+}
+
+function renderHaltFinden() {
+  const stepper = document.getElementById('halt-stepper');
+  const content = document.getElementById('halt-content');
+  if (!stepper || !content) return;
+  const cfg = haltCfg();
+  document.getElementById('halt-main-title').textContent = SPRACHE === 'en' ? 'What do I need now?' : 'Was brauche ich jetzt?';
+  document.getElementById('halt-intro').textContent = SPRACHE === 'en'
+    ? 'A moment to sort things: what happened, what am I feeling, what do I need, what might help now?'
+    : 'Ein Moment zum Sortieren: Was ist passiert, was fühle ich, was brauche ich, was könnte jetzt helfen?';
+  stepper.innerHTML = HALT_STEPS.map((id, i) => `<button class="halt-step ${i === haltStep ? 'active' : ''}" onclick="haltSetStep(${i})"><span class="halt-step-nr">${i + 1}. ${cfg.txt.stepWord}</span><span class="halt-step-label">${cfg.stepLabels[i]}</span></button>`).join('');
+  const id = HALT_STEPS[haltStep];
+  if (id === 'ankommen') content.innerHTML = haltRenderAnkommen(cfg);
+  if (id === 'beobachtung') content.innerHTML = haltRenderBeobachtung(cfg);
+  if (id === 'gefuehl') content.innerHTML = haltRenderGefuehl(cfg);
+  if (id === 'beduerfnis') content.innerHTML = haltRenderBeduerfnis(cfg);
+  if (id === 'handlung') content.innerHTML = haltRenderHandlung(cfg);
+}
+
+function haltRenderAnkommen(cfg) {
+  const de = SPRACHE !== 'en';
+  return `<div class="halt-title">${de ? 'Einen Moment Halt finden' : 'Find a moment of support'}</div>
+    <div class="halt-intro">${de ? 'Du musst gerade nichts perfekt verstehen. Wir schauen nur auf den nächsten kleinen Schritt.' : 'You do not need to understand everything perfectly. We only look for the next small step.'}</div>
+    <div class="halt-note">${de ? 'Wenn du sehr aufgewühlt bist: Spüre beide Füße am Boden. Schau dich im Raum um. Benenne innerlich drei Dinge, die du siehst.' : 'If you feel very stirred up: feel both feet on the floor. Look around the room. Silently name three things you see.'}</div>
+    <div class="halt-chips">${cfg.belastung.map(x => haltChip(x, haltState.belastung === x, 'belastung')).join('')}</div>
+    ${haltActions(false, true)}`;
+}
+
+function haltRenderBeobachtung(cfg) {
+  const de = SPRACHE !== 'en';
+  const kat = cfg.beobachtungKategorien.find(k => k.id === haltState.beobachtungsKategorie);
+  return `<div class="halt-title">${de ? 'Was ist passiert?' : 'What happened?'}</div>
+    <div class="halt-intro">${de ? 'Vielleicht beschreibt dein erster Satz schon, wie es auf dich gewirkt hat. Für die Beobachtung hilft: Was wurde gesagt, getan, nicht getan oder was ist passiert?' : 'Maybe your first sentence already describes how it affected you. For the observation, ask: what was said, done, not done, or what happened?'}</div>
+    <div class="halt-chips">${cfg.beobachtungKategorien.map(k => haltChip(k.label, haltState.beobachtungsKategorie === k.id, 'beobachtungsKategorie', k.id)).join('')}</div>
+    ${kat ? `<div class="halt-note"><strong>${escapeHtml(kat.label)}</strong><br>${escapeHtml(kat.hinweis)}<div class="halt-starter-list">${kat.starter.map(s => `<button class="halt-starter" onclick="haltSetBeobachtung('${escapeHtml(s)}')">${escapeHtml(s)}</button>`).join('')}</div></div>` : `<div class="halt-note">${cfg.txt.chooseStarter}</div>`}
+    <textarea id="halt-beobachtung" rows="3" oninput="haltState.beobachtung=this.value;haltUpdateObsHinweis()" placeholder="${de ? 'Beispiel: Ich habe um 10 Uhr geschrieben und bisher keine Antwort bekommen.' : 'Example: I wrote at 10 a.m. and have not received a reply yet.'}">${escapeHtml(haltState.beobachtung)}</textarea>
+    <div id="halt-obs-hinweis">${haltBeobachtungHinweis()}</div>
+    ${haltActions(true, true)}`;
+}
+
+function haltRenderGefuehl(cfg) {
+  const de = SPRACHE !== 'en';
+  return `<div class="halt-title">${de ? 'Was fühlst du?' : 'What are you feeling?'}</div>
+    <div class="halt-intro">${de ? 'Wähle ein oder mehrere Gefühle. Es muss nicht exakt sein. Annäherung reicht.' : 'Choose one or more feelings. It does not have to be exact. Approximation is enough.'}</div>
+    <div class="halt-chips">${cfg.gefuehle.map(x => haltChip(x, haltState.gefuehle.includes(x), 'gefuehle')).join('')}</div>
+    <div class="halt-note">${de ? 'Danke. Das ergibt Sinn, dass sich gerade etwas zeigt. Wir müssen es nicht wegmachen, nur verstehen, was wichtig ist.' : 'Thank you. It makes sense that something is showing up. We do not have to remove it, only understand what matters.'}</div>
+    ${haltActions(true, true)}`;
+}
+
+function haltRenderBeduerfnis(cfg) {
+  const de = SPRACHE !== 'en';
+  return `<div class="halt-title">${de ? 'Was könnte darunter wichtig sein?' : 'What might matter underneath?'}</div>
+    <div class="halt-intro">${de ? 'Ein Bedürfnis ist kein Vorwurf und keine Strategie. Es beschreibt, was für dich gerade Bedeutung hat.' : 'A need is not a blame and not a strategy. It describes what matters to you right now.'}</div>
+    <div class="halt-chips">${cfg.beduerfnisse.map(x => haltChip(x, haltState.beduerfnisse.includes(x), 'beduerfnisse')).join('')}</div>
+    <div class="halt-note">${de ? 'Wenn dieses Bedürfnis wichtig ist, muss es nicht sofort perfekt erfüllt werden. Ein kleiner Schritt zählt.' : 'If this need matters, it does not have to be met perfectly right away. One small step counts.'}</div>
+    ${haltActions(true, true)}`;
+}
+
+function haltRenderHandlung(cfg) {
+  const de = SPRACHE !== 'en';
+  const optionen = haltHandlungsOptionen(cfg);
+  const warn = haltEnthaeltDeutung() ? `<div class="halt-note warn"><strong>${de ? 'Beobachtungs-Check:' : 'Observation check:'}</strong><br>${cfg.txt.finalWarn}</div>` : '';
+  return `<div class="halt-title">${de ? 'Was wäre jetzt ein kleiner nächster Schritt?' : 'What could be one small next step?'}</div>
+    <div class="halt-intro">${de ? 'Wähle eine kleine Handlung oder Bitte. Sie soll machbar sein, nicht perfekt.' : 'Choose a small action or request. It should be doable, not perfect.'}</div>
+    ${warn}
+    <div class="halt-action-grid">${optionen.map(([titel, text]) => {
+      const value = `${titel}: ${text}`;
+      return `<button class="halt-action ${haltState.handlung === value ? 'active' : ''}" onclick="haltWaehleHandlung('${escapeHtml(value)}')"><strong>${escapeHtml(titel)}</strong>${escapeHtml(text)}</button>`;
+    }).join('')}</div>
+    <div class="section-label" style="padding-left:0;margin-top:14px">${de ? 'Notiz-Vorschau' : 'Note preview'}</div>
+    <div class="halt-summary">${escapeHtml(haltJournalText(cfg))}</div>
+    ${haltActions(true, false)}`;
+}
+
+function haltBeobachtungHinweis() {
+  const cfg = haltCfg();
+  if (!haltState.beobachtung.trim()) return `<div class="halt-note">${cfg.txt.emptyObs}</div>`;
+  if (!haltEnthaeltDeutung()) return `<div class="halt-note">${cfg.txt.obsOk}</div>`;
+  return `<div class="halt-note warn">${cfg.txt.obsWarn}</div>`;
+}
+
+function haltUpdateObsHinweis() {
+  const el = document.getElementById('halt-obs-hinweis');
+  if (el) el.innerHTML = haltBeobachtungHinweis();
+}
+
+function haltEnthaeltDeutung() {
+  const cfg = haltCfg();
+  const text = haltState.beobachtung.toLowerCase();
+  return cfg.deutungsWoerter.some(w => text.includes(w));
+}
+
+function haltHandlungsOptionen(cfg) {
+  if (SPRACHE === 'en') {
+    return [['Longer exhale','Breathe in normally and exhale a little longer. Just for six breaths.'],['One concrete sentence','Write only one sentence about what concretely happened.'],['Ask for listening','Write: Could you listen for a moment without offering solutions right away?']];
+  }
+  const key = haltState.beduerfnisse[0] || 'Ruhe';
+  return cfg.handlungen[key] || cfg.handlungen.Ruhe;
+}
+
+function haltJournalText(cfg = haltCfg()) {
+  return [
+    cfg.txt.journalTitle,
+    '',
+    `${SPRACHE === 'en' ? 'Observation' : 'Beobachtung'}: ${haltState.beobachtung || '...'}`,
+    `${SPRACHE === 'en' ? 'Feeling' : 'Gefühl'}: ${haltState.gefuehle.join(', ') || '...'}`,
+    `${SPRACHE === 'en' ? 'Need' : 'Bedürfnis'}: ${haltState.beduerfnisse.join(', ') || '...'}`,
+    `${SPRACHE === 'en' ? 'Next step' : 'Nächster Schritt'}: ${haltState.handlung || '...'}`
+  ].join('\n');
+}
+
+function haltSetStep(i) { haltStep = Math.max(0, Math.min(HALT_STEPS.length - 1, i)); renderHaltFinden(); }
+function haltGehe(delta) { haltSetStep(haltStep + delta); }
+function haltSetBeobachtung(text) { haltState.beobachtung = text; renderHaltFinden(); }
+function haltWaehleHandlung(value) { haltState.handlung = value; renderHaltFinden(); }
+
+function haltWaehle(group, value) {
+  if (group === 'belastung') haltState.belastung = value;
+  if (group === 'beobachtungsKategorie') haltState.beobachtungsKategorie = value;
+  if (group === 'gefuehle') toggleArrayWert(haltState.gefuehle, value);
+  if (group === 'beduerfnisse') { toggleArrayWert(haltState.beduerfnisse, value); haltState.handlung = ''; }
+  renderHaltFinden();
+}
+
+function toggleArrayWert(arr, value) {
+  const idx = arr.indexOf(value);
+  if (idx >= 0) arr.splice(idx, 1);
+  else arr.push(value);
+}
+
+function haltReset() {
+  haltStep = 0;
+  haltState = { belastung: '', beobachtung: '', beobachtungsKategorie: '', gefuehle: [], beduerfnisse: [], handlung: '' };
+  renderHaltFinden();
+}
+
+function haltSpeichern() {
+  fuegeJournalEintragHinzu(haltJournalText());
+  zeigToast(haltCfg().txt.saved);
+  ladeHeuteJournal();
+  mikroFeedback('#content-halt .halt-card');
 }
 
 function zeigeStartFehler(detail) {
@@ -6526,6 +6800,29 @@ function renderHilfeInhalt() {
         ? 'Alle Übungen, die du heute geplant hast, mit Status erledigt oder offen und Möglichkeit zur Bewertung.'
         : 'All exercises you have planned for today, with status done or open and the option to rate them.'}</div>
     </div>
+    <!-- HALT FINDEN -->
+    <div class="hilfe-sektion" id="hilfe-halt">
+      <div class="hilfe-h2">${de ? 'Halt finden - Was brauche ich jetzt?' : 'Find support - What do I need now?'}</div>
+      <div class="hilfe-p">${de
+        ? 'Dieser Tab ist für akute Momente gedacht, in denen du dich sortieren möchtest. Er führt dich kurz durch Beobachtung, Gefühl, Bedürfnis und einen kleinen nächsten Schritt.'
+        : 'This tab is for acute moments when you want to sort yourself. It briefly guides you through observation, feeling, need and one small next step.'}</div>
+
+      <div class="hilfe-h3">${de ? 'Beobachtung ohne Bewertung' : 'Observation without evaluation'}</div>
+      <div class="hilfe-p">${de
+        ? 'Im Beobachtungs-Schritt hilft dir die App, vom ersten Eindruck zu einer konkreteren Beschreibung zu kommen: Was wurde gesagt, getan, nicht getan oder was ist passiert?'
+        : 'In the observation step, the app helps you move from the first impression to a more concrete description: what was said, done, not done, or what happened?'}</div>
+
+      <div class="hilfe-h3">${de ? 'Gefühl, Bedürfnis, Schritt' : 'Feeling, need, step'}</div>
+      <div class="hilfe-p">${de
+        ? 'Danach wählst du Gefühle und Bedürfnisse aus. Aus dem ersten Bedürfnis entstehen kleine Handlungsvorschläge oder Bitten, die sofort machbar sein sollen.'
+        : 'After that, you choose feelings and needs. The first selected need creates small action suggestions or requests that should be immediately doable.'}</div>
+
+      <div class="hilfe-h3">${de ? 'Speichern' : 'Saving'}</div>
+      <div class="hilfe-p">${de
+        ? 'Am Ende kannst du die Klärung freiwillig als Notiz speichern. Sie landet im Notizbuch des heutigen Tages. Ohne diesen Klick wird nichts dauerhaft gespeichert.'
+        : "At the end, you can optionally save the clarification as a note. It goes into today's notebook. Without this click, nothing is saved permanently."}</div>
+    </div>
+
     <!-- CHECK-IN -->
     <div class="hilfe-sektion" id="hilfe-checkin">
       <div class="hilfe-h2">${de ? 'Check-in – wie geht es mir?' : 'Check-in – how am I doing?'}</div>
@@ -6792,7 +7089,7 @@ function initialisiereSprache() {
 
   // Tabs
   const tabBtns = document.querySelectorAll('.tab-btn');
-  const tabKeys = ['tab_heute','tab_checkin','tab_uebungen','tab_verlauf','tab_einst'];
+  const tabKeys = ['tab_heute','tab_halt','tab_checkin','tab_uebungen','tab_verlauf','tab_einst'];
   tabBtns.forEach((btn, i) => {
     if (tabKeys[i]) {
       const label = btn.querySelector('.tab-label');
@@ -6806,6 +7103,8 @@ function initialisiereSprache() {
     const map = {
       'Übung jetzt': t('section_uebung_jetzt'),
       'Exercise now': t('section_uebung_jetzt'),
+      'Halt finden': t('tab_halt'),
+      'Find support': t('tab_halt'),
       'Übungsvorschläge': t('section_vorschlaege'),
       'Exercise suggestions': t('section_vorschlaege'),
       'Notizbuch': t('section_notizbuch'),
@@ -6927,13 +7226,14 @@ function initialisiereSprache() {
 
   // Hilfe-Inhalt rendern (vollständig übersetzt)
   renderHilfeInhalt();
+  renderHaltFinden();
   // Hilfe
   const hilfeHeaderTitel = document.querySelector('.hilfe-header-titel');
   if (hilfeHeaderTitel) hilfeHeaderTitel.textContent = t('hilfe_titel');
   const hilfeClose = document.querySelector('.hilfe-close');
   if (hilfeClose) hilfeClose.textContent = t('hilfe_schliessen');
   const hilfeNavBtns = document.querySelectorAll('.hilfe-nav-btn');
-  const hilfeNavKeys = ['hilfe_nav_start','hilfe_nav_heute','hilfe_nav_checkin','hilfe_nav_uebungen','hilfe_nav_verlauf','hilfe_nav_einst','hilfe_nav_sync','hilfe_nav_trouble'];
+  const hilfeNavKeys = ['hilfe_nav_start','hilfe_nav_heute','hilfe_nav_halt','hilfe_nav_checkin','hilfe_nav_uebungen','hilfe_nav_verlauf','hilfe_nav_einst','hilfe_nav_sync','hilfe_nav_trouble'];
   hilfeNavBtns.forEach((btn, i) => {
     if (hilfeNavKeys[i]) btn.textContent = t(hilfeNavKeys[i]);
   });

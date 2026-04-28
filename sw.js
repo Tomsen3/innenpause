@@ -1,6 +1,6 @@
 // sw.js – stabilisierte Version (v2)
 
-const CACHE_NAME = 'innenpause-dynamic-v3';
+const CACHE_NAME = 'innenpause-dynamic-v4';
 
 // Dateien, die wir versuchen zu cachen (fehlertolerant)
 const SHELL = [
