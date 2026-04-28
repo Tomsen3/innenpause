@@ -484,43 +484,127 @@
     ],
     "en": [
       {
-        "text": "My breath is always here – even when everything else changes.",
+        "text": "What resonates in me today?",
+        "kategorie": "Resonance & Contact"
+      },
+      {
+        "text": "I may touch and be touched.",
+        "kategorie": "Resonance & Contact"
+      },
+      {
+        "text": "Resonance does not need performance - only openness.",
+        "kategorie": "Resonance & Contact"
+      },
+      {
+        "text": "What quality do I want to radiate today?",
+        "kategorie": "Resonance & Contact"
+      },
+      {
+        "text": "I am in relationship - with myself, with others, with life.",
+        "kategorie": "Resonance & Contact"
+      },
+      {
+        "text": "What from outside is touching me inwardly right now?",
+        "kategorie": "Resonance & Contact"
+      },
+      {
+        "text": "I do not have to control everything to be connected.",
+        "kategorie": "Resonance & Contact"
+      },
+      {
+        "text": "Resonance is not a technique - it is an attitude.",
+        "kategorie": "Resonance & Contact"
+      },
+      {
+        "text": "What echoes in me when I think of today?",
+        "kategorie": "Resonance & Contact"
+      },
+      {
+        "text": "I am not separate - I am part of something larger.",
+        "kategorie": "Resonance & Contact"
+      },
+      {
+        "text": "Three breaths belong to me.",
+        "kategorie": "Breath & Arriving"
+      },
+      {
+        "text": "Arriving may be quiet.",
+        "kategorie": "Breath & Arriving"
+      },
+      {
+        "text": "The breath always knows where I am.",
+        "kategorie": "Breath & Arriving"
+      },
+      {
+        "text": "I breathe myself into the now.",
+        "kategorie": "Breath & Arriving"
+      },
+      {
+        "text": "Every exhale is a small letting go.",
+        "kategorie": "Breath & Arriving"
+      },
+      {
+        "text": "I do not have to be anywhere else but here.",
+        "kategorie": "Breath & Arriving"
+      },
+      {
+        "text": "The next breath is already a new beginning.",
+        "kategorie": "Breath & Arriving"
+      },
+      {
+        "text": "Breathing is the simplest thing I can do for myself.",
+        "kategorie": "Breath & Arriving"
+      },
+      {
+        "text": "On the inhale: receiving. On the exhale: letting go.",
+        "kategorie": "Breath & Arriving"
+      },
+      {
+        "text": "Today my breath may be my anchor.",
+        "kategorie": "Breath & Arriving"
+      },
+      {
+        "text": "My body is not a problem - it is my home.",
         "kategorie": "Body & Safety"
       },
       {
-        "text": "I allow this moment to be exactly as it is.",
+        "text": "Safety arises from within.",
         "kategorie": "Body & Safety"
       },
       {
-        "text": "My nervous system is allowed to find its way to safety.",
+        "text": "What am I sensing right now - without judging it?",
         "kategorie": "Body & Safety"
       },
       {
-        "text": "I give myself a moment of stillness.",
+        "text": "My nervous system may orient itself.",
         "kategorie": "Body & Safety"
       },
       {
-        "text": "My body remembers safety – I invite it in.",
+        "text": "I give myself a moment of pausing.",
         "kategorie": "Body & Safety"
       },
       {
-        "text": "Connection begins in the body, not in the mind.",
+        "text": "My body remembers safety - I invite it in.",
         "kategorie": "Body & Safety"
       },
       {
-        "text": "Regulation is not failure – it is care.",
+        "text": "Connection begins in the body, not in the head.",
         "kategorie": "Body & Safety"
       },
       {
-        "text": "I am allowed to ask my body today, with kindness.",
+        "text": "Regulation is not failure - it is care.",
         "kategorie": "Body & Safety"
       },
       {
-        "text": "Co-regulation is a gift – to give and to receive.",
+        "text": "Today I may ask my body kindly.",
         "kategorie": "Body & Safety"
       },
       {
-        "text": "A tone today may simply be.",
+        "text": "Co-regulation is a gift - giving and receiving.",
+        "kategorie": "Body & Safety"
+      },
+      {
+        "text": "A tone may simply be today.",
         "kategorie": "Voice & Sound"
       },
       {
@@ -536,11 +620,11 @@
         "kategorie": "Voice & Sound"
       },
       {
-        "text": "I am allowed to be heard today.",
+        "text": "Today I may be audible.",
         "kategorie": "Voice & Sound"
       },
       {
-        "text": "My voice needs no stage – only permission.",
+        "text": "My voice needs no stage - only permission.",
         "kategorie": "Voice & Sound"
       },
       {
@@ -548,7 +632,7 @@
         "kategorie": "Voice & Sound"
       },
       {
-        "text": "I do not sing for others – I sing for myself.",
+        "text": "I do not sing for others - I sing for myself.",
         "kategorie": "Voice & Sound"
       },
       {
@@ -556,7 +640,7 @@
         "kategorie": "Voice & Sound"
       },
       {
-        "text": "What wants to resonate in me today?",
+        "text": "What wants to sound in me today?",
         "kategorie": "Voice & Sound"
       },
       {
@@ -564,27 +648,27 @@
         "kategorie": "Self-Compassion"
       },
       {
-        "text": "I am allowed to be incomplete.",
+        "text": "I may be incomplete.",
         "kategorie": "Self-Compassion"
       },
       {
-        "text": "Care for others begins here – with me.",
+        "text": "Care for others begins here - with me.",
         "kategorie": "Self-Compassion"
       },
       {
-        "text": "Mistakes are not a verdict on who I am.",
+        "text": "Mistakes are not a judgment about me.",
         "kategorie": "Self-Compassion"
       },
       {
-        "text": "I am enough, exactly as I am.",
+        "text": "I am good enough, just as I am.",
         "kategorie": "Self-Compassion"
       },
       {
-        "text": "Self-compassion is not weakness – it is strength.",
+        "text": "Self-compassion is not weakness - it is strength.",
         "kategorie": "Self-Compassion"
       },
       {
-        "text": "I am allowed to be gentle with myself today.",
+        "text": "Today I may be gentle with myself.",
         "kategorie": "Self-Compassion"
       },
       {
@@ -592,7 +676,7 @@
         "kategorie": "Self-Compassion"
       },
       {
-        "text": "I acknowledge what today has cost me.",
+        "text": "I acknowledge what today is costing me.",
         "kategorie": "Self-Compassion"
       },
       {
@@ -612,15 +696,15 @@
         "kategorie": "NVC & Inner Attitude"
       },
       {
-        "text": "Observe rather than evaluate – myself included.",
+        "text": "Observe instead of evaluate - myself too.",
         "kategorie": "NVC & Inner Attitude"
       },
       {
-        "text": "Connection matters more than being right.",
+        "text": "Connection comes before being right.",
         "kategorie": "NVC & Inner Attitude"
       },
       {
-        "text": "What do I need right now – and how can I ask for it?",
+        "text": "What do I need right now - and how can I ask for it?",
         "kategorie": "NVC & Inner Attitude"
       },
       {
@@ -628,11 +712,11 @@
         "kategorie": "NVC & Inner Attitude"
       },
       {
-        "text": "I am allowed to say no without explaining.",
+        "text": "I may say no without explaining myself.",
         "kategorie": "NVC & Inner Attitude"
       },
       {
-        "text": "Empathy begins with curiosity, not with advice.",
+        "text": "Empathy begins with curiosity, not advice.",
         "kategorie": "NVC & Inner Attitude"
       },
       {
@@ -640,7 +724,7 @@
         "kategorie": "NVC & Inner Attitude"
       },
       {
-        "text": "Which version of myself do I want to show up as today?",
+        "text": "Which version of me wants to show up today?",
         "kategorie": "Resources & Possibilities"
       },
       {
@@ -652,7 +736,7 @@
         "kategorie": "Resources & Possibilities"
       },
       {
-        "text": "Resources are always already there – I am allowed to look for them.",
+        "text": "Resources are already here - I may look for them.",
         "kategorie": "Resources & Possibilities"
       },
       {
@@ -660,11 +744,11 @@
         "kategorie": "Resources & Possibilities"
       },
       {
-        "text": "Every mood is a state – not a permanent state.",
+        "text": "Every mood is a state - not a permanent condition.",
         "kategorie": "Resources & Possibilities"
       },
       {
-        "text": "What would the resourceful version of me do right now?",
+        "text": "What would the resourceful version of me do now?",
         "kategorie": "Resources & Possibilities"
       },
       {
@@ -676,115 +760,115 @@
         "kategorie": "Resources & Possibilities"
       },
       {
-        "text": "What possibility do I see today that I missed yesterday?",
+        "text": "What possibility do I see that I did not see yesterday?",
         "kategorie": "Resources & Possibilities"
       },
       {
         "text": "The wound is the place where the light enters you.",
-        "kategorie": "Wisdom"
+        "kategorie": "Rumi & Wisdom"
       },
       {
         "text": "Sell your cleverness and buy bewilderment.",
-        "kategorie": "Wisdom"
+        "kategorie": "Rumi & Wisdom"
       },
       {
-        "text": "You are not a drop in the ocean – you are the entire ocean in a drop.",
-        "kategorie": "Wisdom"
+        "text": "You are not a drop in the ocean - you are the entire ocean in a drop.",
+        "kategorie": "Rumi & Wisdom"
       },
       {
-        "text": "What you seek is seeking you.",
-        "kategorie": "Wisdom"
+        "text": "What you seek is seeking you too.",
+        "kategorie": "Rumi & Wisdom"
       },
       {
-        "text": "Be still as water – and let life flow through you.",
-        "kategorie": "Wisdom"
+        "text": "Be still like water - and let life flow through you.",
+        "kategorie": "Rumi & Wisdom"
       },
       {
-        "text": "The heart is a mirror – keep it clear.",
-        "kategorie": "Wisdom"
+        "text": "The heart is a mirror - keep it clear.",
+        "kategorie": "Rumi & Wisdom"
       },
       {
-        "text": "Dance as if no one is watching – and as if everyone may.",
-        "kategorie": "Wisdom"
+        "text": "Dance as if no one is watching - and as if everyone may see.",
+        "kategorie": "Rumi & Wisdom"
       },
       {
-        "text": "In silence the deepest truth speaks.",
-        "kategorie": "Wisdom"
+        "text": "In stillness, the deepest truth speaks.",
+        "kategorie": "Rumi & Wisdom"
       },
       {
         "text": "Love is the bridge between you and everything else.",
-        "kategorie": "Wisdom"
+        "kategorie": "Rumi & Wisdom"
       },
       {
-        "text": "Who knows themselves knows everything.",
-        "kategorie": "Wisdom"
+        "text": "Who knows themselves knows their Lord.",
+        "kategorie": "Rumi & Wisdom"
       },
       {
         "text": "My body loves to stretch.",
-        "kategorie": "Movement & Vitality"
+        "kategorie": "Movement & Aliveness"
       },
       {
-        "text": "Vitality needs space – I make some.",
-        "kategorie": "Movement & Vitality"
+        "text": "Aliveness needs space - I make some for myself.",
+        "kategorie": "Movement & Aliveness"
       },
       {
-        "text": "When did I last dance – even just inwardly?",
-        "kategorie": "Movement & Vitality"
+        "text": "When did I last dance - even only inwardly?",
+        "kategorie": "Movement & Aliveness"
       },
       {
         "text": "Energy follows attention.",
-        "kategorie": "Movement & Vitality"
+        "kategorie": "Movement & Aliveness"
       },
       {
         "text": "I allow myself to be light.",
-        "kategorie": "Movement & Vitality"
+        "kategorie": "Movement & Aliveness"
       },
       {
-        "text": "Movement is not a duty – it is a gift to my body.",
-        "kategorie": "Movement & Vitality"
+        "text": "Movement is not an obligation - it is a gift to my body.",
+        "kategorie": "Movement & Aliveness"
       },
       {
-        "text": "What wants to move in me today – literally or figuratively?",
-        "kategorie": "Movement & Vitality"
+        "text": "What wants to move in me today - literally or figuratively?",
+        "kategorie": "Movement & Aliveness"
       },
       {
-        "text": "Vitality is not a goal but a decision.",
-        "kategorie": "Movement & Vitality"
+        "text": "Aliveness is not a goal, but a choice.",
+        "kategorie": "Movement & Aliveness"
       },
       {
         "text": "I shake off what is no longer needed.",
-        "kategorie": "Movement & Vitality"
+        "kategorie": "Movement & Aliveness"
       },
       {
         "text": "My body knows the way to joy.",
-        "kategorie": "Movement & Vitality"
+        "kategorie": "Movement & Aliveness"
       },
       {
         "text": "Not every pause needs to be filled.",
         "kategorie": "Stillness & Pausing"
       },
       {
-        "text": "In the quiet I hear what matters.",
+        "text": "In stillness I hear what matters.",
         "kategorie": "Stillness & Pausing"
       },
       {
-        "text": "I do not need to produce in order to be worthy.",
+        "text": "I do not have to produce anything to be valuable.",
         "kategorie": "Stillness & Pausing"
       },
       {
-        "text": "Silence is not lack – it is space.",
+        "text": "Stillness is not a lack - it is space.",
         "kategorie": "Stillness & Pausing"
       },
       {
-        "text": "What shows itself when I do nothing?",
+        "text": "What appears when I do nothing?",
         "kategorie": "Stillness & Pausing"
       },
       {
-        "text": "Pausing is not an interruption – it is the core.",
+        "text": "Pausing is not an interruption - it is the core.",
         "kategorie": "Stillness & Pausing"
       },
       {
-        "text": "I am allowed to slow down today.",
+        "text": "Today I may become slower.",
         "kategorie": "Stillness & Pausing"
       },
       {
@@ -796,35 +880,35 @@
         "kategorie": "Stillness & Pausing"
       },
       {
-        "text": "What do I want to release before the day ends?",
+        "text": "What do I want to let go of today before the day ends?",
         "kategorie": "Stillness & Pausing"
       },
       {
-        "text": "Which part of me needs special attention today?",
+        "text": "Which part of me especially needs attention today?",
         "kategorie": "Inner Parts"
       },
       {
-        "text": "I am allowed to welcome even the difficult parts of myself.",
+        "text": "I may welcome even the difficult parts within me.",
         "kategorie": "Inner Parts"
       },
       {
-        "text": "The child within me is allowed to be heard – without explanation.",
+        "text": "The child in me may be heard - without explanation.",
         "kategorie": "Inner Parts"
       },
       {
-        "text": "I do not need to function in order to be loveable.",
+        "text": "I do not have to function to be lovable.",
         "kategorie": "Inner Parts"
       },
       {
-        "text": "What would my younger self have needed today?",
+        "text": "What would my younger self have needed from me today?",
         "kategorie": "Inner Parts"
       },
       {
-        "text": "I carry wounds – and I also carry healing.",
+        "text": "I carry wounds - and I also carry healing.",
         "kategorie": "Inner Parts"
       },
       {
-        "text": "Every part of me has its reason.",
+        "text": "Every part within me has its reason.",
         "kategorie": "Inner Parts"
       },
       {
@@ -836,7 +920,7 @@
         "kategorie": "Inner Parts"
       },
       {
-        "text": "I am whole – even when I feel fragmented.",
+        "text": "I am whole - even when I feel fragmented.",
         "kategorie": "Inner Parts"
       },
       {
@@ -844,11 +928,11 @@
         "kategorie": "Gratitude & Reflection"
       },
       {
-        "text": "I acknowledge what I have accomplished.",
+        "text": "I acknowledge what I have done.",
         "kategorie": "Gratitude & Reflection"
       },
       {
-        "text": "One moment of today was good – which one?",
+        "text": "One moment of the day was good - which one?",
         "kategorie": "Gratitude & Reflection"
       },
       {
@@ -856,11 +940,11 @@
         "kategorie": "Gratitude & Reflection"
       },
       {
-        "text": "What do I want to take from today?",
+        "text": "What do I want to take with me from today?",
         "kategorie": "Gratitude & Reflection"
       },
       {
-        "text": "Three small things that were here today – even if the day was hard.",
+        "text": "Three small things that were here today - even if the day was hard.",
         "kategorie": "Gratitude & Reflection"
       },
       {
@@ -868,15 +952,15 @@
         "kategorie": "Gratitude & Reflection"
       },
       {
-        "text": "I close the day with dignity, not with judgement.",
+        "text": "I close the day with dignity, not with evaluation.",
         "kategorie": "Gratitude & Reflection"
       },
       {
-        "text": "Who was I for someone today – even unnoticed?",
+        "text": "What was I for someone today - even unnoticed?",
         "kategorie": "Gratitude & Reflection"
       },
       {
-        "text": "I thank myself for everything I attempted today.",
+        "text": "I thank myself for everything I tried today.",
         "kategorie": "Gratitude & Reflection"
       }
     ]
