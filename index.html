@@ -1885,7 +1885,7 @@
 // ============================================================
 // APP VERSION
 // ============================================================
-let APP_VERSION = '2.9';
+let APP_VERSION = '2.10';
 let VERSION_UPDATES = [];
 let VERSION_JSON_STATUS = { ok: false, quelle: 'fallback', meldung: 'Noch nicht geladen', geladenAm: null };
 let APP_START_OK = false;
@@ -1970,52 +1970,9 @@ let SPRACHE = localStorage.getItem('sprache') || 'de';
 
 function setSprache(code) {
   localStorage.setItem('sprache', code);
-
-  // Übungen übersetzen – IDs und Nutzerdaten bleiben erhalten.
-  // Fix v2.3: Dreistufige Lookup-Strategie für maximale Robustheit:
-  //   1. Titel-Lookup in Zielsprache (idempotent – schon korrekt)
-  //   2. Titel-Lookup in Quellsprache (Normalfall)
-  //   3. Positions-Fallback via reihenfolge (wenn Titel durch alte Version abweicht)
-  const deMap = {};
-  STANDARD_UEBUNGEN_DE.forEach((u, i) => { if (!(u.titel in deMap)) deMap[u.titel] = i; });
-  const enMap = {};
-  STANDARD_UEBUNGEN_EN.forEach((u, i) => { if (!(u.titel in enMap)) enMap[u.titel] = i; });
-
-  const targetPool = code === 'en' ? STANDARD_UEBUNGEN_EN : STANDARD_UEBUNGEN_DE;
-  const sourceMap  = code === 'en' ? deMap : enMap;
-  const targetMap  = code === 'en' ? enMap : deMap;
-
-  const gespeichert = getUebungen();
-  const uebersetzt = gespeichert.map(u => {
-    // Stufe 1: Schon in Zielsprache? → unverändert (idempotent)
-    if (targetMap[u.titel] !== undefined) return u;
-
-    // Stufe 2: Titel in Quellsprache gefunden → normal übersetzen
-    const idx = sourceMap[u.titel];
-    if (idx !== undefined && targetPool[idx]) {
-      const ziel = targetPool[idx];
-      return { ...u, titel: ziel.titel, beschreibung: ziel.beschreibung };
-    }
-
-    // Stufe 3: Positions-Fallback – reihenfolge als Index nutzen
-    // Greift wenn Titel im Storage von aktueller Version abweicht (alte Daten)
-    const pos = u.reihenfolge;
-    if (typeof pos === 'number' && pos >= 0 && pos < targetPool.length) {
-      const ziel = targetPool[pos];
-      // Sicherheitscheck: Kategorie muss übereinstimmen
-      if (ziel && ziel.kategorie === u.kategorie) {
-        return { ...u, titel: ziel.titel, beschreibung: ziel.beschreibung };
-      }
-    }
-
-    // Kein Pendant gefunden → eigene/benutzerdefinierte Übung, unverändert lassen
-    return u;
-  });
-
-  lsSet('exercises', uebersetzt);
+  uebersetzeGespeichertenUebungspool(code);
   location.reload();
 }
-
 const STRINGS = {
   de: {
     // App
@@ -3357,7 +3314,7 @@ const STANDARD_UEBUNGEN_DE = [
   { titel: "5-Punkte-Entspannung", beschreibung: "Fünf Körperstellen nacheinander bewusst entspannen: Stirn – Kiefer – Schultern – Hände – Bauch. Bei jeder: einatmen, kurz anspannen, beim Ausatmen loslassen. Fünf Runden, fünf Minuten, fühlbarer Effekt.", kategorie: "Körperwahrnehmung", dauer_minuten: 5, tageszeit: ["mittag", "abend"] },
 
   // ── Ressourcen & Möglichkeiten ──────────────────────────────────────────
-  { titel: "Grounding im schwierigen Moment", beschreibung: "Nenne 5 Dinge, die du sehen kannst – 4, die du berühren kannst – 3, die du hören kannst – 2, die du riechen kannst – 1, das du schmecken kannst. Diese 5-4-3-2-1-Methode holt das Nervensystem in den gegenwärtigen Moment zurück.", kategorie: "Schwierige Momente", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
+  { titel: "Erdung im schwierigen Moment", beschreibung: "Nenne 5 Dinge, die du sehen kannst – 4, die du berühren kannst – 3, die du hören kannst – 2, die du riechen kannst – 1, das du schmecken kannst. Diese 5-4-3-2-1-Methode holt das Nervensystem in den gegenwärtigen Moment zurück.", kategorie: "Schwierige Momente", dauer_minuten: 3, tageszeit: ["mittag", "abend"] },
   { titel: "Welche Version von mir ist heute gefragt?", beschreibung: "Stell dir vor, es gibt verschiedene Versionen von dir – die Ruhige, die Entschlossene, die Neugierige. Welche wäre heute hilfreich? Wie würde sie stehen, sprechen, atmen? Probiere es kurz aus.", kategorie: "Ressourcen & Möglichkeiten", dauer_minuten: 3, tageszeit: ["morgen"] },
   { titel: "Was wäre, wenn es leichter ginge?", beschreibung: "Wähle etwas, das sich gerade schwer anfühlt. Frage dich: Was wäre, wenn es leichter ginge? Nicht als Verneinung der Schwere – sondern als Öffnung. Was würde ich anders tun? Welche Option sehe ich dann?", kategorie: "Ressourcen & Möglichkeiten", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
   { titel: "Zustand benennen und wählen", beschreibung: "Welchen inneren Zustand erlebe ich gerade – erschöpft, angespannt, neugierig, ruhig? Benenne ihn ohne Wertung. Dann frage: Welcher Zustand wäre heute hilfreich? Was bräuchte es, um einen Schritt dorthin zu gehen?", kategorie: "Ressourcen & Möglichkeiten", dauer_minuten: 3, tageszeit: ["morgen", "mittag"] },
@@ -3375,7 +3332,7 @@ const STANDARD_UEBUNGEN_DE = [
   { titel: "Das Gute festhalten", beschreibung: "Schreibe heute Abend drei konkrete Momente auf, die gut waren – auch kleine: ein Lächeln, ein Atemzug Frischluft, ein erledigter Satz. Nicht um schönzureden – sondern um das Positive im Gehirn zu verankern. Positive Neuroplastizität braucht bewusste Aufmerksamkeit.", kategorie: "Schreiben & Ausdruck", dauer_minuten: 3, tageszeit: ["abend"] },
 
   // ── Schwierige Momente ───────────────────────────────────────────────────
-  { titel: "5-4-3-2-1 Grounding", beschreibung: "Benenne laut oder innerlich: 5 Dinge, die du siehst – 4, die du hörst – 3, die du spürst – 2, die du riechst – 1, das du schmeckst. Diese Technik unterbricht akuten Stress zuverlässig durch Aktivierung aller Sinne.", kategorie: "Schwierige Momente", dauer_minuten: 2, tageszeit: ["morgen", "mittag", "abend"] },
+  { titel: "5-4-3-2-1-Erdung", beschreibung: "Benenne laut oder innerlich: 5 Dinge, die du siehst – 4, die du hörst – 3, die du spürst – 2, die du riechst – 1, das du schmeckst. Diese Technik unterbricht akuten Stress zuverlässig durch Aktivierung aller Sinne.", kategorie: "Schwierige Momente", dauer_minuten: 2, tageszeit: ["morgen", "mittag", "abend"] },
   { titel: "STOP-Pause", beschreibung: "S – Stoppe, was du tust. T – Take a breath: ein tiefer Atemzug. O – Observe: Was nehme ich gerade wahr – im Körper, im Kopf, in der Situation? P – Proceed: Was ist jetzt der nächste sinnvolle Schritt? Eine Minute, die alles verändert.", kategorie: "Schwierige Momente", dauer_minuten: 2, tageszeit: ["morgen", "mittag", "abend"] },
   { titel: "Atem verlängern bei Stress", beschreibung: "Wenn du dich angespannt oder getriggert fühlst: Atme 4 Sekunden ein – 2 halten – 6 Sekunden aus. Der verlängerte Ausatem aktiviert sofort den Parasympathikus. Wiederhole 5 mal. Auch in schwierigen Gesprächen unbemerkt möglich.", kategorie: "Schwierige Momente", dauer_minuten: 2, tageszeit: ["morgen", "mittag", "abend"] },
   { titel: "Sicherheitsanker aktivieren", beschreibung: "Denke an einen Ort, eine Person oder einen Gegenstand, bei dem du dich sicher fühlst. Vergegenwärtige ihn so konkret wie möglich – Bild, Geruch, Klang, Gefühl. Lass den Körper ankommen. Dieser innere Anker ist immer verfügbar.", kategorie: "Schwierige Momente", dauer_minuten: 2, tageszeit: ["morgen", "mittag", "abend"] },
@@ -3413,6 +3370,65 @@ const STANDARD_UEBUNGEN_DE = [
 const IMPULSE_POOL = SPRACHE === 'en' ? IMPULSE_POOL_EN : IMPULSE_POOL_DE;
 const TAGESFRAGEN  = SPRACHE === 'en' ? TAGESFRAGEN_EN  : TAGESFRAGEN_DE;
 const STANDARD_UEBUNGEN = SPRACHE === 'en' ? STANDARD_UEBUNGEN_EN : STANDARD_UEBUNGEN_DE;
+
+function uebungsSprachMaps() {
+  const deMap = {};
+  const enMap = {};
+  STANDARD_UEBUNGEN_DE.forEach((u, i) => { if (!(u.titel in deMap)) deMap[u.titel] = i; });
+  STANDARD_UEBUNGEN_EN.forEach((u, i) => { if (!(u.titel in enMap)) enMap[u.titel] = i; });
+  return { deMap, enMap };
+}
+
+function uebersetzeGespeichertenUebungspool(code = SPRACHE) {
+  const gespeichert = getUebungen();
+  if (!Array.isArray(gespeichert) || gespeichert.length === 0) return 0;
+
+  const { deMap, enMap } = uebungsSprachMaps();
+  const targetPool = code === 'en' ? STANDARD_UEBUNGEN_EN : STANDARD_UEBUNGEN_DE;
+  const sourceMap  = code === 'en' ? deMap : enMap;
+  const targetMap  = code === 'en' ? enMap : deMap;
+  let geaendert = 0;
+
+  const uebersetzt = gespeichert.map(u => {
+    const kategorie = KAT_EN_DE[u.kategorie] || u.kategorie;
+    let idx = targetMap[u.titel];
+    if (idx === undefined) idx = sourceMap[u.titel];
+    if (idx === undefined && typeof u.reihenfolge === 'number' && targetPool[u.reihenfolge]) {
+      idx = u.reihenfolge;
+    }
+
+    const ziel = idx !== undefined ? targetPool[idx] : null;
+    if (!ziel) {
+      const katFix = kategorie !== u.kategorie ? { ...u, kategorie } : u;
+      if (katFix !== u) geaendert++;
+      return katFix;
+    }
+
+    const neu = {
+      ...u,
+      titel: ziel.titel,
+      beschreibung: ziel.beschreibung,
+      kategorie: ziel.kategorie,
+      dauer_minuten: ziel.dauer_minuten,
+      tageszeit: Array.isArray(ziel.tageszeit) ? [...ziel.tageszeit] : []
+    };
+
+    if (
+      neu.titel !== u.titel ||
+      neu.beschreibung !== u.beschreibung ||
+      neu.kategorie !== u.kategorie ||
+      neu.dauer_minuten !== u.dauer_minuten ||
+      JSON.stringify(neu.tageszeit) !== JSON.stringify(u.tageszeit || [])
+    ) geaendert++;
+    return neu;
+  });
+
+  if (geaendert > 0) {
+    lsSet('exercises', uebersetzt);
+    localStorage.removeItem('daily_suggestions');
+  }
+  return geaendert;
+}
 
 // HILFSFUNKTIONEN
 // ============================================================
@@ -5089,7 +5105,11 @@ function speichereTageszeitenGrenzen() {
 function importiereStandardPoolStill() {
   // Wird beim ersten Start automatisch aufgerufen – kein Confirm
   const alle = getUebungen();
-  if (alle.length > 0) return; // Schon vorhanden
+  if (alle.length > 0) {
+    const angepasst = uebersetzeGespeichertenUebungspool(SPRACHE);
+    if (angepasst > 0) console.log('Übungspool sprachlich angepasst:', angepasst, 'Übungen, Sprache:', SPRACHE);
+    return; // Schon vorhanden
+  }
   // Lädt den Pool in der eingestellten Sprache
   const pool = SPRACHE === 'en' ? STANDARD_UEBUNGEN_EN : STANDARD_UEBUNGEN_DE;
   const neu = pool.map((u, i) => ({

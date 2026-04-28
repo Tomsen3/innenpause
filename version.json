@@ -1,13 +1,13 @@
 {
-  "appVersion": "2.9",
+  "appVersion": "2.10",
   "released": "2026-04-28",
   "updates": [
     {
-      "version": "2.9",
+      "version": "2.10",
       "changelog": [
-        "Header und Tagesimpuls farblich leichter gestaltet",
-        "Begruessung und Datum tageszeitabhaengig im Header angezeigt",
-        "Schnellwahl 2 und 5 Minuten direkt unter der Uebung platziert"
+        "Uebungspool wird beim Start automatisch an die gewaehlte Sprache angepasst",
+        "Deutsche Standarduebungen mit Grounding-Begriff auf Erdung umbenannt",
+        "Alte Uebungsvorschlaege werden nach Sprachkorrekturen neu erzeugt"
       ]
     }
   ]
