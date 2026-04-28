@@ -636,7 +636,8 @@
 // ============================================================
 // APP VERSION
 // ============================================================
-let APP_VERSION = '3.0';
+const BUNDLED_APP_VERSION = '3.1';
+let APP_VERSION = BUNDLED_APP_VERSION;
 let VERSION_UPDATES = [];
 let VERSION_JSON_STATUS = { ok: false, quelle: 'fallback', meldung: 'Noch nicht geladen', geladenAm: null };
 let APP_START_OK = false;
@@ -715,11 +716,16 @@ function getPendingUpdatesForDisplay(gespeichert) {
 // ============================================================
 // MEHRSPRACHIGKEIT (i18n) – Punkt 12
 // Sprache wird in localStorage unter 'sprache' gespeichert.
-// Umschalten: setSprache('en') oder setSprache('de') → reload.
+// Umschalten: setSprache('en') oder setSprache('de') -> reload.
 // ============================================================
 let SPRACHE = localStorage.getItem('sprache') || 'de';
+let AKTIVER_TAB = localStorage.getItem('aktiver_tab') || 'heute';
 
 function setSprache(code) {
+  if (code === SPRACHE) return;
+  const aktiverTab = getAktiverTab();
+  if (aktiverTab) localStorage.setItem('aktiver_tab', aktiverTab);
+  merkeScrollPositionFuerSprachwechsel();
   localStorage.setItem('sprache', code);
   uebersetzeGespeichertenUebungspool(code);
   location.reload();
@@ -1103,7 +1109,49 @@ function genId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 }
 
-function zeigeTab(name) {
+function getAktiverTab() {
+  const active = document.querySelector('.tab-content.active');
+  return active?.id?.replace('content-', '') || AKTIVER_TAB || 'heute';
+}
+
+function merkeScrollPositionFuerSprachwechsel() {
+  try {
+    sessionStorage.setItem('sprachwechsel_scroll_y', String(window.scrollY || document.documentElement.scrollTop || 0));
+  } catch (e) {
+    localStorage.setItem('sprachwechsel_scroll_y', String(window.scrollY || document.documentElement.scrollTop || 0));
+  }
+}
+
+function holeScrollPositionNachSprachwechsel() {
+  let raw = null;
+  try {
+    raw = sessionStorage.getItem('sprachwechsel_scroll_y');
+    sessionStorage.removeItem('sprachwechsel_scroll_y');
+  } catch (e) {
+    raw = localStorage.getItem('sprachwechsel_scroll_y');
+    localStorage.removeItem('sprachwechsel_scroll_y');
+  }
+
+  const y = Number(raw);
+  return Number.isFinite(y) && y > 0 ? y : null;
+}
+
+function stelleScrollPositionNachSprachwechselWiederHer() {
+  const y = holeScrollPositionNachSprachwechsel();
+  if (y == null) return;
+
+  requestAnimationFrame(() => {
+    window.scrollTo({ top: y, left: 0, behavior: 'auto' });
+    setTimeout(() => window.scrollTo({ top: y, left: 0, behavior: 'auto' }), 80);
+  });
+}
+
+function zeigeTab(name, speichern = true) {
+  if (!document.getElementById('content-' + name) || !document.getElementById('tab-' + name)) {
+    name = 'heute';
+  }
+  AKTIVER_TAB = name;
+  if (speichern) localStorage.setItem('aktiver_tab', name);
   document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
   document.getElementById('content-' + name).classList.add('active');
@@ -2256,7 +2304,11 @@ async function setzeAppCacheZurueck() {
   try {
     if ('caches' in window) {
       const keys = await caches.keys();
-      await Promise.all(keys.map(key => caches.delete(key)));
+      await Promise.all(
+        keys
+          .filter(key => key.startsWith('innenpause-'))
+          .map(key => caches.delete(key))
+      );
     }
 
     if ('serviceWorker' in navigator) {
@@ -2349,6 +2401,7 @@ async function aktualisiereDebugStatus() {
     : `${VERSION_JSON_STATUS.quelle}: ${VERSION_JSON_STATUS.meldung}`;
   const gespeicherteVersion = getGespeicherteVersion();
   const updateOffen = vergleicheVersionen(gespeicherteVersion, APP_VERSION) < 0;
+  const versionsStatus = getVersionsStatus();
   const cacheStatus = await ermittleCacheStatus();
   const swRegistrierbar = 'serviceWorker' in navigator;
   const swController = !!(swRegistrierbar && navigator.serviceWorker.controller);
@@ -2356,7 +2409,8 @@ async function aktualisiereDebugStatus() {
 
   box.innerHTML = [
     debugZeile('index.html geladen', document.readyState || 'unbekannt', true),
-    debugZeile('Geladene App-Version', APP_VERSION, true),
+    debugZeile('Geladene App-Version', versionsStatus.geladen, true),
+    debugZeile('Online verfügbare Version', versionsStatus.online, versionsStatus.onlineOk),
     debugZeile('Gespeicherte Version', gespeicherteVersion + (updateOffen ? ' · Update offen' : ''), !updateOffen),
     debugZeile('version.json geladen', VERSION_JSON_STATUS.ok ? 'ja' : 'nein', VERSION_JSON_STATUS.ok),
     debugZeile('version.json Detail', versionStatus, VERSION_JSON_STATUS.ok),
@@ -2986,14 +3040,7 @@ function ladeEinstellungenUI() {
   if (aaEl) aaEl.checked = autoAkk;
 
   // Versionsanzeige
-  const vEl = document.getElementById('version-anzeige');
-  if (vEl) {
-    const gespeichert = getGespeicherteVersion();
-    const aktuell = APP_VERSION;
-    vEl.textContent = vergleicheVersionen(gespeichert, aktuell) < 0
-      ? `Installiert: ${gespeichert} · Neu: ${aktuell} ⚠️`
-      : `Version ${aktuell} · aktuell ✓`;
-  }
+  renderVersionsAnzeige();
   ladeSyncUI();
   aktualisiereDebugStatus();
   let total = 0;
@@ -3370,12 +3417,40 @@ function getGespeicherteVersion() {
   return localStorage.getItem('app_version') || '1.0';
 }
 
+function getVersionsStatus() {
+  return {
+    installiert: getGespeicherteVersion(),
+    geladen: BUNDLED_APP_VERSION,
+    online: APP_VERSION,
+    onlineOk: VERSION_JSON_STATUS.ok
+  };
+}
+
+function renderVersionsAnzeige() {
+  const vEl = document.getElementById('version-anzeige');
+  if (!vEl) return;
+
+  const status = getVersionsStatus();
+  const updateOffen = vergleicheVersionen(status.installiert, status.online) < 0;
+  const onlineText = status.onlineOk
+    ? status.online
+    : (SPRACHE === 'en' ? `not checked (${status.online})` : `nicht geprueft (${status.online})`);
+
+  vEl.innerHTML = [
+    `${SPRACHE === 'en' ? 'Installed' : 'Installiert'}: ${status.installiert}`,
+    `${SPRACHE === 'en' ? 'Loaded' : 'Geladen'}: ${status.geladen}`,
+    `${SPRACHE === 'en' ? 'Online available' : 'Online verfuegbar'}: ${onlineText}`,
+    updateOffen
+      ? (SPRACHE === 'en' ? 'Update ready' : 'Update bereit')
+      : (SPRACHE === 'en' ? 'Up to date' : 'Aktuell')
+  ].join('<br>');
+}
+
 function pruefeUpdate(manuell = false) {
   const gespeichert = getGespeicherteVersion();
   const updateVerfuegbar = vergleicheVersionen(gespeichert, APP_VERSION) < 0;
 
-  const vEl = document.getElementById('version-anzeige');
-  if (vEl) vEl.textContent = `Installiert: ${gespeichert} · Aktuell: ${APP_VERSION}`;
+  renderVersionsAnzeige();
 
   if (!updateVerfuegbar) {
     if (manuell) zeigToast(t('toast_aktuell'));
@@ -4098,32 +4173,92 @@ function importiereStandardPoolEN() {
 }
 
 // Sync-Erinnerung mit übersetztem Text
+function hatSicherungswuerdigeDaten() {
+  return zaehleCheckins() > 0 ||
+    Object.keys(ls('journal', {})).length > 0 ||
+    Object.keys(ls('daily_summary', {})).length > 0 ||
+    Object.keys(ls('daily_exercises', {})).length > 0;
+}
+
+function sollBackupErinnern() {
+  if (!hatSicherungswuerdigeDaten()) return false;
+
+  const heute = heuteString();
+  if (localStorage.getItem('backup_erinnerung_datum') === heute) return false;
+
+  const letzterExport = localStorage.getItem('backup_letzter_export');
+  if (!letzterExport) return true;
+
+  return tageDifferenzISO(letzterExport, heute) >= 7;
+}
+
+function backupExportUndSchliesse() {
+  exportiereAllesDaten();
+  schliesseSyncErinnerung();
+}
+
 function zeigeSyncErinnerung() {
   const info = getSyncInfo();
-  if (!info) return;
   const heute = heuteString();
-  const letzteErinnerung = localStorage.getItem('sync_erinnerung_datum');
-  if (letzteErinnerung === heute) return;
-  localStorage.setItem('sync_erinnerung_datum', heute);
 
   const el = document.getElementById('sync-erinnerung');
   const infoEl = document.getElementById('sync-erinnerung-info');
   if (!el) return;
 
   const titelEl = el.querySelector('[style*="Lora"]');
-  if (titelEl) titelEl.textContent = t('sync_erinnerung_titel');
-  const textEl = el.querySelector('[style*="color:var(--text2)"]');
-  if (textEl) textEl.textContent = t('sync_erinnerung_text');
-  const spaeterBtn = el.querySelector('[onclick="schliesseSyncErinnerung()"]');
-  if (spaeterBtn) spaeterBtn.textContent = t('sync_erinnerung_spaeter');
-  const ladenBtn = el.querySelector('[onclick="syncLadenUndSchliesse()"]');
-  if (ladenBtn) ladenBtn.textContent = t('sync_erinnerung_laden');
-  const speichernBtn = el.querySelector('[onclick="syncSpeichernUndSchliesse()"]');
-  if (speichernBtn) speichernBtn.textContent = t('sync_erinnerung_speichern');
+  const aktionButtons = el.querySelectorAll('button');
+  const spaeterBtn = aktionButtons[0];
+  const ladenBtn = aktionButtons[1];
+  const speichernBtn = aktionButtons[2];
 
-  if (infoEl && info.letzter_sync) {
-    const d = new Date(info.letzter_sync).toLocaleString(t('verlauf_datum_locale'));
-    infoEl.textContent = t('sync_datei_prefix') + info.dateiname + ' · ' + t('sync_letzter_prefix') + d;
+  if (info) {
+    const letzteErinnerung = localStorage.getItem('sync_erinnerung_datum');
+    if (letzteErinnerung === heute) return;
+    localStorage.setItem('sync_erinnerung_datum', heute);
+
+    if (titelEl) titelEl.textContent = t('sync_erinnerung_titel');
+    const textEl = el.querySelector('[style*="color:var(--text2)"]');
+    if (textEl) textEl.textContent = t('sync_erinnerung_text');
+    if (spaeterBtn) spaeterBtn.textContent = t('sync_erinnerung_spaeter');
+    if (ladenBtn) {
+      ladenBtn.style.display = '';
+      ladenBtn.textContent = t('sync_erinnerung_laden');
+      ladenBtn.setAttribute('onclick', 'syncLadenUndSchliesse()');
+    }
+    if (speichernBtn) {
+      speichernBtn.textContent = t('sync_erinnerung_speichern');
+      speichernBtn.setAttribute('onclick', 'syncSpeichernUndSchliesse()');
+    }
+
+    if (infoEl && info.letzter_sync) {
+      const d = new Date(info.letzter_sync).toLocaleString(t('verlauf_datum_locale'));
+      infoEl.textContent = t('sync_datei_prefix') + info.dateiname + ' · ' + t('sync_letzter_prefix') + d;
+    }
+    el.style.display = 'flex';
+    return;
+  }
+
+  if (!sollBackupErinnern()) return;
+  localStorage.setItem('backup_erinnerung_datum', heute);
+
+  if (titelEl) titelEl.textContent = SPRACHE === 'en' ? 'Backup reminder' : 'Backup-Erinnerung';
+  const textEl = el.querySelector('[style*="color:var(--text2)"]');
+  if (textEl) {
+    textEl.textContent = SPRACHE === 'en'
+      ? 'Your entries are stored only on this device. A quick JSON export protects them if the browser or device loses local data.'
+      : 'Deine Einträge liegen nur auf diesem Gerät. Ein kurzes JSON-Backup schützt sie, falls Browser oder Gerät lokale Daten verlieren.';
+  }
+  if (infoEl) {
+    const letzterExport = localStorage.getItem('backup_letzter_export');
+    infoEl.textContent = letzterExport
+      ? (SPRACHE === 'en' ? `Last export: ${letzterExport}` : `Letzter Export: ${letzterExport}`)
+      : (SPRACHE === 'en' ? 'No backup export saved yet.' : 'Noch kein Backup-Export vermerkt.');
+  }
+  if (spaeterBtn) spaeterBtn.textContent = SPRACHE === 'en' ? 'Later' : 'Später';
+  if (ladenBtn) ladenBtn.style.display = 'none';
+  if (speichernBtn) {
+    speichernBtn.textContent = SPRACHE === 'en' ? 'Export backup' : 'Backup exportieren';
+    speichernBtn.setAttribute('onclick', 'backupExportUndSchliesse()');
   }
   el.style.display = 'flex';
 }
@@ -4210,6 +4345,8 @@ function ladeEinstellungen() {
 function rendereStartansicht() {
   ladeHeuteTab();
   ladeStreak();
+  zeigeTab(AKTIVER_TAB, false);
+  stelleScrollPositionNachSprachwechselWiederHer();
   pruefeUpdate();
   zeigeSyncErinnerung();
 }
