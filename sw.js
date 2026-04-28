@@ -1,11 +1,16 @@
-// sw.js – stabilisierte Version (v2)
+// sw.js - stabilisierte Version (v3)
 
-const CACHE_NAME = 'innenpause-dynamic-v4';
+const CACHE_NAME = 'innenpause-v3-0';
 
-// Dateien, die wir versuchen zu cachen (fehlertolerant)
 const SHELL = [
   './index.html',
-  './manifest.json'
+  './manifest.json',
+  './css/styles.css',
+  './js/sync-backup.js',
+  './js/pdf-export.js',
+  './version.json',
+  './data/bausteine.json',
+  './data/hilfe.json'
 ];
 
 // INSTALL
@@ -43,6 +48,20 @@ self.addEventListener('fetch', event => {
 
   // version.json IMMER frisch
   if (url.pathname.endsWith('version.json')) {
+    event.respondWith(
+      fetch(event.request)
+        .then(res => {
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+          return res;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // ausgelagerte App-Daten frisch laden, offline aus Cache
+  if (url.pathname.endsWith('/data/bausteine.json') || url.pathname.endsWith('/data/hilfe.json')) {
     event.respondWith(
       fetch(event.request)
         .then(res => {

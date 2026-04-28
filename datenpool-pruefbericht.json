@@ -1,0 +1,1080 @@
+{
+  "erstellt_am": "2026-04-28T18:19:56.050Z",
+  "quelle": "data/bausteine.json",
+  "anzahl": {
+    "de": 150,
+    "en": 150,
+    "gleich": true
+  },
+  "ids_und_reihenfolge": {
+    "simuliert": true,
+    "muster": "std-uebung-001 ... std-uebung-150",
+    "abweichungen": []
+  },
+  "metadaten": {
+    "kategorie_abweichungen": [],
+    "dauer_abweichungen": [],
+    "tageszeit_abweichungen": []
+  },
+  "titelpaare": [
+    {
+      "nummer": 1,
+      "id": "std-uebung-001",
+      "de": "Ankeratem",
+      "en": "Anchor Breath",
+      "kategorie": "Atem"
+    },
+    {
+      "nummer": 2,
+      "id": "std-uebung-002",
+      "de": "4-7-8 Atem",
+      "en": "4-7-8 Breathing",
+      "kategorie": "Atem"
+    },
+    {
+      "nummer": 3,
+      "id": "std-uebung-003",
+      "de": "Seufzen dürfen",
+      "en": "Permission to Sigh",
+      "kategorie": "Atem"
+    },
+    {
+      "nummer": 4,
+      "id": "std-uebung-004",
+      "de": "Wellenatmung",
+      "en": "Wave Breathing",
+      "kategorie": "Atem"
+    },
+    {
+      "nummer": 5,
+      "id": "std-uebung-005",
+      "de": "Brummender Ausatem",
+      "en": "Humming Exhale",
+      "kategorie": "Atem"
+    },
+    {
+      "nummer": 6,
+      "id": "std-uebung-006",
+      "de": "Boxatmung",
+      "en": "Box Breathing",
+      "kategorie": "Atem"
+    },
+    {
+      "nummer": 7,
+      "id": "std-uebung-007",
+      "de": "Atemraum finden",
+      "en": "Finding Breathing Space",
+      "kategorie": "Atem"
+    },
+    {
+      "nummer": 8,
+      "id": "std-uebung-008",
+      "de": "Ausatemverlängerung",
+      "en": "Extended Exhale",
+      "kategorie": "Atem"
+    },
+    {
+      "nummer": 9,
+      "id": "std-uebung-009",
+      "de": "Atem und Wort",
+      "en": "Breath and Word",
+      "kategorie": "Atem"
+    },
+    {
+      "nummer": 10,
+      "id": "std-uebung-010",
+      "de": "Morgendlicher erster Atemzug",
+      "en": "Morning's First Breath",
+      "kategorie": "Atem"
+    },
+    {
+      "nummer": 11,
+      "id": "std-uebung-011",
+      "de": "Body-Scan Light",
+      "en": "Light Body Scan",
+      "kategorie": "Körperwahrnehmung"
+    },
+    {
+      "nummer": 12,
+      "id": "std-uebung-012",
+      "de": "Füße auf dem Boden",
+      "en": "Feet on the Ground",
+      "kategorie": "Körperwahrnehmung"
+    },
+    {
+      "nummer": 13,
+      "id": "std-uebung-013",
+      "de": "Wo bin ich gerade?",
+      "en": "Where Am I?",
+      "kategorie": "Körperwahrnehmung"
+    },
+    {
+      "nummer": 14,
+      "id": "std-uebung-014",
+      "de": "Hände wahrnehmen",
+      "en": "Noticing Your Hands",
+      "kategorie": "Körperwahrnehmung"
+    },
+    {
+      "nummer": 15,
+      "id": "std-uebung-015",
+      "de": "Schultern loslassen",
+      "en": "Releasing the Shoulders",
+      "kategorie": "Körperwahrnehmung"
+    },
+    {
+      "nummer": 16,
+      "id": "std-uebung-016",
+      "de": "Inneres Wetter",
+      "en": "Inner Weather",
+      "kategorie": "Körperwahrnehmung"
+    },
+    {
+      "nummer": 17,
+      "id": "std-uebung-017",
+      "de": "Spannungslandkarte",
+      "en": "Tension Map",
+      "kategorie": "Körperwahrnehmung"
+    },
+    {
+      "nummer": 18,
+      "id": "std-uebung-018",
+      "de": "Körperhaltung und Zustand",
+      "en": "Posture and State",
+      "kategorie": "Körperwahrnehmung"
+    },
+    {
+      "nummer": 19,
+      "id": "std-uebung-019",
+      "de": "Selbstumarmung",
+      "en": "Self-Embrace",
+      "kategorie": "Körperwahrnehmung"
+    },
+    {
+      "nummer": 20,
+      "id": "std-uebung-020",
+      "de": "Schwingung spüren",
+      "en": "Feeling the Vibration",
+      "kategorie": "Körperwahrnehmung"
+    },
+    {
+      "nummer": 21,
+      "id": "std-uebung-021",
+      "de": "Summen als Heimkommen",
+      "en": "Humming as Coming Home",
+      "kategorie": "Stimme & Singen"
+    },
+    {
+      "nummer": 22,
+      "id": "std-uebung-022",
+      "de": "Vokalreise",
+      "en": "Vowel Journey",
+      "kategorie": "Stimme & Singen"
+    },
+    {
+      "nummer": 23,
+      "id": "std-uebung-023",
+      "de": "Ton des Morgens",
+      "en": "Morning's First Tone",
+      "kategorie": "Stimme & Singen"
+    },
+    {
+      "nummer": 24,
+      "id": "std-uebung-024",
+      "de": "Schattensingen",
+      "en": "Shadow Singing",
+      "kategorie": "Stimme & Singen"
+    },
+    {
+      "nummer": 25,
+      "id": "std-uebung-025",
+      "de": "Körperklopfen mit Ton",
+      "en": "Body Tapping with Tone",
+      "kategorie": "Stimme & Singen"
+    },
+    {
+      "nummer": 26,
+      "id": "std-uebung-026",
+      "de": "Lied ohne Worte",
+      "en": "Song Without Words",
+      "kategorie": "Stimme & Singen"
+    },
+    {
+      "nummer": 27,
+      "id": "std-uebung-027",
+      "de": "Ich bin schön, wenn ich singe",
+      "en": "I Am Beautiful When I Sing",
+      "kategorie": "Stimme & Singen"
+    },
+    {
+      "nummer": 28,
+      "id": "std-uebung-028",
+      "de": "Töne für Gefühle",
+      "en": "Tones for Feelings",
+      "kategorie": "Stimme & Singen"
+    },
+    {
+      "nummer": 29,
+      "id": "std-uebung-029",
+      "de": "Abendlied",
+      "en": "Evening Song",
+      "kategorie": "Stimme & Singen"
+    },
+    {
+      "nummer": 30,
+      "id": "std-uebung-030",
+      "de": "Call and Response mit dir selbst",
+      "en": "Call and Response With Yourself",
+      "kategorie": "Stimme & Singen"
+    },
+    {
+      "nummer": 31,
+      "id": "std-uebung-031",
+      "de": "Was ist jetzt gerade da?",
+      "en": "What Is Here Right Now?",
+      "kategorie": "GfK & Bedürfnisse"
+    },
+    {
+      "nummer": 32,
+      "id": "std-uebung-032",
+      "de": "Gefühl benennen",
+      "en": "Naming a Feeling",
+      "kategorie": "GfK & Bedürfnisse"
+    },
+    {
+      "nummer": 33,
+      "id": "std-uebung-033",
+      "de": "Welches Bedürfnis steckt dahinter?",
+      "en": "What Need Is Behind It?",
+      "kategorie": "GfK & Bedürfnisse"
+    },
+    {
+      "nummer": 34,
+      "id": "std-uebung-034",
+      "de": "Die Bitte an mich selbst",
+      "en": "A Request to Myself",
+      "kategorie": "GfK & Bedürfnisse"
+    },
+    {
+      "nummer": 35,
+      "id": "std-uebung-035",
+      "de": "Innerer Kritiker übersetzen",
+      "en": "Translating the Inner Critic",
+      "kategorie": "GfK & Bedürfnisse"
+    },
+    {
+      "nummer": 36,
+      "id": "std-uebung-036",
+      "de": "Dankbarkeit und Bedürfnis",
+      "en": "Gratitude and Need",
+      "kategorie": "GfK & Bedürfnisse"
+    },
+    {
+      "nummer": 37,
+      "id": "std-uebung-037",
+      "de": "Nein als Selbstfürsorge",
+      "en": "No as Self-Care",
+      "kategorie": "GfK & Bedürfnisse"
+    },
+    {
+      "nummer": 38,
+      "id": "std-uebung-038",
+      "de": "Bedürfnis-Check Mittag",
+      "en": "Midday Need Check",
+      "kategorie": "GfK & Bedürfnisse"
+    },
+    {
+      "nummer": 39,
+      "id": "std-uebung-039",
+      "de": "Gefühls-Körper-Verbindung",
+      "en": "Feeling-Body Connection",
+      "kategorie": "GfK & Bedürfnisse"
+    },
+    {
+      "nummer": 40,
+      "id": "std-uebung-040",
+      "de": "Brief an ein Bedürfnis",
+      "en": "Letter to a Need",
+      "kategorie": "GfK & Bedürfnisse"
+    },
+    {
+      "nummer": 41,
+      "id": "std-uebung-041",
+      "de": "Wie würde ich mit einem Freund sprechen?",
+      "en": "How Would I Speak to a Friend?",
+      "kategorie": "Selbstmitgefühl"
+    },
+    {
+      "nummer": 42,
+      "id": "std-uebung-042",
+      "de": "Die drei Türen des Selbstmitgefühls",
+      "en": "The Three Doors of Self-Compassion",
+      "kategorie": "Selbstmitgefühl"
+    },
+    {
+      "nummer": 43,
+      "id": "std-uebung-043",
+      "de": "Innerer freundlicher Beobachter",
+      "en": "Inner Kind Observer",
+      "kategorie": "Selbstmitgefühl"
+    },
+    {
+      "nummer": 44,
+      "id": "std-uebung-044",
+      "de": "Was habe ich heute gut gemacht?",
+      "en": "What Did I Do Well Today?",
+      "kategorie": "Selbstmitgefühl"
+    },
+    {
+      "nummer": 45,
+      "id": "std-uebung-045",
+      "de": "Inneres Kind grüßen",
+      "en": "Greeting the Inner Child",
+      "kategorie": "Selbstmitgefühl"
+    },
+    {
+      "nummer": 46,
+      "id": "std-uebung-046",
+      "de": "Selbst-Berührung als Fürsorge",
+      "en": "Self-Touch as Care",
+      "kategorie": "Selbstmitgefühl"
+    },
+    {
+      "nummer": 47,
+      "id": "std-uebung-047",
+      "de": "Was darf bleiben, wie es ist?",
+      "en": "What May Stay as It Is?",
+      "kategorie": "Selbstmitgefühl"
+    },
+    {
+      "nummer": 48,
+      "id": "std-uebung-048",
+      "de": "Innerer Kritiker und innerer Fürsorger",
+      "en": "Inner Critic and Inner Caregiver",
+      "kategorie": "Selbstmitgefühl"
+    },
+    {
+      "nummer": 49,
+      "id": "std-uebung-049",
+      "de": "Fehler als Menschlichkeit",
+      "en": "Mistakes as Humanity",
+      "kategorie": "Selbstmitgefühl"
+    },
+    {
+      "nummer": 50,
+      "id": "std-uebung-050",
+      "de": "Abendlicher Segen für dich selbst",
+      "en": "Evening Blessing for Yourself",
+      "kategorie": "Selbstmitgefühl"
+    },
+    {
+      "nummer": 51,
+      "id": "std-uebung-051",
+      "de": "Orientierung im Raum",
+      "en": "Orienting in the Room",
+      "kategorie": "Polyvagal & Regulation"
+    },
+    {
+      "nummer": 52,
+      "id": "std-uebung-052",
+      "de": "Vagus-Summen",
+      "en": "Vagus Humming",
+      "kategorie": "Polyvagal & Regulation"
+    },
+    {
+      "nummer": 53,
+      "id": "std-uebung-053",
+      "de": "Kaltes Wasser – Tauchreflex",
+      "en": "Cold Water - Diving Reflex",
+      "kategorie": "Polyvagal & Regulation"
+    },
+    {
+      "nummer": 54,
+      "id": "std-uebung-054",
+      "de": "Sicherheitssignale suchen",
+      "en": "Looking for Safety Signals",
+      "kategorie": "Polyvagal & Regulation"
+    },
+    {
+      "nummer": 55,
+      "id": "std-uebung-055",
+      "de": "Soziale Verbindung als Regulation",
+      "en": "Social Connection as Regulation",
+      "kategorie": "Polyvagal & Regulation"
+    },
+    {
+      "nummer": 56,
+      "id": "std-uebung-056",
+      "de": "Voo-Übung",
+      "en": "Voo Exercise",
+      "kategorie": "Polyvagal & Regulation"
+    },
+    {
+      "nummer": 57,
+      "id": "std-uebung-057",
+      "de": "Zittern erlauben",
+      "en": "Allow Shaking",
+      "kategorie": "Polyvagal & Regulation"
+    },
+    {
+      "nummer": 58,
+      "id": "std-uebung-058",
+      "de": "Pendeln zwischen Ressource und Belastung",
+      "en": "Pendulating Between Resource and Stress",
+      "kategorie": "Polyvagal & Regulation"
+    },
+    {
+      "nummer": 59,
+      "id": "std-uebung-059",
+      "de": "Selbstmassage Kiefer",
+      "en": "Self-Massage for the Jaw",
+      "kategorie": "Polyvagal & Regulation"
+    },
+    {
+      "nummer": 60,
+      "id": "std-uebung-060",
+      "de": "Langer Ausatem mit Ton",
+      "en": "Long Exhale with Sound",
+      "kategorie": "Polyvagal & Regulation"
+    },
+    {
+      "nummer": 61,
+      "id": "std-uebung-061",
+      "de": "Ausschütteln",
+      "en": "Shake It Out",
+      "kategorie": "Bewegung & Rhythmus"
+    },
+    {
+      "nummer": 62,
+      "id": "std-uebung-062",
+      "de": "Klopfen auf Körperrhythmus",
+      "en": "Tapping to Your Body Rhythm",
+      "kategorie": "Bewegung & Rhythmus"
+    },
+    {
+      "nummer": 63,
+      "id": "std-uebung-063",
+      "de": "Gehen als Meditation",
+      "en": "Walking as Meditation",
+      "kategorie": "Bewegung & Rhythmus"
+    },
+    {
+      "nummer": 64,
+      "id": "std-uebung-064",
+      "de": "Rhythmus klopfen und summen",
+      "en": "Tapping Rhythm and Humming",
+      "kategorie": "Bewegung & Rhythmus"
+    },
+    {
+      "nummer": 65,
+      "id": "std-uebung-065",
+      "de": "Spontantanz",
+      "en": "Spontaneous Dance",
+      "kategorie": "Bewegung & Rhythmus"
+    },
+    {
+      "nummer": 66,
+      "id": "std-uebung-066",
+      "de": "Federnd stehen",
+      "en": "Springy Standing",
+      "kategorie": "Bewegung & Rhythmus"
+    },
+    {
+      "nummer": 67,
+      "id": "std-uebung-067",
+      "de": "Stretching mit Atem",
+      "en": "Stretching with Breath",
+      "kategorie": "Bewegung & Rhythmus"
+    },
+    {
+      "nummer": 68,
+      "id": "std-uebung-068",
+      "de": "Eigener Beat",
+      "en": "Your Own Beat",
+      "kategorie": "Bewegung & Rhythmus"
+    },
+    {
+      "nummer": 69,
+      "id": "std-uebung-069",
+      "de": "Bewegung für ein Gefühl",
+      "en": "Movement for a Feeling",
+      "kategorie": "Bewegung & Rhythmus"
+    },
+    {
+      "nummer": 70,
+      "id": "std-uebung-070",
+      "de": "Rhythmisches Wiegen",
+      "en": "Rhythmic Rocking",
+      "kategorie": "Bewegung & Rhythmus"
+    },
+    {
+      "nummer": 71,
+      "id": "std-uebung-071",
+      "de": "Nur sitzen",
+      "en": "Just Sitting",
+      "kategorie": "Stille & Meditation"
+    },
+    {
+      "nummer": 72,
+      "id": "std-uebung-072",
+      "de": "Gedanken vorbeiziehen lassen",
+      "en": "Letting Thoughts Pass By",
+      "kategorie": "Stille & Meditation"
+    },
+    {
+      "nummer": 73,
+      "id": "std-uebung-073",
+      "de": "Stille hören",
+      "en": "Listening to Stillness",
+      "kategorie": "Stille & Meditation"
+    },
+    {
+      "nummer": 74,
+      "id": "std-uebung-074",
+      "de": "Ein Moment vollständiger Gegenwart",
+      "en": "A Moment of Complete Presence",
+      "kategorie": "Stille & Meditation"
+    },
+    {
+      "nummer": 75,
+      "id": "std-uebung-075",
+      "de": "Stille nach dem Ton",
+      "en": "Stillness after Sound",
+      "kategorie": "Stille & Meditation"
+    },
+    {
+      "nummer": 76,
+      "id": "std-uebung-076",
+      "de": "Atemstille finden",
+      "en": "Finding Breath Stillness",
+      "kategorie": "Stille & Meditation"
+    },
+    {
+      "nummer": 77,
+      "id": "std-uebung-077",
+      "de": "Nichts leisten",
+      "en": "Doing Nothing",
+      "kategorie": "Stille & Meditation"
+    },
+    {
+      "nummer": 78,
+      "id": "std-uebung-078",
+      "de": "Innere Stille aufsuchen",
+      "en": "Finding Inner Stillness",
+      "kategorie": "Stille & Meditation"
+    },
+    {
+      "nummer": 79,
+      "id": "std-uebung-079",
+      "de": "Mit geschlossenen Augen sitzen",
+      "en": "Sitting with Eyes Closed",
+      "kategorie": "Stille & Meditation"
+    },
+    {
+      "nummer": 80,
+      "id": "std-uebung-080",
+      "de": "Abend-Stille",
+      "en": "Evening Stillness",
+      "kategorie": "Stille & Meditation"
+    },
+    {
+      "nummer": 81,
+      "id": "std-uebung-081",
+      "de": "Kontakt-Moment bewusst gestalten",
+      "en": "Shaping a Moment of Contact Consciously",
+      "kategorie": "Kontakt & Verbindung"
+    },
+    {
+      "nummer": 82,
+      "id": "std-uebung-082",
+      "de": "Dankbarkeit aussprechen",
+      "en": "Expressing Gratitude",
+      "kategorie": "Kontakt & Verbindung"
+    },
+    {
+      "nummer": 83,
+      "id": "std-uebung-083",
+      "de": "Verbindung in der Erinnerung",
+      "en": "Connection in Memory",
+      "kategorie": "Kontakt & Verbindung"
+    },
+    {
+      "nummer": 84,
+      "id": "std-uebung-084",
+      "de": "Eine ehrliche Nachricht",
+      "en": "An Honest Message",
+      "kategorie": "Kontakt & Verbindung"
+    },
+    {
+      "nummer": 85,
+      "id": "std-uebung-085",
+      "de": "Präsenz verschenken",
+      "en": "Giving Presence",
+      "kategorie": "Kontakt & Verbindung"
+    },
+    {
+      "nummer": 86,
+      "id": "std-uebung-086",
+      "de": "Energie-Check",
+      "en": "Energy Check",
+      "kategorie": "Energie & Lebendigkeit"
+    },
+    {
+      "nummer": 87,
+      "id": "std-uebung-087",
+      "de": "Powerpause",
+      "en": "Power Pause",
+      "kategorie": "Energie & Lebendigkeit"
+    },
+    {
+      "nummer": 88,
+      "id": "std-uebung-088",
+      "de": "Freude aufspüren",
+      "en": "Tracking Joy",
+      "kategorie": "Energie & Lebendigkeit"
+    },
+    {
+      "nummer": 89,
+      "id": "std-uebung-089",
+      "de": "Morgenaktivierung mit Stimme",
+      "en": "Morning Activation with Voice",
+      "kategorie": "Energie & Lebendigkeit"
+    },
+    {
+      "nummer": 90,
+      "id": "std-uebung-090",
+      "de": "Ressource aktivieren",
+      "en": "Activate a Resource",
+      "kategorie": "Energie & Lebendigkeit"
+    },
+    {
+      "nummer": 91,
+      "id": "std-uebung-091",
+      "de": "Lebendigkeit im Körper suchen",
+      "en": "Seeking Aliveness in the Body",
+      "kategorie": "Energie & Lebendigkeit"
+    },
+    {
+      "nummer": 92,
+      "id": "std-uebung-092",
+      "de": "Was lässt mich aufleuchten?",
+      "en": "What Makes Me Light Up?",
+      "kategorie": "Energie & Lebendigkeit"
+    },
+    {
+      "nummer": 93,
+      "id": "std-uebung-093",
+      "de": "Aktivierungsatem",
+      "en": "Activating Breath",
+      "kategorie": "Energie & Lebendigkeit"
+    },
+    {
+      "nummer": 94,
+      "id": "std-uebung-094",
+      "de": "Freudenspeicher anzapfen",
+      "en": "Tapping the Joy Store",
+      "kategorie": "Energie & Lebendigkeit"
+    },
+    {
+      "nummer": 95,
+      "id": "std-uebung-095",
+      "de": "Spielimpuls",
+      "en": "Play Impulse",
+      "kategorie": "Energie & Lebendigkeit"
+    },
+    {
+      "nummer": 96,
+      "id": "std-uebung-096",
+      "de": "Lachen einladen",
+      "en": "Inviting Laughter",
+      "kategorie": "Energie & Lebendigkeit"
+    },
+    {
+      "nummer": 97,
+      "id": "std-uebung-097",
+      "de": "Strecken und Gähnen",
+      "en": "Stretching and Yawning",
+      "kategorie": "Energie & Lebendigkeit"
+    },
+    {
+      "nummer": 98,
+      "id": "std-uebung-098",
+      "de": "Natur-Kontakt",
+      "en": "Nature Contact",
+      "kategorie": "Energie & Lebendigkeit"
+    },
+    {
+      "nummer": 99,
+      "id": "std-uebung-099",
+      "de": "Lied das trägt",
+      "en": "A Song That Carries You",
+      "kategorie": "Energie & Lebendigkeit"
+    },
+    {
+      "nummer": 100,
+      "id": "std-uebung-100",
+      "de": "Wozu bin ich heute lebendig?",
+      "en": "What Am I Alive For Today?",
+      "kategorie": "Energie & Lebendigkeit"
+    },
+    {
+      "nummer": 101,
+      "id": "std-uebung-101",
+      "de": "Progressive Muskelentspannung (kurz)",
+      "en": "Progressive Muscle Relaxation (Short)",
+      "kategorie": "Körperwahrnehmung"
+    },
+    {
+      "nummer": 102,
+      "id": "std-uebung-102",
+      "de": "PMR – Hände und Arme",
+      "en": "PMR – Hands and Arms",
+      "kategorie": "Körperwahrnehmung"
+    },
+    {
+      "nummer": 103,
+      "id": "std-uebung-103",
+      "de": "Geführter Body-Scan",
+      "en": "Guided Body Scan",
+      "kategorie": "Körperwahrnehmung"
+    },
+    {
+      "nummer": 104,
+      "id": "std-uebung-104",
+      "de": "5-Punkte-Entspannung",
+      "en": "5-Point Relaxation",
+      "kategorie": "Körperwahrnehmung"
+    },
+    {
+      "nummer": 105,
+      "id": "std-uebung-105",
+      "de": "Erdung im schwierigen Moment",
+      "en": "Grounding in a Difficult Moment",
+      "kategorie": "Schwierige Momente"
+    },
+    {
+      "nummer": 106,
+      "id": "std-uebung-106",
+      "de": "Welche Version von mir ist heute gefragt?",
+      "en": "Which Version of Me Is Needed Today?",
+      "kategorie": "Ressourcen & Möglichkeiten"
+    },
+    {
+      "nummer": 107,
+      "id": "std-uebung-107",
+      "de": "Was wäre, wenn es leichter ginge?",
+      "en": "What If It Could Be Easier?",
+      "kategorie": "Ressourcen & Möglichkeiten"
+    },
+    {
+      "nummer": 108,
+      "id": "std-uebung-108",
+      "de": "Zustand benennen und wählen",
+      "en": "Name Your State and Choose",
+      "kategorie": "Ressourcen & Möglichkeiten"
+    },
+    {
+      "nummer": 109,
+      "id": "std-uebung-109",
+      "de": "Ausnahmen suchen",
+      "en": "Looking for Exceptions",
+      "kategorie": "Ressourcen & Möglichkeiten"
+    },
+    {
+      "nummer": 110,
+      "id": "std-uebung-110",
+      "de": "Wunderfrage",
+      "en": "The Miracle Question",
+      "kategorie": "Ressourcen & Möglichkeiten"
+    },
+    {
+      "nummer": 111,
+      "id": "std-uebung-111",
+      "de": "Skalenfrage",
+      "en": "The Scaling Question",
+      "kategorie": "Ressourcen & Möglichkeiten"
+    },
+    {
+      "nummer": 112,
+      "id": "std-uebung-112",
+      "de": "Möglichkeitsraum öffnen",
+      "en": "Opening the Space of Possibility",
+      "kategorie": "Ressourcen & Möglichkeiten"
+    },
+    {
+      "nummer": 113,
+      "id": "std-uebung-113",
+      "de": "Brief an mich selbst",
+      "en": "Letter to Myself",
+      "kategorie": "Schreiben & Ausdruck"
+    },
+    {
+      "nummer": 114,
+      "id": "std-uebung-114",
+      "de": "Ich-Botschaft formulieren",
+      "en": "Forming an I-Statement",
+      "kategorie": "Schreiben & Ausdruck"
+    },
+    {
+      "nummer": 115,
+      "id": "std-uebung-115",
+      "de": "Drei-Sätze-Tagebuch",
+      "en": "Three-Sentence Journal",
+      "kategorie": "Schreiben & Ausdruck"
+    },
+    {
+      "nummer": 116,
+      "id": "std-uebung-116",
+      "de": "Ungesendeter Brief",
+      "en": "Unsent Letter",
+      "kategorie": "Schreiben & Ausdruck"
+    },
+    {
+      "nummer": 117,
+      "id": "std-uebung-117",
+      "de": "Satzanfänge vollenden",
+      "en": "Complete the Sentence",
+      "kategorie": "Schreiben & Ausdruck"
+    },
+    {
+      "nummer": 118,
+      "id": "std-uebung-118",
+      "de": "Das Gute festhalten",
+      "en": "Hold onto the Good",
+      "kategorie": "Schreiben & Ausdruck"
+    },
+    {
+      "nummer": 119,
+      "id": "std-uebung-119",
+      "de": "5-4-3-2-1-Erdung",
+      "en": "5-4-3-2-1 Grounding",
+      "kategorie": "Schwierige Momente"
+    },
+    {
+      "nummer": 120,
+      "id": "std-uebung-120",
+      "de": "STOP-Pause",
+      "en": "STOP Pause",
+      "kategorie": "Schwierige Momente"
+    },
+    {
+      "nummer": 121,
+      "id": "std-uebung-121",
+      "de": "Atem verlängern bei Stress",
+      "en": "Extend the Breath under Stress",
+      "kategorie": "Schwierige Momente"
+    },
+    {
+      "nummer": 122,
+      "id": "std-uebung-122",
+      "de": "Sicherheitsanker aktivieren",
+      "en": "Activate Your Safety Anchor",
+      "kategorie": "Schwierige Momente"
+    },
+    {
+      "nummer": 123,
+      "id": "std-uebung-123",
+      "de": "Gefühl benennen entschärft es",
+      "en": "Naming a Feeling Defuses It",
+      "kategorie": "Schwierige Momente"
+    },
+    {
+      "nummer": 124,
+      "id": "std-uebung-124",
+      "de": "Körper erden bei Überwältigung",
+      "en": "Ground Your Body When Overwhelmed",
+      "kategorie": "Schwierige Momente"
+    },
+    {
+      "nummer": 125,
+      "id": "std-uebung-125",
+      "de": "Trigger-Pause einlegen",
+      "en": "Take a Trigger Pause",
+      "kategorie": "Schwierige Momente"
+    },
+    {
+      "nummer": 126,
+      "id": "std-uebung-126",
+      "de": "Selbst-Mitgefühl im Schmerz",
+      "en": "Self-Compassion in Pain",
+      "kategorie": "Schwierige Momente"
+    },
+    {
+      "nummer": 127,
+      "id": "std-uebung-127",
+      "de": "Stille-Minute",
+      "en": "Stillness Minute",
+      "kategorie": "Stille & Meditation"
+    },
+    {
+      "nummer": 128,
+      "id": "std-uebung-128",
+      "de": "Offenes Gewahrsein",
+      "en": "Open Awareness",
+      "kategorie": "Stille & Meditation"
+    },
+    {
+      "nummer": 129,
+      "id": "std-uebung-129",
+      "de": "Wärme für eine schwierige Person",
+      "en": "Warmth for a Difficult Person",
+      "kategorie": "Kontakt & Verbindung"
+    },
+    {
+      "nummer": 130,
+      "id": "std-uebung-130",
+      "de": "Dankbarkeit für eine Person",
+      "en": "Gratitude for a Person",
+      "kategorie": "Kontakt & Verbindung"
+    },
+    {
+      "nummer": 131,
+      "id": "std-uebung-131",
+      "de": "Zugehörigkeit spüren",
+      "en": "Sense of Belonging",
+      "kategorie": "Kontakt & Verbindung"
+    },
+    {
+      "nummer": 132,
+      "id": "std-uebung-132",
+      "de": "Ein echtes Gespräch",
+      "en": "One Real Conversation",
+      "kategorie": "Kontakt & Verbindung"
+    },
+    {
+      "nummer": 133,
+      "id": "std-uebung-133",
+      "de": "Energie-Inventur",
+      "en": "Energy Inventory",
+      "kategorie": "Energie & Lebendigkeit"
+    },
+    {
+      "nummer": 134,
+      "id": "std-uebung-134",
+      "de": "Stärke als Ressource",
+      "en": "Strength as Resource",
+      "kategorie": "Ressourcen & Möglichkeiten"
+    },
+    {
+      "nummer": 135,
+      "id": "std-uebung-135",
+      "de": "Was ist möglich?",
+      "en": "What Is Possible?",
+      "kategorie": "Ressourcen & Möglichkeiten"
+    },
+    {
+      "nummer": 136,
+      "id": "std-uebung-136",
+      "de": "Lösungsfokus-Pause",
+      "en": "Solution Focus Pause",
+      "kategorie": "Ressourcen & Möglichkeiten"
+    },
+    {
+      "nummer": 137,
+      "id": "std-uebung-137",
+      "de": "Ressourcen-Netzwerk",
+      "en": "Resource Network",
+      "kategorie": "Ressourcen & Möglichkeiten"
+    },
+    {
+      "nummer": 138,
+      "id": "std-uebung-138",
+      "de": "Zukünftiges Ich",
+      "en": "Future Self",
+      "kategorie": "Ressourcen & Möglichkeiten"
+    },
+    {
+      "nummer": 139,
+      "id": "std-uebung-139",
+      "de": "Umdeuten",
+      "en": "Reframe Moment",
+      "kategorie": "Ressourcen & Möglichkeiten"
+    },
+    {
+      "nummer": 140,
+      "id": "std-uebung-140",
+      "de": "Was hat heute funktioniert?",
+      "en": "What Has Worked Today?",
+      "kategorie": "Ressourcen & Möglichkeiten"
+    },
+    {
+      "nummer": 141,
+      "id": "std-uebung-141",
+      "de": "Stärken-Inventur",
+      "en": "Strength Inventory",
+      "kategorie": "Ressourcen & Möglichkeiten"
+    },
+    {
+      "nummer": 142,
+      "id": "std-uebung-142",
+      "de": "Bewusstseinsstrom",
+      "en": "Stream of Consciousness",
+      "kategorie": "Schreiben & Ausdruck"
+    },
+    {
+      "nummer": 143,
+      "id": "std-uebung-143",
+      "de": "Ich-Aussagen üben",
+      "en": "I-Statement Practice",
+      "kategorie": "Schreiben & Ausdruck"
+    },
+    {
+      "nummer": 144,
+      "id": "std-uebung-144",
+      "de": "Drei gute Dinge",
+      "en": "Three Good Things",
+      "kategorie": "Schreiben & Ausdruck"
+    },
+    {
+      "nummer": 145,
+      "id": "std-uebung-145",
+      "de": "Morgenseiten (Mini)",
+      "en": "Morning Pages (Mini)",
+      "kategorie": "Schreiben & Ausdruck"
+    },
+    {
+      "nummer": 146,
+      "id": "std-uebung-146",
+      "de": "STOP-Übung",
+      "en": "STOP Practice",
+      "kategorie": "Schwierige Momente"
+    },
+    {
+      "nummer": 147,
+      "id": "std-uebung-147",
+      "de": "Den Sturm benennen",
+      "en": "Naming the Storm",
+      "kategorie": "Schwierige Momente"
+    },
+    {
+      "nummer": 148,
+      "id": "std-uebung-148",
+      "de": "Kaltwasser-Reset",
+      "en": "Cold Water Reset",
+      "kategorie": "Schwierige Momente"
+    },
+    {
+      "nummer": 149,
+      "id": "std-uebung-149",
+      "de": "Trigger-Pause",
+      "en": "Trigger Pause",
+      "kategorie": "Schwierige Momente"
+    },
+    {
+      "nummer": 150,
+      "id": "std-uebung-150",
+      "de": "Mantra-Atem",
+      "en": "Mantra Breath",
+      "kategorie": "Stille & Meditation"
+    }
+  ],
+  "leere_titel_oder_beschreibungen": [],
+  "zusammenfassung": {
+    "ok": true,
+    "id_abweichungen": 0,
+    "kategorie_abweichungen": 0,
+    "dauer_abweichungen": 0,
+    "tageszeit_abweichungen": 0,
+    "leere_titel_oder_beschreibungen": 0
+  }
+}

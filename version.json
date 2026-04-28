@@ -1,9 +1,9 @@
 {
-  "appVersion": "2.11",
+  "appVersion": "3.0",
   "released": "2026-04-28",
   "updates": [
     {
-      "version": "2.11",
+      "version": "3.0",
       "changelog": [
         "Neuer Tab Halt finden als akute GfK-orientierte Unterstuetzung",
         "Beobachtungs-Coach mit Satzstartern fuer bewertungsarme Beschreibungen",
