@@ -1,0 +1,14 @@
+{
+  "appVersion": "2.9",
+  "released": "2026-04-28",
+  "updates": [
+    {
+      "version": "2.9",
+      "changelog": [
+        "Header und Tagesimpuls farblich leichter gestaltet",
+        "Begruessung und Datum tageszeitabhaengig im Header angezeigt",
+        "Schnellwahl 2 und 5 Minuten direkt unter der Uebung platziert"
+      ]
+    }
+  ]
+}

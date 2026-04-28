@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="">
+<html lang="de">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,19 +31,24 @@
     --bg: #f5f0e8;
     --bg2: #ede7d9;
     --bg3: #e2dace;
-    --card: #faf7f2;
-    --border: #d4ccbc;
+    --card: #fffdf8;
+    --border: #d9ded5;
     --text: #2c2416;
     --text2: #6b5f4e;
     --text3: #9e8f7a;
     --accent: #7a6d52;
-    --accent2: #b5956a;
-    --accent3: #8fa67a;
+    --accent2: #c57a3d;
+    --accent3: #4f7a5c;
     --warm: #c4845a;
     --blue: #6a8fa6;
+    --success: #4f7a5c;
+    --info: #6a8fa6;
+    --warning: #c4845a;
     --radius: 12px;
     --shadow: 0 2px 12px rgba(44,36,22,0.08);
     --shadow-lg: 0 4px 24px rgba(44,36,22,0.12);
+    --shadow-focus: 0 12px 34px rgba(44,36,22,0.18);
+    --ease-soft: cubic-bezier(.2,.8,.2,1);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -149,33 +154,62 @@
 
   /* IMPULS HEADER */
   #impuls-header {
-    background: linear-gradient(135deg, #2c2416 0%, #4a3c28 100%);
-    color: #f5f0e8;
+    background: #e6eee3;
+    color: #1f2a21;
     padding: 12px 20px 14px;
     position: sticky;
     top: 0;
     z-index: 100;
+    border-bottom: 1px solid rgba(111,127,112,0.22);
+    box-shadow: 0 1px 10px rgba(31,42,33,0.06);
   }
   .app-titel-bereich {
     display: flex;
     align-items: baseline;
     gap: 10px;
     margin-bottom: 8px;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid rgba(111,127,112,0.20);
     padding-bottom: 8px;
+  }
+  .header-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+    margin-left: 12px;
+  }
+  .header-greeting {
+    text-align: right;
+    color: #2f3f31;
+    line-height: 1.25;
+    white-space: nowrap;
+  }
+  .header-greeting-main {
+    font-family: 'Lora', serif;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .header-greeting-date {
+    font-size: 11px;
+    color: #6f7f70;
+  }
+  .header-tools {
+    display: flex;
+    align-items: center;
+    gap: 5px;
   }
   #app-titel-anzeige {
     font-family: 'Lora', serif;
     font-size: 18px;
     font-weight: 500;
-    color: #f5f0e8;
+    color: #1f2a21;
     cursor: pointer;
     transition: opacity 0.2s;
   }
   #app-titel-anzeige:hover { opacity: 0.75; }
   #app-untertitel-anzeige {
     font-size: 11px;
-    color: #9e8f7a;
+    color: #6f7f70;
     letter-spacing: 0.5px;
     cursor: pointer;
     transition: opacity 0.2s;
@@ -184,21 +218,21 @@
   #app-titel-edit-bereich {
     display: none;
     margin-bottom: 8px;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid rgba(111,127,112,0.20);
     padding-bottom: 8px;
   }
   #app-titel-edit-bereich input {
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.58);
+    border: 1px solid rgba(111,127,112,0.28);
     border-radius: 6px;
-    color: #f5f0e8;
+    color: #1f2a21;
     padding: 4px 8px;
     font-family: 'Lora', serif;
     font-size: 15px;
     width: 100%;
     margin-bottom: 5px;
   }
-  #app-titel-edit-bereich input::placeholder { color: rgba(255,255,255,0.35); }
+  #app-titel-edit-bereich input::placeholder { color: rgba(31,42,33,0.42); }
   .titel-edit-aktionen { display: flex; gap: 8px; }
   .titel-edit-aktionen button {
     font-size: 12px;
@@ -208,12 +242,12 @@
     cursor: pointer;
   }
   .btn-titel-ok { background: var(--accent2); color: #fff; }
-  .btn-titel-ab { background: rgba(255,255,255,0.1); color: #ede7d9; }
+  .btn-titel-ab { background: rgba(255,255,255,0.62); color: #2f3f31; }
   .impuls-label {
     font-size: 10px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--accent2);
+    color: #c57a3d;
     margin-bottom: 4px;
     font-family: 'DM Sans', sans-serif;
     font-weight: 500;
@@ -221,26 +255,26 @@
   .impuls-text {
     font-family: 'Lora', serif;
     font-style: italic;
-    font-size: 15px;
+    font-size: 16px;
     line-height: 1.5;
-    color: #ede7d9;
+    color: #2f3f31;
   }
   .impuls-kategorie {
     font-size: 11px;
-    color: #9e8f7a;
+    color: #6f7f70;
     margin-top: 4px;
   }
 
   /* TABS */
   #tab-bar {
     display: flex;
-    background: var(--card);
+    background: #f6f5f0;
     border-bottom: 1px solid var(--border);
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     position: sticky;
-    top: 72px;
+    top: 126px;
     z-index: 99;
   }
   #tab-bar::-webkit-scrollbar { display: none; }
@@ -263,8 +297,10 @@
     transition: all 0.2s;
     white-space: nowrap;
   }
-  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent2); }
-  .tab-icon { font-size: 18px; }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent2); border-bottom-width: 3px; background: linear-gradient(to top, rgba(197,122,61,0.18) 0%, transparent 78%); }
+  .tab-btn:active { transform: scale(0.97); }
+  .tab-btn.active .tab-icon { transform: scale(1.12); }
+  .tab-icon { font-size: 18px; transition: transform 0.18s var(--ease-soft); }
 
   /* MAIN CONTENT */
   #main { padding: 0 0 100px; max-width: 600px; margin: 0 auto; }
@@ -273,12 +309,27 @@
 
   /* CARDS */
   .card {
-    background: var(--card);
+    background: #fffdf8;
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 16px;
     margin: 12px 16px;
     box-shadow: var(--shadow);
+    transition: transform 0.18s var(--ease-soft), box-shadow 0.18s var(--ease-soft), border-color 0.18s var(--ease-soft), background 0.18s var(--ease-soft);
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(44,36,22,0.12);
+  }
+  .card-reflexion {
+    background: linear-gradient(180deg, #fffdf8 0%, #fbf7ef 100%);
+    border-left: 4px solid var(--blue);
+  }
+  .card-daten {
+    border-left: 4px solid var(--accent3);
+  }
+  .card-verwaltung {
+    border-left: 4px solid var(--accent2);
   }
   .card-title {
     font-family: 'Lora', serif;
@@ -295,10 +346,19 @@
   .akkordeon {
     background: var(--card);
     border: 1px solid var(--border);
+    border-left: 4px solid var(--accent3);
     border-radius: var(--radius);
     margin: 12px 16px;
     overflow: hidden;
     box-shadow: var(--shadow);
+    transition: transform 0.18s var(--ease-soft), box-shadow 0.18s var(--ease-soft), border-color 0.18s var(--ease-soft);
+  }
+  .akkordeon:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(44,36,22,0.12);
+  }
+  .akkordeon.open {
+    border-left-color: var(--accent2);
   }
   .akkordeon-header {
     padding: 14px 16px;
@@ -333,15 +393,31 @@
 
   /* ÜBUNG JETZT */
   .uebung-jetzt-card {
-    background: linear-gradient(135deg, var(--card) 0%, var(--bg2) 100%);
-    border: 1px solid var(--accent2);
-    border-radius: var(--radius);
-    margin: 8px 16px 4px;
-    padding: 16px;
-    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #fffdf8 0%, #f6f9f2 58%, #edf4ea 100%);
+    border: 2px solid rgba(79,122,92,0.58);
+    border-radius: calc(var(--radius) + 4px);
+    margin: 10px 16px 6px;
+    padding: 20px 18px 18px;
+    box-shadow: 0 16px 38px rgba(31,42,33,0.16);
+    transform: scale(1.01);
+    transition: transform 0.18s var(--ease-soft), box-shadow 0.18s var(--ease-soft), border-color 0.18s var(--ease-soft);
   }
-  .uebung-jetzt-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent2); font-weight: 500; margin-bottom: 6px; }
-  .uebung-jetzt-titel { font-family: 'Lora', serif; font-size: 17px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+  .uebung-jetzt-card::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 6px;
+    background: linear-gradient(180deg, var(--accent2), var(--success));
+  }
+  .uebung-jetzt-card:hover {
+    transform: translateY(-3px) scale(1.015);
+    border-color: rgba(197,122,61,0.68);
+    box-shadow: 0 18px 46px rgba(31,42,33,0.20);
+  }
+  .uebung-jetzt-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent2); font-weight: 700; margin-bottom: 8px; padding-left: 4px; }
+  .uebung-jetzt-titel { font-family: 'Lora', serif; font-size: 20px; font-weight: 600; color: var(--text); margin-bottom: 7px; line-height: 1.3; }
   .uebung-jetzt-meta { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; font-size: 13px; color: var(--text2); }
   .uebung-jetzt-desc { font-size: 13px; color: var(--text2); line-height: 1.5; margin-bottom: 10px; }
 
@@ -369,7 +445,7 @@
     border-radius: 50%;
     background: var(--accent2);
     cursor: pointer;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 0 0 4px rgba(197,122,61,0.18), 0 1px 4px rgba(0,0,0,0.16);
   }
 
   /* INPUTS */
@@ -386,7 +462,7 @@
     transition: border-color 0.2s;
     resize: vertical;
   }
-  textarea:focus, input[type=text]:focus, input[type=number]:focus, select:focus { border-color: var(--accent2); }
+  textarea:focus, input[type=text]:focus, input[type=number]:focus, select:focus { border-color: var(--accent2); box-shadow: 0 0 0 3px rgba(181,149,106,0.16); }
 
   /* BUTTONS */
   .btn {
@@ -400,16 +476,26 @@
     font-family: 'DM Sans', sans-serif;
     font-size: 14px;
     font-weight: 500;
-    transition: all 0.2s;
+    transition: transform 0.12s var(--ease-soft), box-shadow 0.18s var(--ease-soft), background 0.18s var(--ease-soft), border-color 0.18s var(--ease-soft);
   }
-  .btn-primary { background: var(--accent); color: #f5f0e8; }
-  .btn-primary:hover { background: #5a4f3c; }
+  .btn:hover { box-shadow: 0 4px 14px rgba(44,36,22,0.12); }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: var(--success); color: #f5f0e8; }
+  .btn-primary:hover { background: #3f654b; }
   .btn-secondary { background: var(--bg2); color: var(--text); border: 1px solid var(--border); }
   .btn-secondary:hover { background: var(--bg3); }
   .btn-sm { padding: 6px 12px; font-size: 13px; }
   .btn-block { width: 100%; justify-content: center; margin-top: 12px; }
   .btn-danger { background: #c0392b; color: #fff; }
   .btn-danger:hover { background: #a93226; }
+  .micro-pulse {
+    animation: microPulse 0.55s var(--ease-soft);
+  }
+  @keyframes microPulse {
+    0% { box-shadow: 0 0 0 0 rgba(197,122,61,0.0); }
+    35% { box-shadow: 0 0 0 6px rgba(197,122,61,0.18); }
+    100% { box-shadow: var(--shadow); }
+  }
 
   /* FAVORITEN-BUTTON */
   .fav-btn {
@@ -427,14 +513,60 @@
   .fav-btn.aktiv { color: #e74c3c; }
 
   /* ÜBUNGS-KARTE */
-  .uebung-card { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin: 8px 0; position: relative; }
+  .uebung-card { background: var(--bg); border: 1px solid var(--border); border-left: 4px solid var(--accent2); border-radius: 10px; padding: 14px; margin: 8px 0; position: relative; transition: transform 0.18s var(--ease-soft), box-shadow 0.18s var(--ease-soft), background 0.18s var(--ease-soft); }
+  .uebung-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(44,36,22,0.11); background: #fffaf3; }
   .uebung-titel { font-family: 'Lora', serif; font-size: 15px; font-weight: 500; margin-bottom: 4px; }
   .uebung-meta { font-size: 12px; color: var(--text3); display: flex; gap: 10px; margin-bottom: 8px; }
   .uebung-desc { font-size: 14px; color: var(--text2); line-height: 1.5; }
   .uebung-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; align-items: center; }
   .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
   .badge-kat { background: var(--bg2); color: var(--text2); }
-  .badge-done { background: #d4edda; color: #3a7c4a; }
+  .badge-done { background: rgba(79,122,92,0.16); color: var(--success); }
+
+  /* BEGRÜSSUNGSZEILE */
+  .begruessung-bar {
+    margin: 12px 16px 4px;
+    padding: 10px 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 13px;
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .begruessung-icon { font-size: 18px; }
+  .begruessung-text { font-family: 'Lora', serif; font-style: italic; }
+
+  /* KATEGORIE-FARBEN */
+  .badge-kat[data-kat="Atem"]                    { background: #dbeeff; color: #2a6496; }
+  .badge-kat[data-kat="Körperwahrnehmung"]        { background: #e8f4e8; color: #2d6a2d; }
+  .badge-kat[data-kat="Stimme & Singen"]          { background: #fde8f0; color: #9b2a5a; }
+  .badge-kat[data-kat="GfK & Bedürfnisse"]        { background: #fff3dc; color: #7a5500; }
+  .badge-kat[data-kat="Selbstmitgefühl"]          { background: #fde8e8; color: #8c2a2a; }
+  .badge-kat[data-kat="Polyvagal & Regulation"]   { background: #e8eeff; color: #2a3d8c; }
+  .badge-kat[data-kat="Bewegung & Rhythmus"]      { background: #e8fdf0; color: #1a6640; }
+  .badge-kat[data-kat="Stille & Meditation"]      { background: #f0e8ff; color: #5a2d8c; }
+  .badge-kat[data-kat="Kontakt & Verbindung"]     { background: #fff0e8; color: #7a3a00; }
+  .badge-kat[data-kat="Energie & Lebendigkeit"]   { background: #fffbe8; color: #6b5900; }
+  .badge-kat[data-kat="Ressourcen & Möglichkeiten"] { background: #e8f8ff; color: #1a5a72; }
+  .badge-kat[data-kat="Schreiben & Ausdruck"]     { background: #f5e8ff; color: #6a1a8c; }
+  .badge-kat[data-kat="Schwierige Momente"]       { background: #fce8e8; color: #8c1a1a; }
+  /* EN-Varianten */
+  .badge-kat[data-kat="Breath"]                   { background: #dbeeff; color: #2a6496; }
+  .badge-kat[data-kat="Body Awareness"]           { background: #e8f4e8; color: #2d6a2d; }
+  .badge-kat[data-kat="Voice & Singing"]          { background: #fde8f0; color: #9b2a5a; }
+  .badge-kat[data-kat="NVC & Needs"]              { background: #fff3dc; color: #7a5500; }
+  .badge-kat[data-kat="Self-Compassion"]          { background: #fde8e8; color: #8c2a2a; }
+  .badge-kat[data-kat="Polyvagal & Regulation"]   { background: #e8eeff; color: #2a3d8c; }
+  .badge-kat[data-kat="Movement & Rhythm"]        { background: #e8fdf0; color: #1a6640; }
+  .badge-kat[data-kat="Stillness & Meditation"]   { background: #f0e8ff; color: #5a2d8c; }
+  .badge-kat[data-kat="Contact & Connection"]     { background: #fff0e8; color: #7a3a00; }
+  .badge-kat[data-kat="Energy & Vitality"]        { background: #fffbe8; color: #6b5900; }
+  .badge-kat[data-kat="Resources & Possibilities"]{ background: #e8f8ff; color: #1a5a72; }
+  .badge-kat[data-kat="Writing & Expression"]     { background: #f5e8ff; color: #6a1a8c; }
+  .badge-kat[data-kat="Difficult Moments"]        { background: #fce8e8; color: #8c1a1a; }
 
   /* STERNE */
   .sterne { display: flex; gap: 4px; }
@@ -545,12 +677,23 @@
   .empty-state { text-align: center; padding: 30px 20px; color: var(--text3); font-style: italic; font-family: 'Lora', serif; font-size: 14px; }
 
   .heute-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 12px 16px; }
-  .heute-slot { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 10px; text-align: center; cursor: pointer; transition: all 0.2s; }
-  .heute-slot:hover { background: var(--bg2); }
-  .heute-slot.aktiv { border-color: var(--accent2); background: #fdf5e6; }
+  .heute-slot { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 10px; text-align: center; cursor: pointer; transition: transform 0.18s var(--ease-soft), box-shadow 0.18s var(--ease-soft), background 0.18s var(--ease-soft), border-color 0.18s var(--ease-soft); }
+  .heute-slot:hover { background: var(--bg2); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(44,36,22,0.10); }
+  .heute-slot:active { transform: scale(0.97); }
+  .heute-slot.aktiv { border-color: var(--accent2); background: #fdf5e6; box-shadow: 0 6px 18px rgba(181,149,106,0.18); }
   .heute-slot-icon { font-size: 22px; margin-bottom: 4px; }
   .heute-slot-label { font-size: 12px; color: var(--text2); }
   .heute-slot-status { font-size: 10px; color: var(--text3); margin-top: 2px; }
+  .schnellzugriff-row {
+    margin: 0 16px 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .schnellzugriff-row .btn {
+    justify-content: center;
+    background: #f6f5f0;
+  }
 
   /* STREAK */
   .streak-bar {
@@ -586,6 +729,65 @@
 
   /* Daten-Verwaltung */
   .daten-info { font-size: 12px; color: var(--text3); padding: 8px 0; }
+
+  /* DEBUG-STATUS */
+  .debug-status-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .debug-status-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--bg3);
+    font-size: 12px;
+  }
+  .debug-status-row:last-child { border-bottom: none; }
+  .debug-status-label { color: var(--text3); }
+  .debug-status-value { color: var(--text); font-weight: 600; text-align: right; overflow-wrap: anywhere; }
+  .debug-status-ok { color: var(--success); }
+  .debug-status-warn { color: var(--warm); }
+  .startfehler-box {
+    margin: 12px 16px;
+    background: #fff4ec;
+    border: 1px solid rgba(196,132,90,0.45);
+    border-left: 5px solid var(--warm);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    color: var(--text2);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  #global-startfehler-container {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  #global-startfehler-container .startfehler-box {
+    margin-top: 12px;
+  }
+  .debug-action-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  @media (max-width: 420px) {
+    .debug-action-row { grid-template-columns: 1fr; }
+  }
+
+  .startfehler-box strong {
+    display: block;
+    color: var(--text);
+    font-family: 'Lora', serif;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+
 
   /* UPDATE BANNER */
   #update-banner {
@@ -627,9 +829,9 @@
   #hilfe-modal { display: none; position: fixed; inset: 0; background: rgba(44,36,22,0.6); z-index: 500; flex-direction: column; }
   #hilfe-modal.open { display: flex; }
   .hilfe-container { background: var(--bg); flex: 1; overflow: hidden; display: flex; flex-direction: column; max-width: 600px; margin: 0 auto; width: 100%; margin-top: 40px; border-radius: 20px 20px 0 0; }
-  .hilfe-header { background: linear-gradient(135deg, #2c2416, #4a3c28); color: #f5f0e8; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-radius: 20px 20px 0 0; }
+  .hilfe-header { background: #e6eee3; color: #1f2a21; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-radius: 20px 20px 0 0; border-bottom: 1px solid #cfdccf; }
   .hilfe-header-titel { font-family: 'Lora', serif; font-size: 17px; }
-  .hilfe-close { background: rgba(255,255,255,0.15); border: none; color: #f5f0e8; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: 14px; }
+  .hilfe-close { background: rgba(31,42,33,0.08); border: none; color: #1f2a21; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: 14px; }
   .hilfe-nav { display: flex; flex-wrap: wrap; background: var(--card); border-bottom: 1px solid var(--border); scrollbar-width: none; }
   .hilfe-nav::-webkit-scrollbar { display: none; }
   .hilfe-nav-btn { flex-shrink: 0; padding: 8px 12px; border: none; background: none; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
@@ -650,8 +852,224 @@
   .hilfe-schritt-nr { background: var(--accent2); color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; flex-shrink: 0; margin-top: 2px; }
 
   /* ? BUTTON IM HEADER */
-  .hilfe-btn { background: rgba(255,255,255,0.12); border: none; color: #f5f0e8; border-radius: 8px; padding: 4px 10px; cursor: pointer; font-size: 15px; font-weight: 600; transition: background 0.2s; }
-  .hilfe-btn:hover { background: rgba(255,255,255,0.22); }
+  .hilfe-btn { background: rgba(31,42,33,0.08); border: none; color: #1f2a21; border-radius: 8px; padding: 4px 10px; cursor: pointer; font-size: 15px; font-weight: 600; transition: background 0.2s; }
+  .hilfe-btn:hover { background: rgba(31,42,33,0.14); }
+
+
+
+  /* ============================================================
+     TAGESFORTSCHRITT UND LEERZUSTÄNDE
+     ============================================================ */
+  .tagesfortschritt-card {
+    margin: 10px 16px 8px;
+    padding: 12px 14px;
+    background: linear-gradient(135deg, rgba(250,247,242,0.96), rgba(237,231,217,0.92));
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent3);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    transition: transform 0.18s var(--ease-soft), box-shadow 0.18s var(--ease-soft);
+  }
+  .naechster-schritt-card {
+    margin: 10px 16px 8px;
+    padding: 14px 16px;
+    background: #fffdf8;
+    border: 1px solid rgba(197,122,61,0.34);
+    border-left: 5px solid var(--accent2);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 26px rgba(44,36,22,0.11);
+  }
+  .naechster-schritt-label {
+    font-size: 10px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: 1.3px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .naechster-schritt-title {
+    font-family: 'Lora', serif;
+    font-size: 16px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .naechster-schritt-text {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.45;
+    margin-bottom: 10px;
+  }
+  .tagesfortschritt-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(44,36,22,0.13);
+  }
+  .tagesfortschritt-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .tagesfortschritt-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .tagesfortschritt-count {
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .tagesfortschritt-bar {
+    height: 7px;
+    border-radius: 999px;
+    background: rgba(44,36,22,0.08);
+    overflow: hidden;
+  }
+  .tagesfortschritt-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent3), var(--accent2));
+    transition: width 0.35s var(--ease-soft);
+  }
+  .tagesfortschritt-sub {
+    margin-top: 7px;
+    font-size: 12px;
+    color: var(--text3);
+    line-height: 1.45;
+  }
+  .uebung-jetzt-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .uebung-jetzt-actions .btn { justify-content: center; }
+  .uebung-jetzt-actions .btn-primary {
+    font-size: 14px;
+    padding: 11px 14px;
+    box-shadow: 0 5px 16px rgba(122,109,82,0.22);
+  }
+  .empty-state {
+    background: rgba(250,247,242,0.72);
+    border: 1px dashed rgba(122,109,82,0.28);
+    border-radius: var(--radius);
+    margin: 8px 16px;
+    padding: 18px 16px;
+    color: var(--text2);
+    font-family: 'DM Sans', sans-serif;
+    font-style: normal;
+    line-height: 1.5;
+  }
+  .empty-state strong {
+    display: block;
+    font-family: 'Lora', serif;
+    font-size: 15px;
+    color: var(--text);
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .empty-state span {
+    display: block;
+    font-size: 13px;
+    color: var(--text3);
+  }
+  .empty-state-actions {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .heute-compact-card {
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+
+  /* RÜCKKEHR / VERLAUF / REDUZIERTE HEUTE-SEITE */
+  .rueckkehr-card {
+    background: linear-gradient(135deg, rgba(143,166,122,0.22), rgba(250,247,242,0.96));
+    border: 1px solid rgba(143,166,122,0.45);
+    border-left: 5px solid var(--accent3);
+    border-radius: var(--radius);
+    margin: 12px 16px 6px;
+    padding: 15px 16px;
+    box-shadow: var(--shadow);
+    animation: innenpauseFadeIn 0.35s var(--ease-soft);
+  }
+  .rueckkehr-title { font-family:'Lora',serif; font-size:16px; color:var(--text); margin-bottom:5px; }
+  .rueckkehr-text { font-size:13px; color:var(--text2); line-height:1.55; margin-bottom:10px; }
+  .vorschlaege-reduziert { display:none; }
+  .vorschlaege-reduziert.offen { display:block; animation: innenpauseFadeIn 0.25s var(--ease-soft); }
+  .insight-grid { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:8px; margin:8px 16px 4px; }
+  .insight-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:12px; box-shadow:var(--shadow); transition:transform .18s var(--ease-soft), box-shadow .18s var(--ease-soft); }
+  .insight-card:hover { transform:translateY(-2px); box-shadow:0 8px 22px rgba(44,36,22,0.12); }
+  .insight-label { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
+  .insight-value { font-family:'Lora',serif; font-size:18px; color:var(--text); line-height:1.2; }
+  .insight-sub { font-size:11px; color:var(--text2); margin-top:4px; line-height:1.35; }
+  .wochenfokus-card { margin:8px 16px 10px; background:rgba(143,166,122,0.12); border-left:4px solid var(--accent3); }
+  @keyframes innenpauseFadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+  @media (max-width: 520px) { .insight-grid { grid-template-columns:1fr; } }
+
+  @media (max-width: 420px) {
+    .uebung-jetzt-actions { grid-template-columns: 1fr; }
+    #impuls-header { padding: 10px 14px 12px; }
+    .app-titel-bereich {
+      gap: 7px;
+      flex-wrap: wrap;
+      margin-bottom: 7px;
+      padding-bottom: 7px;
+    }
+    .header-meta {
+      align-items: flex-end;
+      gap: 4px;
+      margin-left: 8px;
+    }
+    .header-greeting-main { font-size: 13px; }
+    .header-greeting-date { font-size: 10px; }
+    #app-titel-anzeige { font-size: 17px; }
+    .impuls-text { font-size: 15px; line-height: 1.42; }
+    .tab-btn { padding: 10px 6px 8px; }
+    .uebung-jetzt-card {
+      margin: 8px 12px 5px;
+      padding: 18px 15px 16px;
+      transform: none;
+    }
+    .schnellzugriff-row,
+    .heute-grid,
+    .card,
+    .tagesfortschritt-card,
+    .naechster-schritt-card,
+    .streak-bar {
+      margin-left: 12px;
+      margin-right: 12px;
+    }
+  }
+
+
+  /* ============================================================
+     SMART FLOW / KONTEXTLOGIK
+     ============================================================ */
+  .smart-hinweis { margin-top: 10px; background: rgba(143,166,122,0.14); border-left: 4px solid var(--accent3); border-radius: 8px; padding: 9px 11px; font-size: 12px; color: var(--text2); line-height: 1.45; }
+  .smart-hinweis strong { display: block; color: var(--text); font-size: 12px; margin-bottom: 2px; }
+  #flow-modal { display: none; position: fixed; inset: 0; background: rgba(44,36,22,0.62); z-index: 650; align-items: flex-end; }
+  #flow-modal.open { display: flex; }
+  .flow-box { width: 100%; max-width: 600px; margin: 0 auto; background: var(--card); border-radius: 22px 22px 0 0; box-shadow: 0 -10px 40px rgba(0,0,0,0.22); overflow: hidden; }
+  .flow-header { background: linear-gradient(135deg, #2c2416 0%, #4a3c28 100%); color: #f5f0e8; padding: 17px 20px 14px; }
+  .flow-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent2); margin-bottom: 4px; font-weight: 700; }
+  .flow-title { font-family: 'Lora', serif; font-size: 19px; line-height: 1.3; }
+  .flow-body { padding: 18px 20px 20px; }
+  .flow-progress { height: 7px; border-radius: 999px; background: var(--bg3); overflow: hidden; margin-bottom: 16px; }
+  .flow-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent3), var(--accent2)); transition: width 0.3s var(--ease-soft); }
+  .flow-step-title { font-family: 'Lora', serif; font-size: 17px; color: var(--text); margin-bottom: 8px; }
+  .flow-step-text { font-size: 14px; color: var(--text2); line-height: 1.65; margin-bottom: 12px; }
+  .flow-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .flow-actions { display: grid; grid-template-columns: 1fr 1.4fr; gap: 8px; margin-top: 16px; }
+  .flow-feedback { display: none; margin-top: 12px; background: var(--bg2); border-radius: 10px; padding: 12px; }
+  .flow-feedback.show { display: block; }
+  @media (max-width: 420px) { .flow-actions { grid-template-columns: 1fr; } }
 
   /* ============================================================
      PRINT / PDF-EXPORT
@@ -667,6 +1085,21 @@
   }
   .pdf-cb-label:hover { background: var(--bg3); }
   .pdf-cb-label input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--accent); flex-shrink: 0; }
+
+
+  @media (hover: none) {
+    .card:hover, .uebung-card:hover, .heute-slot:hover, .akkordeon:hover, .uebung-jetzt-card:hover {
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      transition: none !important;
+      animation: none !important;
+      scroll-behavior: auto !important;
+    }
+  }
 
   @media print {
     * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -849,6 +1282,8 @@
 </head>
 <body>
 
+<div id="global-startfehler-container" aria-live="polite"></div>
+
 <!-- ============================================================
      LIZENZ-SCREEN (erscheint nur beim ersten Start)
      ============================================================ -->
@@ -875,13 +1310,17 @@
       <span id="app-titel-anzeige">Innenpause</span>
       <span id="app-untertitel-anzeige">Deine täglichen Achtsamkeits-Momente</span>
     </div>
-    <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-      <button class="hilfe-btn" onclick="oeffneHilfe()" title="Hilfe">?</button>
-      <div style="display:flex;gap:3px">
+    <div class="header-meta">
+      <div class="header-greeting" id="header-begruessung">
+        <div class="header-greeting-main">Guten Morgen</div>
+        <div class="header-greeting-date">Dienstag, 28. April</div>
+      </div>
+      <div class="header-tools">
+        <button class="hilfe-btn" onclick="oeffneHilfe()" title="Hilfe">?</button>
         <button id="lang-btn-de" onclick="setSprache('de')" title="Deutsch"
-          style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);cursor:pointer;font-size:20px;padding:3px 6px;border-radius:6px;opacity:0.45;transition:opacity 0.2s,border-color 0.2s,background 0.2s;line-height:1;color:#f5f0e8">🇩🇪</button>
+          style="background:rgba(255,255,255,0.52);border:1px solid rgba(111,127,112,0.28);cursor:pointer;font-size:20px;padding:3px 6px;border-radius:6px;opacity:0.45;transition:opacity 0.2s,border-color 0.2s,background 0.2s;line-height:1;color:#1f2a21">🇩🇪</button>
         <button id="lang-btn-en" onclick="setSprache('en')" title="English"
-          style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);cursor:pointer;font-size:20px;padding:3px 6px;border-radius:6px;opacity:0.45;transition:opacity 0.2s,border-color 0.2s,background 0.2s;line-height:1;color:#f5f0e8">🇬🇧</button>
+          style="background:rgba(255,255,255,0.52);border:1px solid rgba(111,127,112,0.28);cursor:pointer;font-size:20px;padding:3px 6px;border-radius:6px;opacity:0.45;transition:opacity 0.2s,border-color 0.2s,background 0.2s;line-height:1;color:#1f2a21">🇬🇧</button>
       </div>
     </div>
   </div>
@@ -919,8 +1358,16 @@
 
 <div id="main">
 
-  <!-- ===== TAB: HEUTE ===== -->
+   <!-- ===== TAB: HEUTE ===== -->
   <div id="content-heute" class="tab-content active">
+    <div id="rueckkehr-container"></div>
+    <div class="section-label">Übung jetzt</div>
+    <div id="uebung-jetzt-container">
+      <div class="loading">Lade aktuelle Übung...</div>
+    </div>
+    <div id="schnellzugriff-container"></div>
+    <div id="naechster-schritt-container"></div>
+    <div id="tagesfortschritt-container"></div>
     <div id="streak-container"></div>
     <div class="heute-grid">
       <div class="heute-slot" id="slot-morgen" onclick="zeigeTab('checkin'); oeffneCheckin('morgen')">
@@ -939,28 +1386,25 @@
         <div class="heute-slot-status" id="status-abend">–</div>
       </div>
     </div>
-
-    <div class="section-label">Übung jetzt</div>
-    <div id="uebung-jetzt-container">
-      <div class="loading">Lade aktuelle Übung...</div>
-    </div>
-
     <div class="section-label">Übungsvorschläge</div>
-    <div id="heute-vorschlaege-container">
+    <div style="padding:0 16px 6px">
+      <button class="btn btn-secondary btn-sm btn-block" id="vorschlaege-toggle" onclick="toggleVorschlaegeHeute()">Weitere Vorschläge anzeigen</button>
+    </div>
+    <div id="heute-vorschlaege-container" class="vorschlaege-reduziert">
       <div class="loading">Lade Vorschläge...</div>
     </div>
 
     <div class="section-label">Notizbuch</div>
-    <div class="card">
-      <textarea id="journal-input" rows="3" placeholder="Gedanken, Beobachtungen, Momente..."></textarea>
+    <div class="card card-reflexion heute-compact-card">
+      <textarea id="journal-input" rows="2" placeholder="Gedanken, Beobachtungen, Momente..."></textarea>
       <button class="btn btn-primary btn-block btn-sm" onclick="speichereJournal()">Eintrag speichern</button>
     </div>
     <div id="journal-eintraege-heute"></div>
 
     <div class="section-label">Tagesabschluss</div>
-    <div class="card">
-      <div class="card-title">🌙 Tagesabschluss</div>
-      <textarea id="abschluss-text" rows="3" placeholder="Was nehme ich vom heutigen Tag mit?"></textarea>
+    <div class="card card-reflexion heute-compact-card" id="abschluss-card">
+      <div class="card-title">Tagesabschluss</div>
+      <textarea id="abschluss-text" rows="2" placeholder="Was nehme ich vom heutigen Tag mit?"></textarea>
       <div style="margin-top:10px">
         <label style="font-size:13px;color:var(--text2)" id="lbl-highlight">Highlight des Tages</label>
         <input type="text" id="abschluss-highlight" placeholder="Ein Moment, der gut war..." style="margin-top:6px">
@@ -975,6 +1419,7 @@
     <!-- Heutige Übungen (wird dynamisch befüllt) -->
     <div class="section-label">Heutige Übungen</div>
     <div id="heute-uebungen-container"></div>
+    <div id="begruessung-container"></div>
   </div>
 
   <!-- ===== TAB: CHECK-IN ===== -->
@@ -1062,6 +1507,8 @@
 
   <!-- ===== TAB: VERLAUF ===== -->
   <div id="content-verlauf" class="tab-content">
+    <div class="section-label">Deine letzten 7 Tage</div>
+    <div id="verlauf-insights-container"><div class="loading">Lade Auswertung...</div></div>
     <div class="section-label">Letzte 7 Tage – Stimmung</div>
     <div class="card wochen-chart" style="margin:8px 16px">
       <div id="wochen-chart-container">
@@ -1086,7 +1533,7 @@
   <div id="content-einstellungen" class="tab-content">
 
     <div class="section-label">Anzeige</div>
-    <div class="card">
+    <div class="card card-verwaltung">
       <div class="setting-row">
         <div>
           <div class="setting-label">Tagesfrage anzeigen</div>
@@ -1110,7 +1557,7 @@
     </div>
 
     <div class="section-label">Tageszeiten-Grenzen</div>
-    <div class="card">
+    <div class="card card-verwaltung">
       <div style="font-size:12px;color:var(--text3);margin-bottom:12px">Ab welcher Uhrzeit sollen Übungsvorschläge eingeblendet werden?</div>
       <div style="display:flex;gap:12px;flex-wrap:wrap">
         <div style="flex:1;min-width:80px">
@@ -1139,7 +1586,7 @@
     </div>
 
     <div class="section-label">Übungspool</div>
-    <div class="card">
+    <div class="card card-verwaltung">
       <div class="setting-row">
         <div>
           <div class="setting-label">Standard-Pool laden</div>
@@ -1164,7 +1611,7 @@
     </div>
 
     <div class="section-label">Daten</div>
-    <div class="card">
+    <div class="card card-daten">
       <div class="daten-info" id="daten-info">Alle Daten werden lokal auf diesem Gerät gespeichert.</div>
       <div class="setting-row" style="margin-top:8px">
         <div>
@@ -1191,7 +1638,7 @@
     </div>
 
     <div class="section-label">Synchronisierung</div>
-    <div class="card">
+    <div class="card card-daten">
       <div style="font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.5">
         Speichere deine Daten in einer Datei auf OneDrive, Google Drive oder einem anderen Ordner – und lade sie auf anderen Geräten wieder ein.
       </div>
@@ -1246,6 +1693,22 @@
         </div>
         <button class="btn btn-secondary btn-sm" onclick="pruefeUpdate(true)">Prüfen</button>
       </div>
+    </div>
+
+    <div class="section-label">Debug-Status</div>
+    <div class="card card-daten">
+      <div style="font-size:12px;color:var(--text3);line-height:1.5;margin-bottom:8px">
+        Schneller Technik-Check für Version, Speicher, Service Worker und lokale Daten.
+      </div>
+      <div id="debug-status-box" class="debug-status-grid">
+        <div class="debug-status-row"><span class="debug-status-label">Status</span><span class="debug-status-value">Wird geladen …</span></div>
+      </div>
+      <div class="debug-action-row">
+        <button class="btn btn-secondary btn-sm" onclick="aktualisiereDebugStatus()">Status aktualisieren</button>
+        <button class="btn btn-secondary btn-sm" onclick="ladeAppSauberNeu()">App sauber neu laden</button>
+      </div>
+      <button class="btn btn-danger btn-sm btn-block" onclick="setzeAppCacheZurueck()">App technisch zurücksetzen</button>
+      <div class="setting-sub" style="margin-top:8px">Der technische Reset löscht nur Service Worker, App-Cache und temporäre Update-Flags. Deine Einträge im localStorage bleiben erhalten.</div>
     </div>
 
   </div>
@@ -1422,7 +1885,82 @@
 // ============================================================
 // APP VERSION
 // ============================================================
-const APP_VERSION = '2.5';
+let APP_VERSION = '2.9';
+let VERSION_UPDATES = [];
+let VERSION_JSON_STATUS = { ok: false, quelle: 'fallback', meldung: 'Noch nicht geladen', geladenAm: null };
+let APP_START_OK = false;
+let START_FEHLER_LISTE = [];
+let SERVICE_WORKER_STATUS = { ok: false, text: 'Noch nicht geprüft', detail: '' };
+const IST_DEV =
+  location.hostname === 'localhost' ||
+  location.hostname === '127.0.0.1' ||
+  location.hostname === '::1';
+
+async function ladeVersionJson() {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 2000);
+
+  try {
+    const res = await fetch('./version.json?ts=' + Date.now(), {
+      cache: 'no-store',
+      signal: controller.signal
+    });
+
+    clearTimeout(timeout);
+
+    if (!res.ok) throw new Error('version.json konnte nicht geladen werden');
+    const data = await res.json();
+
+    if (data.appVersion || data.version) APP_VERSION = String(data.appVersion || data.version);
+    window.APP_VERSION = APP_VERSION;
+
+    VERSION_JSON_STATUS = {
+      ok: true,
+      quelle: 'version.json',
+      meldung: 'Geladen',
+      geladenAm: new Date().toISOString()
+    };
+
+    VERSION_UPDATES = Array.isArray(data.updates)
+      ? data.updates
+      : (Array.isArray(data.changelog)
+          ? [{ version: APP_VERSION, changelog: data.changelog }]
+          : []);
+  } catch (e) {
+    clearTimeout(timeout);
+
+    console.warn('version.json nicht verfügbar – nutze interne Fallback-Version.', e);
+
+    VERSION_JSON_STATUS = {
+      ok: false,
+      quelle: 'Fallback in index.html',
+      meldung: e?.message || String(e),
+      geladenAm: new Date().toISOString()
+    };
+
+    window.APP_VERSION = APP_VERSION;
+    VERSION_UPDATES = Array.isArray(window.APP_UPDATES)
+      ? APP_UPDATES.map(u => ({ version: u.version, changelog: u.changelog || [] }))
+      : [];
+  }
+}
+
+function getUpdateInfo(version) {
+  return VERSION_UPDATES.find(u => String(u.version) === String(version)) ||
+         APP_UPDATES.find(u => String(u.version) === String(version)) ||
+         { version, changelog: [] };
+}
+
+function getPendingUpdatesForDisplay(gespeichert) {
+  const quelle = VERSION_UPDATES.length
+    ? VERSION_UPDATES
+    : APP_UPDATES.map(u => ({ version: u.version, changelog: u.changelog || [] }));
+
+  return quelle
+    .filter(u => vergleicheVersionen(gespeichert, u.version) < 0)
+    .filter(u => vergleicheVersionen(u.version, APP_VERSION) <= 0)
+    .sort((a, b) => vergleicheVersionen(a.version, b.version));
+}
 // ============================================================
 // MEHRSPRACHIGKEIT (i18n) – Punkt 12
 // Sprache wird in localStorage unter 'sprache' gespeichert.
@@ -1704,13 +2242,13 @@ const STRINGS = {
     sync_erinnerung_laden: '↓ Backup laden',
     sync_erinnerung_speichern: '↑ Backup speichern',
     // Toasts
-    toast_checkin_gespeichert: '✓ Check-in gespeichert',
+    toast_checkin_gespeichert: '✓ Check-in gespeichert. Guter Moment.',
     toast_journal_leer: 'Bitte etwas eingeben',
-    toast_journal_gespeichert: '✓ Eintrag gespeichert',
-    toast_abschluss_gespeichert: '✓ Tagesabschluss gespeichert',
-    toast_uebung_hinzugefuegt: '✓ Zum heutigen Tag hinzugefügt',
-    toast_erledigt: '✓ Als erledigt markiert',
-    toast_feedback_gespeichert: '✓ Feedback gespeichert',
+    toast_journal_gespeichert: '✓ Eintrag gespeichert. Festgehalten.',
+    toast_abschluss_gespeichert: '✓ Tagesabschluss gespeichert. Gut gelandet.',
+    toast_uebung_hinzugefuegt: '✓ Für heute geplant.',
+    toast_erledigt: '✓ Übung abgeschlossen. Gut gemacht.',
+    toast_feedback_gespeichert: '✓ Feedback gespeichert.',
     toast_kommentar_gespeichert: '✓ Kommentar gespeichert',
     toast_bewertung_gespeichert: '⭐ Bewertung gespeichert',
     toast_fav_hinzugefuegt: '❤️ Als Favorit gespeichert',
@@ -1806,6 +2344,19 @@ const STRINGS = {
     filter_zaehler_alle: 'Übungen',
     uebung_fallback_titel: 'Übung',
     uebung_jetzt_label: 'Übung',
+    // PDF-Modal Oberfläche
+    pdf_modal_titel: '📄 PDF exportieren',
+    pdf_modal_zeitraum: 'Zeitraum',
+    pdf_modal_von: 'Von',
+    pdf_modal_bis: 'Bis',
+    pdf_modal_inhalte: 'Inhalte',
+    pdf_modal_cb_checkins: '🌤 Check-ins',
+    pdf_modal_cb_uebungen: '🧘 Übungen',
+    pdf_modal_cb_notizen: '📝 Notizbuch',
+    pdf_modal_cb_abschluss: '🌙 Tagesabschluss',
+    pdf_modal_hinweis: 'Nach dem Klick öffnet sich der Druckdialog.<br>Dort „Als PDF speichern" wählen.',
+    pdf_modal_abbrechen: 'Abbrechen',
+    pdf_modal_erstellen: '📄 PDF erstellen',
   },
   en: {
     // App
@@ -2032,12 +2583,12 @@ const STRINGS = {
     sync_erinnerung_laden: '↓ Load backup',
     sync_erinnerung_speichern: '↑ Save backup',
     // Toasts
-    toast_checkin_gespeichert: '✓ Check-in saved',
+    toast_checkin_gespeichert: '✓ Check-in saved. Good moment.',
     toast_journal_leer: 'Please enter something',
-    toast_journal_gespeichert: '✓ Entry saved',
-    toast_abschluss_gespeichert: '✓ Day\'s end saved',
-    toast_uebung_hinzugefuegt: '✓ Added to today',
-    toast_erledigt: '✓ Marked as done',
+    toast_journal_gespeichert: '✓ Entry saved. Noted.',
+    toast_abschluss_gespeichert: '✓ Day\'s end saved. Landed well.',
+    toast_uebung_hinzugefuegt: '✓ Planned for today.',
+    toast_erledigt: '✓ Exercise completed. Well done.',
     toast_feedback_gespeichert: '✓ Feedback saved',
     toast_kommentar_gespeichert: '✓ Comment saved',
     toast_bewertung_gespeichert: '⭐ Rating saved',
@@ -2133,7 +2684,20 @@ const STRINGS = {
     // Render helpers
     filter_zaehler_alle: 'exercises',
     uebung_fallback_titel: 'Exercise',
-    uebung_jetzt_label: 'Exercise',
+   uebung_jetzt_label: 'Exercise',
+    // PDF-Modal surface
+    pdf_modal_titel: '📄 Export PDF',
+    pdf_modal_zeitraum: 'Date range',
+    pdf_modal_von: 'From',
+    pdf_modal_bis: 'To',
+    pdf_modal_inhalte: 'Contents',
+    pdf_modal_cb_checkins: '🌤 Check-ins',
+    pdf_modal_cb_uebungen: '🧘 Exercises',
+    pdf_modal_cb_notizen: '📝 Notebook',
+    pdf_modal_cb_abschluss: '🌙 Day\'s end',
+    pdf_modal_hinweis: 'After clicking, your browser\'s print dialog opens.<br>Select "Save as PDF" there.',
+    pdf_modal_abbrechen: 'Cancel',
+    pdf_modal_erstellen: '📄 Create PDF',
   }
 };
 
@@ -2885,7 +3449,16 @@ function zeigToast(msg, dauer = 2500) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), dauer);
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), dauer);
+}
+
+function mikroFeedback(target) {
+  const el = typeof target === 'string' ? document.querySelector(target) : target;
+  if (!el) return;
+  el.classList.remove('micro-pulse');
+  void el.offsetWidth;
+  el.classList.add('micro-pulse');
 }
 
 function genId() {
@@ -2924,6 +3497,14 @@ function ladeImpuls() {
   document.getElementById('impuls-text').textContent = impuls.text;
   document.getElementById('impuls-kategorie').textContent = t('impuls_label') + ' ' + impuls.kategorie;
   document.querySelector('.impuls-label') && (document.querySelector('.impuls-label').textContent = t('impuls_label'));
+  aktualisiereStickyTabPosition();
+}
+
+function aktualisiereStickyTabPosition() {
+  const header = document.getElementById('impuls-header');
+  const tabs = document.getElementById('tab-bar');
+  if (!header || !tabs) return;
+  tabs.style.top = Math.ceil(header.getBoundingClientRect().height) + 'px';
 }
 
 // ============================================================
@@ -3050,7 +3631,12 @@ function speichereCheckin(tageszeit) {
   zeigToast(t('toast_checkin_gespeichert'));
   document.getElementById('status-' + tageszeit).textContent = '✓';
   document.getElementById('slot-' + tageszeit).classList.add('aktiv');
+  ladeTagesfortschritt();
+  ladeNaechsterSchritt();
+  mikroFeedback('#slot-' + tageszeit);
+  mikroFeedback('#tagesfortschritt-container .tagesfortschritt-card');
 }
+
 
 // ============================================================
 // ÜBUNGEN
@@ -3115,7 +3701,11 @@ function renderUebungen(liste) {
     }
   }
   if (!liste || liste.length === 0) {
-    c.innerHTML = `<div class="empty-state">${t('keine_uebungen_vorhanden').replace('\n','<br>')}</div>`;
+    c.innerHTML = leerHTML(
+      SPRACHE === 'en' ? 'No exercises found.' : 'Keine Übungen gefunden.',
+      SPRACHE === 'en' ? 'Reset the filters or add a new exercise.' : 'Setze die Filter zurück oder lege eine neue Übung an.',
+      `<button class="btn btn-secondary btn-sm" onclick="resetFilters()">${t('filter_reset')}</button><button class="btn btn-primary btn-sm" onclick="oeffneNeueUebung()">${SPRACHE === 'en' ? 'Add exercise' : 'Übung anlegen'}</button>`
+    );
     return;
   }
   c.innerHTML = liste.map(u => uebungCardHTML(u)).join('');
@@ -3143,14 +3733,14 @@ function uebungCardHTML(u) {
         <button class="fav-btn${istFavorit ? ' aktiv' : ''}" onclick="toggleFavorit('${u.id}')" title="${favTitle}" aria-label="${favTitle}">${favIcon}</button>
       </div>
       <div class="uebung-meta">
-        <span class="badge badge-kat">${katAnzeige(u.kategorie)}</span>
+        <span class="badge badge-kat" data-kat="${katAnzeige(u.kategorie)}">${katAnzeige(u.kategorie)}</span>
         <span>⏱ ${u.dauer_minuten} Min</span>
         <span>🕐 ${tz}</span>
         ${sterneAnzeige}
       </div>
       ${u.beschreibung ? `<div class="uebung-desc">${u.beschreibung}</div>` : ''}
       <div class="uebung-actions">
-        ${!inaktiv ? `<button class="btn btn-primary btn-sm" onclick="uebungZuHeuteHinzufuegen('${u.id}')">${t('btn_heute_machen')}</button>` : ''}
+        ${!inaktiv ? `<button class="btn btn-primary btn-sm" onclick="starteUebungsFlow('${u.id}')">${SPRACHE === 'en' ? 'Start' : 'Starten'}</button>` : ''}
         <button class="btn btn-secondary btn-sm" onclick="bearbeiteUebung('${u.id}')">✏️</button>
         <button class="btn btn-secondary btn-sm" onclick="toggleUebungAktiv('${u.id}')" title="${toggleTitle}">${toggleIcon}</button>
         <button class="btn btn-secondary btn-sm" onclick="loescheUebung('${u.id}')">🗑</button>
@@ -3176,6 +3766,9 @@ function uebungZuHeuteHinzufuegen(exerciseId) {
   lsSet('daily_exercises', dailyEx);
   zeigToast(t('toast_uebung_hinzugefuegt'));
   ladeHeuteUebungen();
+  ladeNaechsterSchritt();
+  mikroFeedback('#heute-uebungen-container .card');
+  mikroFeedback('#naechster-schritt-container .naechster-schritt-card');
 }
 
 function ladeHeuteUebungen() {
@@ -3184,21 +3777,25 @@ function ladeHeuteUebungen() {
   const alleUebungen = getUebungen();
   const c = document.getElementById('heute-uebungen-container');
   if (dailyEx.length === 0) {
-    c.innerHTML = t('keine_heute').replace('\n','<br>');
+    c.innerHTML = leerHTML(
+      SPRACHE === 'en' ? 'Nothing planned yet.' : 'Noch nichts geplant.',
+      SPRACHE === 'en' ? 'Start the current exercise above or pick something short.' : 'Starte die aktuelle Übung oben oder wähle etwas Kurzes.',
+      `<button class="btn btn-primary btn-sm" onclick="document.querySelector('#uebung-jetzt-container .btn-primary')?.click()">${SPRACHE === 'en' ? 'Start current exercise' : 'Aktuelle Übung starten'}</button><button class="btn btn-secondary btn-sm" onclick="schnellUebung(2)">2 Min.</button>`
+    );
     return;
   }
   c.innerHTML = dailyEx.map(de => {
     const u = alleUebungen.find(x => x.id === de.exerciseId);
     const titel = u ? u.titel : t('uebung_fallback_titel');
     const fb = de.feedback;
-    const sterne = fb?.sterne ? '⭐'.repeat(fb.sterne) + '<span style="opacity:0.2">⭐</span>'.repeat(5 - fb.sterne) : null;
-    const daumenIcon = fb?.daumen === 'hoch' ? '👍' : fb?.daumen === 'runter' ? '👎' : fb?.daumen === 'neutral' ? '😐' : null;
+    const sterne = fb?.sterne ? '★'.repeat(fb.sterne) + '<span style="opacity:0.2">★</span>'.repeat(5 - fb.sterne) : null;
+    const daumenIcon = fb?.daumen === 'hoch' ? '+' : fb?.daumen === 'runter' ? '-' : fb?.daumen === 'neutral' ? 'neutral' : null;
     const hatFeedback = fb && (fb.sterne || fb.daumen || fb.notiz || fb.markiert);
     return `
       <div class="card" style="margin:8px 16px">
         <div style="display:flex;justify-content:space-between;align-items:flex-start">
           <div>
-            <div class="uebung-titel" style="font-size:14px">${titel}${fb?.markiert ? ' ⭐' : ''}</div>
+            <div class="uebung-titel" style="font-size:14px">${titel}${fb?.markiert ? ' ★' : ''}</div>
             ${u ? `<div class="uebung-meta"><span class="badge badge-kat">${katAnzeige(u.kategorie)}</span></div>` : ''}
           </div>
           ${de.erledigt ? `<span class="badge badge-done">${t('badge_erledigt')}</span>` : ''}
@@ -3209,7 +3806,7 @@ function ladeHeuteUebungen() {
         </div>` : ''}
         ${fb?.notiz ? `<div style="margin-top:4px;font-size:12px;color:var(--text2);font-style:italic">"${fb.notiz}"</div>` : ''}
         <div class="uebung-actions" style="margin-top:10px">
-          ${!de.erledigt ? `<button class="btn btn-primary btn-sm" onclick="markiereErledigt('${de.id}')">${t('btn_erledigt')}</button>` : ''}
+          ${!de.erledigt ? `<button class="btn btn-primary btn-sm" onclick="starteUebungsFlow('${de.exerciseId}', '${de.id}')">${SPRACHE === 'en' ? 'Start' : 'Starten'}</button>` : ''}
           <button class="btn btn-secondary btn-sm" onclick="oeffreFeedback('${de.id}', '${titel.replace(/'/g,"\\'")}')">
             ${hatFeedback ? t('btn_bewertung_aendern') : t('btn_bewerten')}
           </button>
@@ -3229,6 +3826,9 @@ function markiereErledigt(dailyExId) {
   lsSet('daily_exercises', dailyEx);
   zeigToast(t('toast_erledigt'));
   ladeHeuteUebungen();
+  ladeTagesfortschritt();
+  ladeNaechsterSchritt();
+  mikroFeedback('#tagesfortschritt-container .tagesfortschritt-card');
 }
 
 // ============================================================
@@ -3303,6 +3903,7 @@ function speichereFeedback() {
   zeigToast(t('toast_feedback_gespeichert'));
   schliesseFeedback();
   ladeHeuteUebungen();
+  mikroFeedback('#heute-uebungen-container .card');
 }
 
 // ============================================================
@@ -3319,6 +3920,7 @@ function speichereJournal() {
   document.getElementById('journal-input').value = '';
   zeigToast(t('toast_journal_gespeichert'));
   ladeHeuteJournal();
+  mikroFeedback('#journal-eintraege-heute .journal-entry');
 }
 
 function ladeHeuteJournal() {
@@ -3348,6 +3950,7 @@ function speichereAbschluss() {
   };
   lsSet('daily_summary', summary);
   zeigToast(t('toast_abschluss_gespeichert'));
+  mikroFeedback('#abschluss-card');
 }
 
 function ladeAbschlussWerte() {
@@ -3362,16 +3965,497 @@ function ladeAbschlussWerte() {
 // ============================================================
 // HEUTE TAB
 // ============================================================
+function ladeBegruessung() {
+  const c = document.getElementById('begruessung-container');
+  const header = document.getElementById('header-begruessung');
+  const h = new Date().getHours();
+  let gruss;
+  if (SPRACHE === 'en') {
+    if (h < 11)       gruss = 'Good morning';
+    else if (h < 17)  gruss = 'Good afternoon';
+    else              gruss = 'Good evening';
+  } else {
+    if (h < 11)       gruss = 'Guten Morgen';
+    else if (h < 17)  gruss = 'Guten Tag';
+    else              gruss = 'Guten Abend';
+  }
+  const tage = t('tag_labels_voll');
+  const monate = t('monat_labels');
+  const d = new Date();
+  const datumStr = `${tage[d.getDay()]}, ${d.getDate()}. ${monate[d.getMonth()]}`;
+
+  if (header) {
+    header.innerHTML = `
+      <div class="header-greeting-main">${gruss}</div>
+      <div class="header-greeting-date">${datumStr}</div>`;
+  }
+  if (c) c.innerHTML = '';
+  aktualisiereStickyTabPosition();
+}
+
+function ladeSchnellzugriff() {
+  const c = document.getElementById('schnellzugriff-container');
+  if (!c) return;
+  c.innerHTML = `
+    <div class="schnellzugriff-row">
+      <button class="btn btn-secondary btn-sm" onclick="schnellUebung(2)">2 Min.</button>
+      <button class="btn btn-secondary btn-sm" onclick="schnellUebung(5)">5 Min.</button>
+    </div>`;
+}
+
+function leerHTML(titel, text = '', aktion = '') {
+  return `<div class="empty-state"><strong>${titel}</strong>${text ? `<span>${text}</span>` : ''}${aktion ? `<div class="empty-state-actions">${aktion}</div>` : ''}</div>`;
+}
+
+function ladeTagesfortschritt() {
+  const c = document.getElementById('tagesfortschritt-container');
+  if (!c) return;
+  const heute = heuteString();
+  const daten = ls('checkins', {})[heute] || {};
+  const zeiten = ['morgen', 'mittag', 'abend'];
+  const erledigt = zeiten.filter(tz => !!daten[tz]).length;
+  const prozent = Math.round((erledigt / zeiten.length) * 100);
+  const naechsterKey = zeiten.find(tz => !daten[tz]);
+  const labelMap = { morgen: t('morgen'), mittag: t('mittag'), abend: t('abend') };
+  const titel = SPRACHE === 'en' ? 'Today\'s check-ins' : 'Dein Tagesstand';
+  const zaehler = SPRACHE === 'en' ? `${erledigt} of 3` : `${erledigt} von 3`;
+  const sub = erledigt === 3
+    ? (SPRACHE === 'en' ? 'All three check-ins are saved. Good. Enough for today.' : 'Alle drei Check-ins sind gespeichert. Gut. Für heute reicht das Verwaltungsprogramm.')
+    : (SPRACHE === 'en' ? `Next useful step: ${labelMap[naechsterKey]} check-in.` : `Nächster sinnvoller Schritt: ${labelMap[naechsterKey]}-Check-in.`);
+  c.innerHTML = `
+    <div class="tagesfortschritt-card">
+      <div class="tagesfortschritt-head">
+        <div class="tagesfortschritt-title">${titel}</div>
+        <div class="tagesfortschritt-count">${zaehler}</div>
+      </div>
+      <div class="tagesfortschritt-bar"><div class="tagesfortschritt-fill" style="width:${prozent}%"></div></div>
+      <div class="tagesfortschritt-sub">${sub}</div>
+    </div>`;
+}
+
+function ladeNaechsterSchritt() {
+  const c = document.getElementById('naechster-schritt-container');
+  if (!c) return;
+
+  const heute = heuteString();
+  const aktuelleZeit = getTageszeit();
+  const checkinsHeute = ls('checkins', {})[heute] || {};
+  const dailyExHeute = ls('daily_exercises', {})[heute] || [];
+  const offeneUebung = dailyExHeute.find(e => !e.erledigt);
+  const checkinFehlt = !checkinsHeute[aktuelleZeit];
+  const labels = { morgen: t('morgen'), mittag: t('mittag'), abend: t('abend') };
+
+  if (checkinFehlt) {
+    c.innerHTML = `
+      <div class="naechster-schritt-card">
+        <div class="naechster-schritt-label">${SPRACHE === 'en' ? 'Next step' : 'Nächster Schritt'}</div>
+        <div class="naechster-schritt-title">${SPRACHE === 'en' ? `${labels[aktuelleZeit]} check-in` : `${labels[aktuelleZeit]}-Check-in`}</div>
+        <div class="naechster-schritt-text">${SPRACHE === 'en' ? 'Start with a short check-in so the app can guide the rest of today better.' : 'Starte mit einem kurzen Check-in, damit die App den restlichen Tag besser führen kann.'}</div>
+        <button class="btn btn-primary btn-sm" onclick="zeigeTab('checkin'); oeffneCheckin('${aktuelleZeit}')">${SPRACHE === 'en' ? 'Open check-in' : 'Check-in öffnen'}</button>
+      </div>`;
+    return;
+  }
+
+  if (offeneUebung) {
+    const u = getUebungen().find(x => x.id === offeneUebung.exerciseId);
+    const titel = u?.titel || t('uebung_fallback_titel');
+    c.innerHTML = `
+      <div class="naechster-schritt-card">
+        <div class="naechster-schritt-label">${SPRACHE === 'en' ? 'Next step' : 'Nächster Schritt'}</div>
+        <div class="naechster-schritt-title">${escapeHtml(titel)}</div>
+        <div class="naechster-schritt-text">${SPRACHE === 'en' ? 'You already planned this exercise for today. Continue here.' : 'Diese Übung ist heute schon geplant. Mach hier weiter.'}</div>
+        <button class="btn btn-primary btn-sm" onclick="starteUebungsFlow('${offeneUebung.exerciseId}', '${offeneUebung.id}')">${SPRACHE === 'en' ? 'Continue' : 'Weiter'}</button>
+      </div>`;
+    return;
+  }
+
+  c.innerHTML = '';
+}
+
+function schnellUebung(maxMin) {
+  const alle = getUebungen().filter(u => u.aktiv && u.dauer_minuten <= maxMin);
+  if (!alle.length) { zeigToast(SPRACHE === 'en' ? `No exercises up to ${maxMin} min.` : `Keine Übungen bis ${maxMin} Min.`); return; }
+  const u = alle[Math.floor(Math.random() * alle.length)];
+  const kat = katAnzeige(u.kategorie);
+  zeigToast(`${u.titel} · ${u.dauer_minuten} Min.`);
+  // Direkt in uebung-jetzt-container einblenden
+  const c = document.getElementById('uebung-jetzt-container');
+  if (c) c.innerHTML = `
+    <div class="uebung-jetzt-card">
+      <div class="uebung-jetzt-label">${SPRACHE === 'en' ? 'Quick exercise' : 'Schnellübung'}</div>
+      <div class="uebung-jetzt-titel">${u.titel}</div>
+      <div class="uebung-jetzt-meta">
+        <span>${kat}</span>
+        <span>${u.dauer_minuten} Min.</span>
+      </div>
+      <div class="uebung-jetzt-desc">${u.beschreibung || ''}</div>
+      <div class="uebung-jetzt-actions">
+        <button class="btn btn-primary" onclick="starteUebungsFlow('${u.id}')">${SPRACHE === 'en' ? 'Start exercise' : 'Übung starten'}</button>
+        <button class="btn btn-secondary" onclick="schnellUebung(${maxMin})">${SPRACHE === 'en' ? 'Another one' : 'Andere Übung'}</button>
+      </div>
+    </div>`;
+}
+
+function tageDifferenzISO(a, b) {
+  const d1 = new Date(a + 'T12:00:00');
+  const d2 = new Date(b + 'T12:00:00');
+  return Math.round((d2 - d1) / 86400000);
+}
+function ladeRueckkehrHinweis() {
+  const c = document.getElementById('rueckkehr-container');
+  if (!c) return;
+  const heute = heuteString();
+  const last = localStorage.getItem('last_active_date');
+  let html = '';
+  if (last && last !== heute) {
+    const diff = tageDifferenzISO(last, heute);
+    if (diff >= 2) {
+      const titel = SPRACHE === 'en' ? 'Good to see you again.' : 'Schön, dass du wieder da bist.';
+      const text = SPRACHE === 'en' ? `You were away for ${diff} days. No catching up, no bad conscience. One small check-in is enough today.` : `Du warst ${diff} Tage nicht hier. Kein Nachholen, kein schlechtes Gewissen. Heute reicht ein kleiner Wiedereinstieg.`;
+      const btn = SPRACHE === 'en' ? 'Gentle re-entry' : 'Sanft wiedereinsteigen';
+      html = `<div class="rueckkehr-card"><div class="rueckkehr-title">${titel}</div><div class="rueckkehr-text">${text}</div><button class="btn btn-primary btn-sm" onclick="sanfterWiedereinstieg()">${btn}</button></div>`;
+    }
+  }
+  c.innerHTML = html;
+  localStorage.setItem('last_active_date', heute);
+}
+function sanfterWiedereinstieg() {
+  const c = document.getElementById('rueckkehr-container');
+  if (c) c.innerHTML = '';
+  zeigeTab('checkin');
+  oeffneCheckin(getTageszeit());
+}
+function toggleVorschlaegeHeute() {
+  const c = document.getElementById('heute-vorschlaege-container');
+  const b = document.getElementById('vorschlaege-toggle');
+  if (!c) return;
+  c.classList.toggle('offen');
+  if (b) b.textContent = c.classList.contains('offen') ? (SPRACHE === 'en' ? 'Hide more suggestions' : 'Weitere Vorschläge ausblenden') : (SPRACHE === 'en' ? 'Show more suggestions' : 'Weitere Vorschläge anzeigen');
+}
+function aktualisiereVorschlaegeReduktion() {
+  const c = document.getElementById('heute-vorschlaege-container');
+  const b = document.getElementById('vorschlaege-toggle');
+  if (!c || !b) return;
+  const heute = heuteString();
+  const dailyEx = ls('daily_exercises', {})[heute] || [];
+  const hatErledigt = dailyEx.some(e => e.erledigt);
+  if (hatErledigt) {
+    c.classList.add('offen');
+    b.textContent = SPRACHE === 'en' ? 'Hide more suggestions' : 'Weitere Vorschläge ausblenden';
+  } else {
+    c.classList.remove('offen');
+    b.textContent = SPRACHE === 'en' ? 'Show more suggestions' : 'Weitere Vorschläge anzeigen';
+  }
+}
+
+function sichererAufruf(label, fn) {
+  try {
+    fn();
+    return true;
+  } catch (e) {
+    console.error('Innenpause Startfehler bei:', label, e);
+    return false;
+  }
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+function zeigeStartFehler(detail) {
+  const detailText = detail ? String(detail) : '';
+  if (detailText) {
+    START_FEHLER_LISTE.push({
+      zeit: new Date().toISOString(),
+      detail: detailText
+    });
+    if (START_FEHLER_LISTE.length > 8) START_FEHLER_LISTE = START_FEHLER_LISTE.slice(-8);
+  }
+
+  const text = SPRACHE === 'en'
+    ? 'Some content could not be loaded. Please reload the app. If this happens again, check the debug status in Settings.'
+    : 'Einige Inhalte konnten nicht geladen werden. Bitte lade die App neu. Wenn das wieder passiert, prüfe den Debug-Status in den Einstellungen.';
+  const details = detailText ? `<div style="margin-top:6px;font-size:12px;color:var(--text3)">${escapeHtml(detailText)}</div>` : '';
+  const html = `<div class="startfehler-box"><strong>${SPRACHE === 'en' ? 'Loading problem' : 'Ladeproblem erkannt'}</strong>${text}${details}<button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="ladeAppSauberNeu()">${SPRACHE === 'en' ? 'Reload app' : 'App neu laden'}</button></div>`;
+
+  const global = document.getElementById('global-startfehler-container');
+  if (global) global.innerHTML = html;
+
+  ['uebung-jetzt-container', 'heute-vorschlaege-container', 'schnellzugriff-container'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && (!el.innerHTML || el.querySelector('.loading'))) el.innerHTML = html;
+  });
+
+  aktualisiereDebugStatus();
+}
+
+function pruefeLocalStorageZugriff() {
+  const key = '__innenpause_test__';
+  localStorage.setItem(key, 'ok');
+  const ok = localStorage.getItem(key) === 'ok';
+  localStorage.removeItem(key);
+  return ok;
+}
+
 function ladeHeuteTab() {
-  ladeImpuls();
-  ladeVorschlaege();
-  // Check-in-Formulare dynamisch aufbauen (Felder sind im HTML leer)
-  ['morgen', 'mittag', 'abend'].forEach(tz => baueCheckinFormular(tz));
-  ladeCheckinWerte();
-  ladeHeuteUebungen();
-  ladeHeuteJournal();
-  ladeAbschlussWerte();
-  ladeStreak();
+  const schritte = [
+    ['Rückkehrhinweis', ladeRueckkehrHinweis],
+    ['Begrüßung', ladeBegruessung],
+    ['Schnellzugriff', ladeSchnellzugriff],
+    ['Tagesimpuls', ladeImpuls],
+    ['Vorschläge', ladeVorschlaege],
+    ['Vorschlagsreduktion', aktualisiereVorschlaegeReduktion],
+    ['Check-in-Formulare', () => ['morgen', 'mittag', 'abend'].forEach(tz => baueCheckinFormular(tz))],
+    ['Check-in-Werte', ladeCheckinWerte],
+    ['Tagesfortschritt', ladeTagesfortschritt],
+    ['Nächster Schritt', ladeNaechsterSchritt],
+    ['Heutige Übungen', ladeHeuteUebungen],
+    ['Journal', ladeHeuteJournal],
+    ['Tagesabschluss', ladeAbschlussWerte],
+    ['Streak', ladeStreak]
+  ];
+  const fehlgeschlagen = schritte.filter(([label, fn]) => !sichererAufruf(label, fn)).map(([label]) => label);
+  if (fehlgeschlagen.length) zeigeStartFehler('Fehler in: ' + fehlgeschlagen.join(', '));
+}
+
+
+// ============================================================
+// KONTEXTLOGIK: smarte Übungsauswahl
+// ============================================================
+function getLetzterCheckinHeute() {
+  const heute = heuteString();
+  const daten = ls('checkins', {})[heute] || {};
+  for (const tz of ['abend', 'mittag', 'morgen']) if (daten[tz]) return { tageszeit: tz, ...daten[tz] };
+  return null;
+}
+function getSmartKontext() {
+  const letzter = getLetzterCheckinHeute();
+  if (!letzter) return { typ: 'neutral', grund: SPRACHE === 'en' ? 'Selected from the current time of day. A check-in will make suggestions more precise.' : 'Aus der aktuellen Tageszeit gewählt. Mit einem Check-in werden die Vorschläge genauer.' };
+  const stressSignal = Math.max(0, 6 - (letzter.koerper || 5)) + Math.max(0, 6 - (letzter.stimmung || 5));
+  if ((letzter.energie || 5) <= 3) return { typ: 'aktivierung', grund: SPRACHE === 'en' ? 'Your energy is low. The app suggests a gentle activating exercise.' : 'Deine Energie ist niedrig. Deshalb wird eine sanft aktivierende Übung vorgeschlagen.' };
+  if (stressSignal >= 4 || (letzter.koerper || 5) <= 3) return { typ: 'regulation', grund: SPRACHE === 'en' ? 'Your values point to tension. The app suggests regulation first.' : 'Deine Werte deuten auf Anspannung. Deshalb bekommt Regulation Vorrang.' };
+  if ((letzter.verbundenheit || 5) <= 3) return { typ: 'verbindung', grund: SPRACHE === 'en' ? 'Connection is low today. The app suggests contact or self-compassion.' : 'Verbundenheit ist heute niedrig. Deshalb passt Kontakt oder Selbstmitgefühl.' };
+  if ((letzter.stimmung || 5) >= 7 && (letzter.energie || 5) >= 6) return { typ: 'ressource', grund: SPRACHE === 'en' ? 'Your check-in looks stable. The app suggests a resource-oriented exercise.' : 'Dein Check-in wirkt stabil. Deshalb passt eine ressourcenorientierte Übung.' };
+  return { typ: 'neutral', grund: SPRACHE === 'en' ? 'Balanced suggestion based on your latest check-in.' : 'Ausgewogener Vorschlag auf Basis deines letzten Check-ins.' };
+}
+function scoreUebungFuerKontext(u, kontext) {
+  const kat = u.kategorie || '';
+  let score = 0;
+  if (u.favorit) score += 8;
+  if (u.bewertung_schnitt) score += Math.round(u.bewertung_schnitt * 2);
+  if (kontext.typ === 'regulation') {
+    if (['Atem', 'Körperwahrnehmung', 'Polyvagal & Regulation', 'Stille & Meditation'].includes(kat)) score += 24;
+    if ((u.dauer_minuten || 0) <= 3) score += 6;
+  } else if (kontext.typ === 'aktivierung') {
+    if (['Bewegung & Rhythmus', 'Stimme & Singen', 'Energie & Lebendigkeit', 'Körperwahrnehmung'].includes(kat)) score += 24;
+    if ((u.dauer_minuten || 0) <= 5) score += 4;
+  } else if (kontext.typ === 'verbindung') {
+    if (['Kontakt & Verbindung', 'Selbstmitgefühl', 'GfK & Bedürfnisse', 'Stimme & Singen'].includes(kat)) score += 24;
+  } else if (kontext.typ === 'ressource') {
+    if (['Ressourcen & Möglichkeiten', 'Energie & Lebendigkeit', 'Schreiben & Ausdruck', 'Stimme & Singen'].includes(kat)) score += 22;
+  } else if ((u.dauer_minuten || 0) <= 3) score += 4;
+  return score + Math.random();
+}
+function waehleSmarteUebung(tageszeit, pool) {
+  if (!pool || !pool.length) return { uebung: null, grund: '' };
+  const kontext = getSmartKontext();
+  const sortiert = [...pool].sort((a, b) => scoreUebungFuerKontext(b, kontext) - scoreUebungFuerKontext(a, kontext));
+  return { uebung: sortiert[0], grund: kontext.grund };
+}
+function smartHinweisHTML(text) {
+  if (!text) return '';
+  const titel = SPRACHE === 'en' ? 'Why this suggestion?' : 'Warum diese Übung?';
+  return `<div class="smart-hinweis"><strong>${titel}</strong>${text}</div>`;
+}
+
+
+// ============================================================
+// DEBUG-STATUS / START-CHECK
+// ============================================================
+function zaehleCheckins() {
+  const checkins = ls('checkins', {});
+  return Object.values(checkins).reduce((sum, tag) => sum + Object.keys(tag || {}).length, 0);
+}
+
+function serviceWorkerStatusText() {
+  if (!('serviceWorker' in navigator)) return { text: 'Nicht unterstützt', ok: false };
+  if (SERVICE_WORKER_STATUS && SERVICE_WORKER_STATUS.text !== 'Noch nicht geprüft') {
+    return SERVICE_WORKER_STATUS;
+  }
+  if (navigator.serviceWorker.controller) return { text: 'Aktiv', ok: true };
+  return { text: 'Registrierbar, aber noch nicht aktiv', ok: true };
+}
+
+async function registriereServiceWorker() {
+  if (!('serviceWorker' in navigator)) {
+    SERVICE_WORKER_STATUS = { text: 'Nicht unterstützt', ok: false, detail: 'Dieser Browser unterstützt keine Service Worker.' };
+    return SERVICE_WORKER_STATUS;
+  }
+
+  if (location.protocol === 'file:') {
+    SERVICE_WORKER_STATUS = { text: 'Nicht aktiv bei Datei-Start', ok: false, detail: 'Service Worker funktionieren nur über http://localhost oder https.' };
+    return SERVICE_WORKER_STATUS;
+  }
+
+  // Entwicklungsmodus: VS Code / Live Server soll nicht durch Service Worker blockiert werden.
+  // Auf echter HTTPS-Veröffentlichung bleibt die PWA-Funktion aktiv.
+  if (IST_DEV) {
+    try {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      const relevanteRegistrierungen = registrations.filter(reg => reg.scope && reg.scope.startsWith(location.origin));
+      await Promise.all(relevanteRegistrierungen.map(reg => reg.unregister().catch(() => false)));
+      SERVICE_WORKER_STATUS = {
+        text: navigator.serviceWorker.controller ? 'Im Entwicklungsmodus abgemeldet, nach Neuladen aus' : 'Nicht aktiv im lokalen Entwicklungsmodus',
+        ok: true,
+        detail: `${relevanteRegistrierungen.length} lokale Registrierung(en) entfernt`
+      };
+    } catch (e) {
+      SERVICE_WORKER_STATUS = { text: 'Dev-Modus aktiv, Abmeldung fehlgeschlagen', ok: false, detail: e?.message || String(e) };
+    }
+    return SERVICE_WORKER_STATUS;
+  }
+
+  try {
+   const registration = await navigator.serviceWorker.register('./sw.js', { scope: './' });
+
+   navigator.serviceWorker.ready
+  .then(() => console.log('Service Worker bereit'))
+  .catch(err => console.warn('SW ready Fehler:', err));
+
+    if (registration.waiting) {
+      SERVICE_WORKER_STATUS = { text: 'Update wartet auf Neustart', ok: true, detail: 'Ein neuer Service Worker liegt bereit.' };
+    } else if (navigator.serviceWorker.controller) {
+      SERVICE_WORKER_STATUS = { text: 'Aktiv', ok: true, detail: registration.scope };
+    } else {
+      SERVICE_WORKER_STATUS = { text: 'Registriert, wird nach Neuladen aktiv', ok: true, detail: registration.scope };
+    }
+
+    registration.addEventListener('updatefound', () => {
+      SERVICE_WORKER_STATUS = { text: 'Update wird vorbereitet', ok: true, detail: registration.scope };
+      aktualisiereDebugStatus();
+    });
+
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      SERVICE_WORKER_STATUS = { text: 'Aktiv', ok: true, detail: 'Controller wurde aktualisiert.' };
+      aktualisiereDebugStatus();
+    });
+
+    return SERVICE_WORKER_STATUS;
+  } catch (e) {
+    SERVICE_WORKER_STATUS = { text: 'Registrierung fehlgeschlagen', ok: false, detail: e?.message || String(e) };
+    console.warn('Service Worker konnte nicht registriert werden:', e);
+    return SERVICE_WORKER_STATUS;
+  }
+}
+
+function letzterStartfehlerText() {
+  if (!START_FEHLER_LISTE.length) return '–';
+  const letzter = START_FEHLER_LISTE[START_FEHLER_LISTE.length - 1];
+  return `${new Date(letzter.zeit).toLocaleTimeString()} · ${letzter.detail}`;
+}
+
+async function ermittleCacheStatus() {
+  if (!('caches' in window)) return { text: 'Nicht unterstützt', ok: false };
+  try {
+    const keys = await caches.keys();
+    return { text: keys.length ? keys.join(', ') : 'Keine App-Caches gefunden', ok: true };
+  } catch (e) {
+    return { text: e?.message || String(e), ok: false };
+  }
+}
+
+async function ladeAppSauberNeu() {
+  try {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistration('./')
+  .then(reg => {
+    if (reg) reg.update().catch(() => null);
+  })
+  .catch(() => {});
+    }
+  } catch (e) {
+    console.warn('Service-Worker-Update vor Neuladen fehlgeschlagen:', e);
+  }
+  window.location.reload();
+}
+
+async function setzeAppCacheZurueck() {
+  const msg = SPRACHE === 'en'
+    ? 'Technically reset the app now? Service worker, app cache and temporary update flags will be removed. Your entries will be kept.'
+    : 'App technisch zurücksetzen? Service Worker, App-Cache und temporäre Update-Flags werden entfernt. Deine Einträge bleiben erhalten.';
+  if (!confirm(msg)) return;
+
+  try {
+    if ('caches' in window) {
+      const keys = await caches.keys();
+      await Promise.all(keys.map(key => caches.delete(key)));
+    }
+
+    if ('serviceWorker' in navigator) {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(registrations.map(reg => reg.unregister().catch(() => false)));
+    }
+
+    localStorage.removeItem('update_spaeter');
+    localStorage.removeItem('sync_erinnerung_datum');
+
+    SERVICE_WORKER_STATUS = { text: 'Zurückgesetzt', ok: true, detail: 'Service Worker deregistriert, Cache gelöscht.' };
+    zeigToast(SPRACHE === 'en' ? 'Technical reset done. Reloading …' : 'Technischer Reset erledigt. Lade neu …');
+    aktualisiereDebugStatus();
+    setTimeout(() => window.location.reload(), 700);
+  } catch (e) {
+    console.error('Technischer Reset fehlgeschlagen:', e);
+    zeigeStartFehler((SPRACHE === 'en' ? 'Technical reset failed: ' : 'Technischer Reset fehlgeschlagen: ') + (e?.message || String(e)));
+  }
+}
+
+function debugZeile(label, value, ok = true) {
+  const cls = ok ? 'debug-status-ok' : 'debug-status-warn';
+  return `<div class="debug-status-row"><span class="debug-status-label">${label}</span><span class="debug-status-value ${cls}">${value}</span></div>`;
+}
+
+async function aktualisiereDebugStatus() {
+  const box = document.getElementById('debug-status-box');
+  if (!box) return;
+
+  let storageOk = false;
+  try { storageOk = pruefeLocalStorageZugriff(); } catch (e) { storageOk = false; }
+
+  const sw = serviceWorkerStatusText();
+  const versionStatus = VERSION_JSON_STATUS.ok
+    ? `${VERSION_JSON_STATUS.quelle} geladen${VERSION_JSON_STATUS.geladenAm ? ' · ' + new Date(VERSION_JSON_STATUS.geladenAm).toLocaleTimeString() : ''}`
+    : `${VERSION_JSON_STATUS.quelle}: ${VERSION_JSON_STATUS.meldung}`;
+  const gespeicherteVersion = getGespeicherteVersion();
+  const updateOffen = vergleicheVersionen(gespeicherteVersion, APP_VERSION) < 0;
+  const cacheStatus = await ermittleCacheStatus();
+  const swRegistrierbar = 'serviceWorker' in navigator;
+  const swController = !!(swRegistrierbar && navigator.serviceWorker.controller);
+
+  box.innerHTML = [
+    debugZeile('index.html geladen', document.readyState || 'unbekannt', true),
+    debugZeile('Geladene App-Version', APP_VERSION, true),
+    debugZeile('Gespeicherte Version', gespeicherteVersion + (updateOffen ? ' · Update offen' : ''), !updateOffen),
+    debugZeile('version.json geladen', VERSION_JSON_STATUS.ok ? 'ja' : 'nein', VERSION_JSON_STATUS.ok),
+    debugZeile('version.json Detail', versionStatus, VERSION_JSON_STATUS.ok),
+    debugZeile('Sprache', SPRACHE, true),
+    debugZeile('Entwicklungsmodus', IST_DEV ? 'ja' : 'nein', true),
+    debugZeile('LocalStorage', storageOk ? 'lesbar und beschreibbar' : 'Problem erkannt', storageOk),
+    debugZeile('Übungen im Pool', String(getUebungen().length), getUebungen().length > 0),
+    debugZeile('Check-ins gespeichert', String(zaehleCheckins()), true),
+    debugZeile('Service Worker unterstützt', swRegistrierbar ? 'ja' : 'nein', swRegistrierbar),
+    debugZeile('Service Worker aktiv', swController ? 'ja' : 'nein', swController || IST_DEV || location.protocol === 'file:'),
+    debugZeile('Service Worker Status', sw.text, sw.ok),
+    debugZeile('Service Worker Controller', swController ? 'aktiv für diese Seite' : 'noch kein Controller', swController || location.protocol === 'file:'),
+    debugZeile('SW-Detail', sw.detail || '–', sw.ok),
+    debugZeile('Cache-Name', cacheStatus.text, cacheStatus.ok),
+    debugZeile('Letzter Startfehler', letzterStartfehlerText(), START_FEHLER_LISTE.length === 0),
+    debugZeile('Startstatus', APP_START_OK ? 'Start abgeschlossen' : 'Start noch nicht abgeschlossen / Fehler möglich', APP_START_OK)
+  ].join('');
 }
 
 // ============================================================
@@ -3405,12 +4489,13 @@ function holeOderErstelleVorschlagLokal(tageszeit, alleUebungen) {
   }
   if (pool.length === 0) return null;
 
-  const gewaehlt = pool[Math.floor(Math.random() * pool.length)];
-  suggestions[heute][tageszeit] = { exerciseId: gewaehlt.id, kommentar: '' };
+  const smart = waehleSmarteUebung(tageszeit, pool);
+  const gewaehlt = smart.uebung || pool[Math.floor(Math.random() * pool.length)];
+  suggestions[heute][tageszeit] = { exerciseId: gewaehlt.id, kommentar: '', smartReason: smart.grund || '' };
   lsSet('daily_suggestions', suggestions);
   rotation[tageszeit] = [...(rotation[tageszeit] || []), gewaehlt.id];
   lsSet('exercise_rotation', rotation);
-  return { exerciseId: gewaehlt.id, kommentar: '', uebung: gewaehlt };
+  return { exerciseId: gewaehlt.id, kommentar: '', smartReason: smart.grund || '', uebung: gewaehlt };
 }
 
 
@@ -3551,7 +4636,11 @@ function ladeWochenChart() {
   }
 
   if (tage.every(t => t.schnitt === null)) {
-    c.innerHTML = `<div class="empty-state" style="padding:16px 0;font-size:13px">${t('verlauf_keine_daten')}</div>`;
+    c.innerHTML = leerHTML(
+      SPRACHE === 'en' ? 'No trend yet.' : 'Noch kein Verlauf.',
+      SPRACHE === 'en' ? 'Save one check-in today and the chart starts filling.' : 'Speichere heute einen Check-in, dann füllt sich die Übersicht.',
+      `<button class="btn btn-primary btn-sm" onclick="zeigeTab('checkin'); oeffneCheckin('${getTageszeit()}')">${SPRACHE === 'en' ? 'Open check-in' : 'Check-in öffnen'}</button>`
+    );
     return;
   }
 
@@ -3641,27 +4730,35 @@ function ladeVorschlaege() {
 
   if (freigeschaltet.length === 0) {
     const startMorgen = parseInt(localStorage.getItem('setting_startMorgen') ?? '5');
-    container.innerHTML = `<div class="empty-state">${t('ab_uhr_vorschlaege').replace('{h}', startMorgen)}</div>`;
-    jetztContainer.innerHTML = `<div class="empty-state" style="margin:8px 16px">${t("ab_uhr_jetzt").replace("{h}", startMorgen)}</div>`;
+    container.innerHTML = leerHTML(SPRACHE === 'en' ? 'Suggestions are not active yet.' : 'Die Vorschläge starten später.', t('ab_uhr_vorschlaege').replace('{h}', startMorgen));
+    jetztContainer.innerHTML = leerHTML(
+      SPRACHE === 'en' ? 'A first pause will appear soon.' : 'Die erste kleine Pause erscheint bald.',
+      t("ab_uhr_jetzt").replace("{h}", startMorgen),
+      `<button class="btn btn-secondary btn-sm" onclick="schnellUebung(2)">2 Min.</button>`
+    );
     return;
   }
 
   if (alleUebungen.length === 0) {
-    container.innerHTML = `<div class="empty-state">${t('keine_uebungen_vorhanden').replace('\n','<br>')}</div>`;
-    jetztContainer.innerHTML = `<div class="empty-state" style="margin:8px 16px">${t('keine_uebungen_vorhanden').replace('\n','<br>')}</div>`;
+    container.innerHTML = leerHTML(SPRACHE === 'en' ? 'No exercise pool yet.' : 'Noch kein Übungspool vorhanden.', t('keine_uebungen_vorhanden').replace('\n',' '));
+    jetztContainer.innerHTML = leerHTML(
+      SPRACHE === 'en' ? 'No current exercise.' : 'Noch keine aktuelle Übung.',
+      t('keine_uebungen_vorhanden').replace('\n',' '),
+      `<button class="btn btn-primary btn-sm" onclick="importiereStandardPool()">${SPRACHE === 'en' ? 'Load default pool' : 'Standard-Pool laden'}</button>`
+    );
     return;
   }
 
   const tzConfig = [
-    { key: 'morgen', label: `🌅 ${t('morgen')}`, emoji: '🌅' },
-    { key: 'mittag', label: `☀️ ${t('mittag')}`, emoji: '☀️' },
-    { key: 'abend',  label: `🌙 ${t('abend')}`,  emoji: '🌙' }
+    { key: 'morgen', label: t('morgen') },
+    { key: 'mittag', label: t('mittag') },
+    { key: 'abend',  label: t('abend') }
   ];
   const aktuelletageszeit = getTageszeit();
   let jetztHTML = '';
   let akkHTML = '';
 
-  for (const { key, label, emoji } of tzConfig) {
+  for (const { key, label } of tzConfig) {
     if (!freigeschaltet.includes(key)) continue;
     const vorschlag = holeOderErstelleVorschlagLokal(key, alleUebungen);
     const u = vorschlag?.uebung || null;
@@ -3674,12 +4771,14 @@ function ladeVorschlaege() {
           <div class="uebung-jetzt-label">${label} ${t('uebung_jetzt_label')}</div>
           <div class="uebung-jetzt-titel">${u.titel}</div>
           <div class="uebung-jetzt-meta">
-            <span class="badge badge-kat">${katAnzeige(u.kategorie)}</span>
+            <span class="badge badge-kat" data-kat="${katAnzeige(u.kategorie)}">${katAnzeige(u.kategorie)}</span>
             <span>⏱ ${u.dauer_minuten} Min</span>
           </div>
           ${u.beschreibung ? `<div class="uebung-jetzt-desc">${u.beschreibung}</div>` : ''}
-          <div class="uebung-actions">
-            <button class="btn btn-primary btn-sm" onclick="uebungZuHeuteHinzufuegen('${u.id}')">${t('btn_heute_planen')}</button>
+          ${smartHinweisHTML(vorschlag.smartReason)}
+          <div class="uebung-jetzt-actions">
+            <button class="btn btn-primary" onclick="starteUebungsFlow('${u.id}')">${SPRACHE === 'en' ? 'Start exercise' : 'Übung starten'}</button>
+            <button class="btn btn-secondary" onclick="neueUebungVorschlagen('${key}')">${SPRACHE === 'en' ? 'Another one' : 'Andere Übung'}</button>
           </div>
         </div>`;
     }
@@ -3688,16 +4787,16 @@ function ladeVorschlaege() {
       <div style="padding-top:8px">
         <div class="uebung-titel">${u.titel}</div>
         <div class="uebung-meta" style="margin:4px 0 8px">
-          <span class="badge badge-kat">${katAnzeige(u.kategorie)}</span>
+          <span class="badge badge-kat" data-kat="${katAnzeige(u.kategorie)}">${katAnzeige(u.kategorie)}</span>
           <span>⏱ ${u.dauer_minuten} Min</span>
-          ${u.bewertung_schnitt ? `<span style="color:var(--accent2)">⭐ ${u.bewertung_schnitt.toFixed(1)}</span>` : ''}
+          ${u.bewertung_schnitt ? `<span style="color:var(--accent2)">★ ${u.bewertung_schnitt.toFixed(1)}</span>` : ''}
         </div>
         ${u.beschreibung ? `<div class="uebung-desc" style="font-size:13px;color:var(--text2);margin-bottom:10px">${u.beschreibung}</div>` : ''}
         <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
           <div style="font-size:12px;color:var(--text2);margin-bottom:4px;font-weight:500">${t('wie_hilfreich')}</div>
           <div class="inline-sterne" id="inline-sterne-${key}">
             ${[1,2,3,4,5].map(n => `<span class="inline-stern${(u.bewertung_sterne_letzt || 0) >= n ? ' aktiv' : ''}"
-              onclick="bewerteSternVorschlag('${u.id}', ${n}, '${key}')">⭐</span>`).join('')}
+              onclick="bewerteSternVorschlag('${u.id}', ${n}, '${key}')">★</span>`).join('')}
           </div>
           <div class="bewertung-gespeichert" id="bewertung-status-${key}">
             ${u.bewertung_anzahl ? `Ø ${u.bewertung_schnitt.toFixed(1)} ${SPRACHE === 'en' ? 'from' : 'aus'} ${u.bewertung_anzahl} ${SPRACHE === 'en' ? (u.bewertung_anzahl !== 1 ? 'ratings' : 'rating') : ('Bewertung' + (u.bewertung_anzahl !== 1 ? 'en' : ''))}` : ''}
@@ -3732,8 +4831,86 @@ function ladeVorschlaege() {
       </div>`;
   }
 
-  jetztContainer.innerHTML = jetztHTML || `<div class="empty-state" style="margin:8px 16px">${t('keine_aktuell')}</div>`;
-  container.innerHTML = akkHTML || `<div class="empty-state">${t('keine_vorschlaege')}</div>`;
+  jetztContainer.innerHTML = jetztHTML || leerHTML(
+    SPRACHE === 'en' ? 'No exercise right now.' : 'Gerade keine passende Übung.',
+    SPRACHE === 'en' ? 'Choose one directly or try a very short pause.' : 'Wähle direkt eine Übung oder starte eine sehr kurze Pause.',
+    `<button class="btn btn-primary btn-sm" onclick="zeigeTab('uebungen')">${SPRACHE === 'en' ? 'Choose exercise' : 'Übung wählen'}</button><button class="btn btn-secondary btn-sm" onclick="schnellUebung(2)">2 Min.</button>`
+  );
+  container.innerHTML = akkHTML || leerHTML(SPRACHE === 'en' ? 'No suggestions available.' : 'Keine Vorschläge verfügbar.', SPRACHE === 'en' ? 'This usually means the exercise pool is empty or filtered out.' : 'Meist ist dann der Übungspool leer oder gerade nichts freigeschaltet.');
+}
+
+
+// ============================================================
+// FLOW-MODUL: Übung schrittweise begleiten
+// ============================================================
+let FLOW_STATE = { exerciseId: null, dailyExId: null, step: 0, steps: [] };
+function baueFlowSchritte(u) {
+  const dauer = u.dauer_minuten || 3;
+  if (SPRACHE === 'en') return [
+    { titel: 'Arrive', text: 'Take a comfortable position. Let your shoulders drop. One breath is enough to begin.' },
+    { titel: u.titel, text: u.beschreibung || 'Do the exercise in your own pace. No performance, no pressure.' },
+    { titel: 'Notice', text: `Stay for one more breath. What has changed? What is still the same? This exercise took about ${dauer} minutes.` }
+  ];
+  return [
+    { titel: 'Ankommen', text: 'Nimm eine bequeme Position ein. Lass die Schultern sinken. Ein Atemzug reicht als Anfang.' },
+    { titel: u.titel, text: u.beschreibung || 'Mach die Übung in deinem Tempo. Keine Leistung, kein Druck.' },
+    { titel: 'Nachspüren', text: `Bleib noch einen Atemzug da. Was hat sich verändert? Was ist gleich geblieben? Diese Übung dauert ungefähr ${dauer} Minuten.` }
+  ];
+}
+function starteUebungsFlow(exerciseId, dailyExId = null) {
+  const u = getUebungen().find(x => x.id === exerciseId);
+  if (!u) { zeigToast(SPRACHE === 'en' ? 'Exercise not found.' : 'Übung nicht gefunden.'); return; }
+  FLOW_STATE = { exerciseId, dailyExId, step: 0, steps: baueFlowSchritte(u) };
+  const modal = document.getElementById('flow-modal');
+  if (!modal) return;
+  document.getElementById('flow-title').textContent = u.titel;
+  document.getElementById('flow-meta').innerHTML = `<span class="badge badge-kat" data-kat="${katAnzeige(u.kategorie)}">${katAnzeige(u.kategorie)}</span><span class="badge">${u.dauer_minuten || 3} Min</span>`;
+  document.getElementById('flow-feedback').classList.remove('show');
+  const note = document.getElementById('flow-feedback-note');
+  if (note) note.value = '';
+  modal.classList.add('open');
+  renderFlowSchritt();
+}
+function renderFlowSchritt() {
+  const total = FLOW_STATE.steps.length;
+  const step = FLOW_STATE.steps[FLOW_STATE.step];
+  if (!step) return;
+  document.getElementById('flow-progress-fill').style.width = Math.round(((FLOW_STATE.step + 1) / total) * 100) + '%';
+  document.getElementById('flow-step-title').textContent = step.titel;
+  document.getElementById('flow-step-text').textContent = step.text;
+  document.getElementById('flow-step-count').textContent = SPRACHE === 'en' ? `Step ${FLOW_STATE.step + 1} of ${total}` : `Schritt ${FLOW_STATE.step + 1} von ${total}`;
+  document.getElementById('flow-back-btn').style.visibility = FLOW_STATE.step === 0 ? 'hidden' : 'visible';
+  document.getElementById('flow-next-btn').textContent = FLOW_STATE.step === total - 1 ? (SPRACHE === 'en' ? 'Finish' : 'Abschließen') : (SPRACHE === 'en' ? 'Next' : 'Weiter');
+  document.getElementById('flow-feedback').classList.toggle('show', FLOW_STATE.step === total - 1);
+}
+function flowWeiter() {
+  if (FLOW_STATE.step < FLOW_STATE.steps.length - 1) { FLOW_STATE.step += 1; renderFlowSchritt(); }
+  else flowAbschliessen();
+}
+function flowZurueck() { if (FLOW_STATE.step > 0) { FLOW_STATE.step -= 1; renderFlowSchritt(); } }
+function schliesseFlow() { document.getElementById('flow-modal')?.classList.remove('open'); }
+function flowAbschliessen() {
+  const heute = heuteString();
+  const dailyEx = ls('daily_exercises', {});
+  if (!dailyEx[heute]) dailyEx[heute] = [];
+  let eintrag = FLOW_STATE.dailyExId ? dailyEx[heute].find(e => e.id === FLOW_STATE.dailyExId) : null;
+  if (!eintrag) {
+    eintrag = { id: genId(), exerciseId: FLOW_STATE.exerciseId, tageszeit: getTageszeit(), erledigt: false, erledigt_at: null, feedback: null, erstellt_am: new Date().toISOString() };
+    dailyEx[heute].push(eintrag);
+  }
+  const note = document.getElementById('flow-feedback-note')?.value || '';
+  eintrag.erledigt = true;
+  eintrag.erledigt_at = new Date().toISOString();
+  eintrag.feedback = { ...(eintrag.feedback || {}), notiz: note || null };
+  lsSet('daily_exercises', dailyEx);
+  schliesseFlow();
+  zeigToast(SPRACHE === 'en' ? 'Exercise completed.' : 'Übung abgeschlossen.');
+  ladeHeuteUebungen();
+  ladeTagesfortschritt();
+  ladeNaechsterSchritt();
+  mikroFeedback('#tagesfortschritt-container .tagesfortschritt-card');
+  mikroFeedback('#heute-uebungen-container .card');
+  aktualisiereVorschlaegeReduktion();
 }
 
 // ============================================================
@@ -3889,6 +5066,7 @@ function ladeEinstellungenUI() {
       : `Version ${aktuell} · aktuell ✓`;
   }
   ladeSyncUI();
+  aktualisiereDebugStatus();
   let total = 0;
   for (let k in localStorage) {
     if (localStorage.hasOwnProperty(k)) total += (localStorage[k].length * 2); // UTF-16
@@ -4042,9 +5220,60 @@ function speichereAppTitel() {
 // ============================================================
 // VERLAUF
 // ============================================================
+function getLetzteTage(anzahl = 7) {
+  const tage = [];
+  for (let i = anzahl - 1; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    tage.push(d.toISOString().slice(0, 10));
+  }
+  return tage;
+}
+function ladeVerlaufInsights() {
+  const c = document.getElementById('verlauf-insights-container');
+  if (!c) return;
+  const tage = getLetzteTage(7);
+  const checkins = ls('checkins', {});
+  const dailyEx = ls('daily_exercises', {});
+  const alleUebungen = getUebungen();
+  const stimmungen = [];
+  let checkinCount = 0;
+  let uebungCount = 0;
+  const katCounts = {};
+  tage.forEach(ds => {
+    const td = checkins[ds] || {};
+    ['morgen','mittag','abend'].forEach(tz => {
+      if (td[tz]) {
+        checkinCount++;
+        if (td[tz].stimmung != null) stimmungen.push(Number(td[tz].stimmung));
+      }
+    });
+    (dailyEx[ds] || []).forEach(e => {
+      if (e.erledigt) uebungCount++;
+      const u = alleUebungen.find(x => x.id === e.exerciseId);
+      if (u?.kategorie) katCounts[katAnzeige(u.kategorie)] = (katCounts[katAnzeige(u.kategorie)] || 0) + 1;
+    });
+  });
+  const avg = stimmungen.length ? (stimmungen.reduce((a,b)=>a+b,0) / stimmungen.length) : null;
+  const topKat = Object.entries(katCounts).sort((a,b)=>b[1]-a[1])[0]?.[0] || (SPRACHE === 'en' ? 'not enough data' : 'noch offen');
+  const fokusText = uebungCount === 0 && checkinCount === 0 ? (SPRACHE === 'en' ? 'There is not much data yet. That is okay; the story starts with the first entry.' : 'Noch wenig Daten. Das ist in Ordnung; die Geschichte beginnt mit dem ersten Eintrag.') : (SPRACHE === 'en' ? `This week your focus was on ${topKat}.` : `Dein Schwerpunkt lag zuletzt bei ${topKat}.`);
+  const stimmungValue = avg == null ? '–' : avg.toFixed(1);
+  const stimmungSub = avg == null ? (SPRACHE === 'en' ? 'No mood values yet' : 'Noch keine Stimmungswerte') : (SPRACHE === 'en' ? 'average mood' : 'Stimmung im Schnitt');
+  const uebungSub = SPRACHE === 'en' ? 'completed exercises' : 'abgeschlossene Übungen';
+  const checkinSub = SPRACHE === 'en' ? 'saved check-ins' : 'gespeicherte Check-ins';
+  c.innerHTML = `
+    <div class="insight-grid">
+      <div class="insight-card"><div class="insight-label">${SPRACHE === 'en' ? 'Mood' : 'Stimmung'}</div><div class="insight-value">${stimmungValue}</div><div class="insight-sub">${stimmungSub}</div></div>
+      <div class="insight-card"><div class="insight-label">${SPRACHE === 'en' ? 'Practice' : 'Praxis'}</div><div class="insight-value">${uebungCount}</div><div class="insight-sub">${uebungSub}</div></div>
+      <div class="insight-card"><div class="insight-label">Check-ins</div><div class="insight-value">${checkinCount}</div><div class="insight-sub">${checkinSub}</div></div>
+    </div>
+    <div class="card wochenfokus-card"><div class="card-title">${SPRACHE === 'en' ? 'Weekly pattern' : 'Wochenmuster'}</div><div style="font-size:13px;color:var(--text2);line-height:1.55">${fokusText}</div></div>`;
+}
+
 function ladeVerlaufInit() {
   const inp = document.getElementById('verlauf-datum');
   inp.value = heuteString(); // immer auf Heute springen beim Tab-Öffnen
+  ladeVerlaufInsights();
   ladeWochenChart();
   ladeVerlauf();
 }
@@ -4079,13 +5308,12 @@ function ladeVerlauf() {
     html += `<div class="section-label">${t('verlauf_checkins')}</div>`;
     tzArr.forEach(tz => {
       const ci = tagesDaten[tz];
-      const icons  = { morgen: '🌅', mittag: '☀️', abend: '🌙' };
       const labels = { morgen: t('morgen'), mittag: t('mittag'), abend: t('abend') };
-      html += `<div class="card"><div class="card-title">${icons[tz]} ${labels[tz]}</div>`;
+      html += `<div class="card"><div class="card-title">${labels[tz]}</div>`;
       if (tz === 'morgen' && ci.schlaf_qualitaet) {
         html += `<div class="checkin-zeile"><span>😴 Schlaf</span><div style="display:flex;gap:8px;align-items:center"><div class="checkin-balken"><div class="checkin-balken-fill" style="width:${ci.schlaf_qualitaet*10}%"></div></div><span>${ci.schlaf_qualitaet}/10</span></div></div>`;
       }
-      [['stimmung','🌤 Stimmung'],['energie','⚡ Energie'],['koerper','🫀 Körper'],['verbundenheit','🤝 Verbundenheit']].forEach(([k,l]) => {
+      [['stimmung','Stimmung'],['energie','Energie'],['koerper','Körper'],['verbundenheit','Verbundenheit']].forEach(([k,l]) => {
         if (ci[k] != null) html += `<div class="checkin-zeile"><span>${l}</span><div style="display:flex;gap:8px;align-items:center"><div class="checkin-balken"><div class="checkin-balken-fill" style="width:${ci[k]*10}%"></div></div><span>${ci[k]}/10</span></div></div>`;
       });
       if (ci.freitext) html += `<div style="margin-top:8px;font-size:13px;color:var(--text2);font-style:italic">"${ci.freitext}"</div>`;
@@ -4103,12 +5331,12 @@ function ladeVerlauf() {
       const fb = de.feedback;
       html += `<div class="card">
         <div class="uebung-titel" style="font-size:14px">${titel}</div>
-        ${u ? `<div class="uebung-meta"><span class="badge badge-kat">${u.kategorie}</span></div>` : ''}
+        ${u ? `<div class="uebung-meta"><span class="badge badge-kat" data-kat="${u.kategorie}">${u.kategorie}</span></div>` : ''}
         ${de.erledigt ? `<span class="badge badge-done">${t('badge_erledigt')}</span>` : `<span style="font-size:12px;color:var(--text3)">${t('nicht_erledigt')}</span>`}
         ${fb ? `<div style="margin-top:8px;font-size:13px">
-          ${fb.sterne ? '⭐'.repeat(fb.sterne) + '<span style="opacity:0.2">⭐</span>'.repeat(5-fb.sterne) : ''}
-          ${fb.daumen === 'hoch' ? '👍' : fb.daumen === 'runter' ? '👎' : ''}
-          ${fb.markiert ? '⭐' : ''}
+          ${fb.sterne ? '★'.repeat(fb.sterne) + '<span style="opacity:0.2">★</span>'.repeat(5-fb.sterne) : ''}
+          ${fb.daumen === 'hoch' ? '+' : fb.daumen === 'runter' ? '-' : ''}
+          ${fb.markiert ? '★' : ''}
           ${fb.notiz ? `<div style="color:var(--text2);font-style:italic;margin-top:4px">"${fb.notiz}"</div>` : ''}
         </div>` : ''}
       </div>`;
@@ -4119,7 +5347,7 @@ function ladeVerlauf() {
   if (journal.length > 0) {
     html += '<div class="section-label">Notizen</div><div style="padding:0 16px">';
     journal.forEach(e => {
-      html += `<div class="journal-entry"><div class="journal-time">🕐 ${e.time}</div><div class="journal-text">${e.text}</div></div>`;
+      html += `<div class="journal-entry"><div class="journal-time">${e.time}</div><div class="journal-text">${e.text}</div></div>`;
     });
     html += '</div>';
   }
@@ -4128,8 +5356,8 @@ function ladeVerlauf() {
   if (summary) {
     html += '<div class="section-label">Tagesabschluss</div><div class="card">';
     if (summary.abschlusstext) html += `<div style="font-size:14px;margin-bottom:8px">${summary.abschlusstext}</div>`;
-    if (summary.highlight)     html += `<div style="font-size:13px;color:var(--text2)">✨ ${summary.highlight}</div>`;
-    if (summary.dankbarkeit)   html += `<div style="font-size:13px;color:var(--text2);margin-top:4px">🙏 ${summary.dankbarkeit}</div>`;
+    if (summary.highlight)     html += `<div style="font-size:13px;color:var(--text2)">Highlight: ${summary.highlight}</div>`;
+    if (summary.dankbarkeit)   html += `<div style="font-size:13px;color:var(--text2);margin-top:4px">Dankbarkeit: ${summary.dankbarkeit}</div>`;
     html += '</div>';
   }
 
@@ -4142,7 +5370,11 @@ function ladeVerlauf() {
         ${t('verlauf_sync_hinweis')}
       </div>`;
     }
-    html = hinweis + `<div class="empty-state">${t('verlauf_leer')}</div>`;
+    html = hinweis + leerHTML(
+      SPRACHE === 'en' ? 'Nothing saved for this day.' : 'Noch nichts an diesem Tag.',
+      SPRACHE === 'en' ? 'For today, start with a small check-in or exercise.' : 'Für heute kannst du mit einem kleinen Check-in oder einer Übung starten.',
+      istHeute ? `<button class="btn btn-primary btn-sm" onclick="zeigeTab('checkin'); oeffneCheckin('${getTageszeit()}')">${SPRACHE === 'en' ? 'Open check-in' : 'Check-in öffnen'}</button>` : ''
+    );
   }
   c.innerHTML = html;
 }
@@ -4413,20 +5645,34 @@ function startepdfdruck() {
     ${tageSektionen}
     <div class="print-footer">
       ${t('pdf_erstellt')} Innenpause v${APP_VERSION} &nbsp;${t('pdf_lokal')} &nbsp;&middot;&nbsp; ${jetzt}
-    </div>
-    <script>window.onload = function() { document.title = '${dateiName.replace('.pdf','')}'; window.print(); };<\/script>
-  </body></html>`;
+    </div> 
+<\/body><\/html>`;
 
-  const blob = new Blob([vollHtml], { type: 'text/html' });
-  const url  = URL.createObjectURL(blob);
-  const win  = window.open(url, '_blank');
+  const win = window.open('', '_blank');
   if (!win) {
     zeigeToast('Bitte Pop-ups erlauben, um das PDF zu \u00f6ffnen.');
-    URL.revokeObjectURL(url);
     return;
   }
-  // URL nach kurzer Zeit freigeben
-  setTimeout(() => URL.revokeObjectURL(url), 30000);
+
+  win.document.open();
+  win.document.write(vollHtml);
+  win.document.close();
+
+  const drucke = () => {
+    try {
+      win.focus();
+      win.print();
+    } catch (e) {
+      console.warn('Druckdialog konnte nicht automatisch geöffnet werden:', e);
+    }
+  };
+
+  if (win.document.readyState === 'complete') {
+    setTimeout(drucke, 150);
+  } else {
+    win.addEventListener('load', () => setTimeout(drucke, 150), { once: true });
+  }
+
   schliessePdfModal();
 }
 
@@ -4454,11 +5700,18 @@ function schliesseHilfe() {
 function zeigeHilfeSektion(name) {
   document.querySelectorAll('.hilfe-sektion').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.hilfe-nav-btn').forEach(b => b.classList.remove('active'));
+
   const sektion = document.getElementById('hilfe-' + name);
   if (sektion) sektion.classList.add('active');
+
   const btns = document.querySelectorAll('.hilfe-nav-btn');
-  btns.forEach(b => { if (b.getAttribute('onclick').includes("'" + name + "'")) b.classList.add('active'); });
-  // Scroll zurück nach oben
+  btns.forEach(b => {
+    const onclick = b.getAttribute('onclick') || '';
+    if (onclick.includes("'" + name + "'")) {
+      b.classList.add('active');
+    }
+  });
+
   const body = document.querySelector('.hilfe-body');
   if (body) body.scrollTop = 0;
 }
@@ -4737,6 +5990,64 @@ async function syncSpeichernUndSchliesse() {
 }
 
 
+
+// ============================================================
+// SICHERES CHANGELOG / STARTDIAGNOSE
+// ============================================================
+function leereElement(el) {
+  if (!el) return;
+  while (el.firstChild) el.removeChild(el.firstChild);
+}
+
+function textEl(tag, text, className = '') {
+  const el = document.createElement(tag);
+  if (className) el.className = className;
+  el.textContent = text == null ? '' : String(text);
+  return el;
+}
+
+function renderChangelogListe(container, eintraege) {
+  leereElement(container);
+
+  if (!Array.isArray(eintraege) || eintraege.length === 0) {
+    container.appendChild(textEl('li', SPRACHE === 'en' ? 'No changelog entries available.' : 'Keine Changelog-Einträge vorhanden.'));
+    return;
+  }
+
+  eintraege.forEach(eintrag => {
+    container.appendChild(textEl('li', eintrag));
+  });
+}
+
+function pruefeAppStartStrukturell() {
+  const fehler = [];
+
+  let storageOk = false;
+  try {
+    storageOk = pruefeLocalStorageZugriff();
+  } catch (e) {
+    storageOk = false;
+  }
+  if (!storageOk) fehler.push(SPRACHE === 'en' ? 'Local storage is not available.' : 'LocalStorage ist nicht verfügbar.');
+
+  const uebungen = getUebungen();
+  if (!Array.isArray(uebungen) || uebungen.length === 0) {
+    fehler.push(SPRACHE === 'en' ? 'No exercises are available.' : 'Keine Übungen vorhanden.');
+  }
+
+  const checkins = ls('checkins', {});
+  if (!checkins || typeof checkins !== 'object' || Array.isArray(checkins)) {
+    fehler.push(SPRACHE === 'en' ? 'Check-in data has an invalid format.' : 'Check-in-Daten haben ein ungültiges Format.');
+  }
+
+  if (fehler.length > 0) {
+    zeigeStartFehler(fehler.join(' · '));
+    return false;
+  }
+
+  return true;
+}
+
 // ============================================================
 // UPDATE-SYSTEM
 // ============================================================
@@ -4772,9 +6083,7 @@ function pruefeUpdate(manuell = false) {
     if (letzteErinnerung === heuteString()) return;
   }
 
-  const pendingUpdates = APP_UPDATES.filter(u =>
-    vergleicheVersionen(gespeichert, u.version) < 0
-  );
+  const pendingUpdates = getPendingUpdatesForDisplay(gespeichert);
 
   const banner = document.getElementById('update-banner');
   const bannerSub = document.getElementById('update-banner-sub');
@@ -4782,28 +6091,43 @@ function pruefeUpdate(manuell = false) {
     bannerSub.textContent = `Version ${APP_VERSION} ${SPRACHE === 'en' ? 'is ready' : 'ist bereit'} (${pendingUpdates.length} Update${pendingUpdates.length !== 1 ? 's' : ''}).`;
   }
   if (banner) {
+    // Der Update-Hinweis bleibt sichtbar, bis bewusst „Details ansehen“ oder „Später“ gewählt wird.
     banner.classList.add('show');
-    setTimeout(() => banner.classList.remove('show'), 10000);
   }
 }
 
 function zeigeUpdateModal() {
   document.getElementById('update-banner')?.classList.remove('show');
   const gespeichert = getGespeicherteVersion();
-  const pendingUpdates = APP_UPDATES.filter(u =>
-    vergleicheVersionen(gespeichert, u.version) < 0
-  );
+  const pendingUpdates = getPendingUpdatesForDisplay(gespeichert);
 
   const vInfo = document.getElementById('update-version-info');
   if (vInfo) vInfo.textContent = t('update_von_auf').replace('{a}', gespeichert).replace('{b}', APP_VERSION);
 
   const changelog = document.getElementById('update-changelog');
   if (changelog) {
-    changelog.innerHTML = pendingUpdates.map(u =>
-      `<div style="margin-bottom:10px"><strong>v${u.version}</strong><ul style="margin:4px 0 0 16px;font-size:12px;color:var(--text2)">` +
-      u.changelog.map(c => `<li>${c}</li>`).join('') +
-      '</ul></div>'
-    ).join('');
+    leereElement(changelog);
+
+    pendingUpdates.forEach(u => {
+      const info = getUpdateInfo(u.version);
+      const items = Array.isArray(info.changelog) ? info.changelog : [];
+
+      const block = document.createElement('div');
+      block.style.marginBottom = '10px';
+
+      const titel = document.createElement('strong');
+      titel.textContent = `v${u.version}`;
+      block.appendChild(titel);
+
+      const ul = document.createElement('ul');
+      ul.style.margin = '4px 0 0 16px';
+      ul.style.fontSize = '12px';
+      ul.style.color = 'var(--text2)';
+
+      renderChangelogListe(ul, items);
+      block.appendChild(ul);
+      changelog.appendChild(block);
+    });
   }
 
   document.getElementById('update-modal').style.display = 'flex';
@@ -4847,29 +6171,23 @@ function fuehreUpdateAus() {
   localStorage.setItem('app_version', APP_VERSION);
 
   zeigToast(t('toast_update_eingespielt').replace('{v}', APP_VERSION));
-  setTimeout(() => location.reload(), 1500);
+  setTimeout(() => ladeAppSauberNeu(), 900);
 }
 
 // ============================================================
 // Wie ein Update eingespielt wird:
-// 1. APP_VERSION hochzählen (z.B. "1.0" → "1.1")
-// 2. Einen Eintrag in APP_UPDATES hinzufügen mit:
-//    - version: die neue Versionsnummer
-//    - changelog: Liste der Änderungen (wird dem Nutzer angezeigt)
-//    - migration: Funktion die die Datenmigration durchführt
-// 3. index.html auf GitHub pushen – fertig.
-// Die Migration läuft automatisch beim nächsten Seitenaufruf.
+// 1. In version.json appVersion/version hochzählen.
+// 2. In version.json den Changelog pflegen.
+// 3. Nur wenn sich die Datenstruktur ändert: zusätzlich hier in APP_UPDATES
+//    eine Migration für die neue Version ergänzen.
+// Die Anzeige des Changelogs kommt aus version.json; Migrationen bleiben hier,
+// damit Nutzerdaten beim Update erhalten bleiben.
 // ============================================================
 
 const APP_UPDATES = [
   {
     version: '1.1',
-    changelog: [
-      'Bewertungssystem: 5 Sterne direkt in den Vorschlagskarten',
-      'Bewertungen werden bei jeder Übung gespeichert (Durchschnitt)',
-      'Übungen-Tab: Sortierung nach Bewertung, Name',
-      'Feedback-Modal lädt vorhandene Bewertung vor',
-    ],
+    changelog: [],
     migration: (state) => {
       // Keine Datenmigration nötig – nur neue Felder werden ergänzt
       // bewertung_schnitt / bewertung_anzahl entstehen beim ersten Bewerten
@@ -4878,11 +6196,7 @@ const APP_UPDATES = [
   },
   {
     version: '1.2',
-    changelog: [
-      'Update-System: App informiert automatisch über neue Versionen',
-      'Versionsanzeige in den Einstellungen',
-      'Datenmigration: bestehende Nutzerdaten bleiben bei Updates erhalten',
-    ],
+    changelog: [],
     migration: (state) => {
       // Beispiel: neues Feld 'aktiv' bei exercises sicherstellen
       if (state.exercises) {
@@ -4896,59 +6210,32 @@ const APP_UPDATES = [
   },
   {
     version: '1.3',
-    changelog: [
-      'Streak-Anzeige: Tage in Folge mit 7-Tage-Punktereihe im Heute-Tab',
-      'Übungsvorschläge: ↻ Button für neue Übung pro Tageszeit',
-      'Verlauf: Wochenübersicht als Stimmungs-Balkengrafik',
-      'Übungen-Tab: Filter \"⭐ Favoriten\"',
-    ],
+    changelog: [],
     migration: (state) => state
   },
   {
     version: '1.4',
-    changelog: [
-      'Bewertungssterne: ⭐ Emoji statt ★ Symbol',
-      'Inaktive Sterne besser erkennbar (transparenter Hintergrund)',
-    ],
+    changelog: [],
     migration: (state) => state
   },
   {
     version: '1.5',
-    changelog: [
-      'Sync-System: Daten in eigener Cloud-Datei (OneDrive, Google Drive etc.) speichern',
-      'Geführter Einrichtungsprozess für Synchronisierung',
-      'Start-Erinnerung: tägliche Abfrage ob Sync gewünscht',
-      'Fallback auf manuellen Export für Safari/iPhone',
-    ],
+    changelog: [],
     migration: (state) => state
   },
   {
     version: '1.6',
-    changelog: [
-      '\"?\"-Hilfe-Button im Header',
-      'Vollständige Anleitung für alle Reiter integriert',
-      'Troubleshooting: Installation, Updates, Sync, Datenverlust',
-    ],
+    changelog: [],
     migration: (state) => state
   },
   {
     version: '1.7',
-    changelog: [
-      'Neue Kategorie: \"Schwierige Momente\" – 8 Übungen für akuten Stress, Trigger und schwierige Situationen',
-      'Neue Kategorie: \"Schreiben & Ausdruck\" – 6 Übungen (Briefe, Ich-Botschaften, freies Schreiben)',
-      'Neue Kategorie: \"Ressourcen & Möglichkeiten\" – 8 Übungen (Ressourcenaktivierung, Zustandsarbeit, Lösungsfokus)',
-      'PMR & Body-Scan in \"Körperwahrnehmung\" integriert – 4 neue Tiefenentspannungsübungen',
-      '\"Hypnosystemik\" umbenannt in \"Ressourcen & Möglichkeiten\"',
-    ],
+    changelog: [],
     migration: (state) => state
   },
   {
     version: '1.8',
-    changelog: [
-      'Neue Übungen automatisch einspielt: Schwierige Momente, Schreiben & Ausdruck, Ressourcen & Möglichkeiten, PMR & Body-Scan',
-      'Pool-Merge: Neue Standard-Übungen werden ohne Duplikate zu bestehenden hinzugefügt',
-      '\"Hypnosystemik\"-Einträge werden automatisch in \"Ressourcen & Möglichkeiten\" umbenannt',
-    ],
+    changelog: [],
     migration: (state) => {
       // 1. Kategorie umbenennen (Altdaten bereinigen)
       if (state.exercises) {
@@ -4974,20 +6261,12 @@ const APP_UPDATES = [
   },
   {
     version: '2.1',
-    changelog: [
-      'Sprachumschaltung DE↔EN: Übungen werden jetzt zuverlässig übersetzt (Bugfix)',
-      'Alle 126 Übungspaare DE/EN sind jetzt vollständig synchronisiert',
-    ],
+    changelog: [],
     migration: (state) => state
   },
   {
     version: '2.2',
-    changelog: [
-      '24 neue Übungen: Stille & Meditation, Kontakt & Verbindung, Ressourcen, Schreiben, Schwierige Momente',
-      'Darunter: Stille-Minute, Wärme für eine schwierige Person, Zukünftiges Ich, Drei gute Dinge, STOP-Übung, Mantra-Atem u.v.m.',
-      'DE/EN-Pool vollständig bereinigt: alle Übungspaare sind jetzt echte Übersetzungen',
-      'Sprachumschaltung funktioniert jetzt auch bei wiederholtem Wechsel korrekt',
-    ],
+    changelog: [],
     migration: (state) => {
       const neueUebungen = STANDARD_UEBUNGEN.filter(u =>
         [
@@ -5029,12 +6308,7 @@ const APP_UPDATES = [
   },
   {
     version: '2.4',
-    changelog: [
-      'Kategorie-Bug behoben: EN-Übungen hatten englische Kategorienamen als internen Schlüssel',
-      'Neue Funktion: Übungen zurücksetzen (Einstellungen → Daten) – persönliche Daten bleiben erhalten',
-      'Kategorie-Fix wird automatisch auf vorhandene Daten angewendet (Migration)',
-      'Sprachwechsel DE↔EN robuster: Positions-Fallback wenn Titel aus alter Version abweicht',
-    ],
+    changelog: [],
     migration: (state) => {
       const katFixMap = {
         'Movement & Rhythm': 'Bewegung & Rhythmus',
@@ -5062,15 +6336,7 @@ const APP_UPDATES = [
   //   changelog: [
   {
     version: '2.5',
-    changelog: [
-      'PDF-Export neu: Zeitraum frei wählbar (Von\u2013Bis)',
-      'PDF-Export: Inhalte per Checkbox auswählbar (Check-ins, Übungen, Notizbuch, Tagesabschluss)',
-      'PDF-Layout überarbeitet: Balken-Grafiken, strukturierte Tages-Blöcke, sauberer Druck',
-      'PDF-Export: Öffnet direkt als druckfertiges Fenster mit Dateiname (kein Druckdialog mehr aus der App)',
-      'PDF-Export: Zeitraum-Durchschnitt (Stimmung, Energie, Körper, Verbundenheit, Schlaf) als Zusammenfassung',
-      'PDF-Export: Vorgeschlagene Tagesübungen werden mit Tageszeit angezeigt',
-      'PDF-Export: Leere Sektionen werden ausgeblendet',
-    ],
+    changelog: [],
     migration: (state) => state
   },
   // VORLAGE FÜR NÄCHSTES UPDATE (wieder einkommentieren):
@@ -5093,30 +6359,12 @@ const APP_UPDATES = [
   // }
   {
     version: '1.9',
-    changelog: [
-      'Sync-Fix: \"↑ Speichern\" öffnet jetzt korrekt den Schreib-Dialog (statt Lese-Dialog)',
-      'Sync-Erinnerung: Erklärung warum die Datei pro Sitzung erneut gewählt werden muss',
-      'Hilfetext Sync: Klarere Erklärung der Browser-Sicherheitsbeschränkung',
-    ],
+    changelog: [],
     migration: (state) => state
   },
   {
     version: '2.0',
-    changelog: [
-      'Sync: \"Zurücksetzen\"-Button – Speicherort vergessen ohne Datei zu löschen',
-      'Verlauf: Hinweis wenn kein Sync eingerichtet und Tag leer ist',
-      'Übungen: Filter-Zähler zeigt Anzahl gefilterter Übungen',
-      'Verlauf: Tab springt beim Öffnen immer auf den heutigen Tag',
-      'Favoriten-Button ❤️ direkt an jeder Übungskarte (kein Umweg über Bewertungs-Modal)',
-      'Neue Übung: Kategorie ist Pflichtfeld mit roter Fehlermeldung bei fehlendem Eintrag',
-      'Mehrsprachigkeit: App vollständig auf Englisch umschaltbar (DE/EN)',
-      'Sprachumschalter im Header (🇩🇪 / 🇬🇧)',
-      'Hilfe-Bereich vollständig übersetzt (alle 7 Sektionen)',
-      'Übungspool EN: 120 englische Übungen importierbar',
-      'Alle Tabs, Filter, Buttons und Meldungen auf Englisch',
-      'Streak-Anzeige: Bugfix',
-      'Browser-Übersetzungsangebot unterdrückt (lang-Attribut dynamisch)',
-    ],
+    changelog: [],
     migration: (state) => {
       // Favorit-Flag aus alten daily_exercises.feedback.markiert-Einträgen übernehmen
       if (state.exercises && state.daily_exercises) {
@@ -5128,8 +6376,18 @@ const APP_UPDATES = [
           favIds.has(u.id) && !u.favorit ? { ...u, favorit: true } : u
         );
       }
-      return state;
+       return state;
     }
+  },
+  {
+    version: '2.6',
+    changelog: [],
+    migration: (state) => state
+  },
+  {
+    version: '2.7',
+    changelog: [],
+    migration: (state) => state
   },
 ];
 
@@ -5193,40 +6451,50 @@ function renderHilfeInhalt() {
 
     <!-- HEUTE -->
     <div class="hilfe-sektion" id="hilfe-heute">
-      <div class="hilfe-h2">${de ? 'Der Heute-Tab – dein Tagesüberblick' : 'The Today tab – your daily overview'}</div>
+      <div class="hilfe-h2">${de ? 'Der Heute-Tab - dein Tagesüberblick' : 'The Today tab - your daily overview'}</div>
       <div class="hilfe-p">${de
-        ? 'Der Heute-Tab ist deine Startseite. Hier siehst du auf einen Blick, was du für den Tag geplant hast und was bereits erledigt ist.'
-        : 'The Today tab is your home page. Here you can see at a glance what you have planned for the day and what is already done.'}</div>
+        ? 'Der Heute-Tab ist deine Startseite. Er beginnt direkt mit der passenden Übung und zeigt danach den nächsten sinnvollen Schritt, deinen Tagesstand und die weiteren Bereiche.'
+        : 'The Today tab is your home page. It starts directly with the matching exercise, followed by the next sensible step, your daily progress and the other areas.'}</div>
 
-      <div class="hilfe-h3">🔥 Streak</div>
+      <div class="hilfe-h3">${de ? 'Header & Tagesimpuls' : 'Header & daily impulse'}</div>
       <div class="hilfe-p">${de
-        ? 'Oben siehst du deinen aktuellen Streak – wie viele Tage in Folge du mindestens einen Check-in gemacht hast. Die farbigen Punkte zeigen die letzten 7 Tage.'
-        : 'At the top you can see your current streak – how many days in a row you have completed at least one check-in. The coloured dots show the last 7 days.'}</div>
-
-      <div class="hilfe-h3">${de ? 'Morgen / Mittag / Abend' : 'Morning / Midday / Evening'}</div>
-      <div class="hilfe-p">${de
-        ? 'Die drei Kacheln zeigen den Status deiner täglichen Check-ins. Ein Häkchen (✓) bedeutet: für diese Tageszeit hast du bereits eingecheckt. Tippe auf eine Kachel um direkt zum Check-in zu springen.'
-        : 'The three tiles show the status of your daily check-ins. A tick (✓) means you have already checked in for that time of day. Tap a tile to jump directly to the check-in.'}</div>
+        ? 'Oben im Header stehen die passende Begrüßung, das aktuelle Datum und der Tagesimpuls. Die Begrüßung passt sich automatisch an die Tageszeit an.'
+        : 'The header shows the matching greeting, the current date and the daily impulse. The greeting automatically adapts to the time of day.'}</div>
 
       <div class="hilfe-h3">${de ? 'Übung jetzt' : 'Exercise now'}</div>
       <div class="hilfe-p">${de
-        ? 'Hier wird dir die passende Übung für die aktuelle Tageszeit angezeigt – automatisch ausgewählt aus deinem Übungspool.'
-        : 'Here you see the exercise that fits the current time of day – automatically selected from your exercise pool.'}</div>
+        ? 'Hier wird dir die passende Übung für die aktuelle Tageszeit angezeigt. Direkt darunter findest du die Schnellübungen für 2 oder 5 Minuten.'
+        : 'Here you see the exercise that fits the current time of day. Directly below it you will find quick exercises for 2 or 5 minutes.'}</div>
+
+      <div class="hilfe-h3">${de ? 'Nächster Schritt & Tagesstand' : 'Next step & daily progress'}</div>
+      <div class="hilfe-p">${de
+        ? 'Die App zeigt dir, was jetzt sinnvoll ist, zum Beispiel einen Morgen-Check-in oder eine angefangene Übung. Der Tagesstand zeigt, wie viele Check-ins heute schon erledigt sind.'
+        : 'The app shows what makes sense next, for example a morning check-in or an exercise you have started. Daily progress shows how many check-ins are already done today.'}</div>
+
+      <div class="hilfe-h3">${de ? 'Morgen / Mittag / Abend' : 'Morning / Midday / Evening'}</div>
+      <div class="hilfe-p">${de
+        ? 'Die drei Kacheln zeigen den Status deiner täglichen Check-ins. Ein Häkchen bedeutet: für diese Tageszeit hast du bereits eingecheckt. Tippe auf eine Kachel, um direkt zum Check-in zu springen.'
+        : 'The three tiles show the status of your daily check-ins. A tick means you have already checked in for that time of day. Tap a tile to jump directly to the check-in.'}</div>
+
+      <div class="hilfe-h3">Streak</div>
+      <div class="hilfe-p">${de
+        ? 'Dein Streak zeigt, wie viele Tage in Folge du mindestens einen Check-in gemacht hast. Die farbigen Punkte zeigen die letzten 7 Tage.'
+        : 'Your streak shows how many days in a row you have completed at least one check-in. The coloured dots show the last 7 days.'}</div>
 
       <div class="hilfe-h3">${de ? 'Übungsvorschläge' : 'Exercise suggestions'}</div>
       <div class="hilfe-p">${de
-        ? 'Für jede Tageszeit (Morgen, Mittag, Abend) gibt es einen aufklappbaren Vorschlag. Du kannst:'
-        : 'For each time of day (morning, midday, evening) there is a collapsible suggestion. You can:'}</div>
+        ? 'Weitere Vorschläge sind einklappbar, damit die Heute-Seite ruhig bleibt. Du kannst:'
+        : 'Additional suggestions are collapsible so the Today page stays calm. You can:'}</div>
       <div class="hilfe-box tipp">
         ${de
-          ? '• Die Übung mit ⭐ bewerten (1–5 Sterne)<br>• Mit <strong>↻</strong> eine andere Übung anfordern<br>• Die Übung mit \"+ Heute planen\" zum heutigen Tag hinzufügen'
-          : '• Rate the exercise with ⭐ (1–5 stars)<br>• Request a different exercise with <strong>↻</strong><br>• Add the exercise to today with "+ Plan for today"'}
+          ? '- Die Übung mit Sternen bewerten (1-5 Sterne)<br>- Mit <strong>↻</strong> eine andere Übung anfordern<br>- Die Übung mit "+ Heute planen" zum heutigen Tag hinzufügen'
+          : '- Rate the exercise with stars (1-5 stars)<br>- Request a different exercise with <strong>↻</strong><br>- Add the exercise to today with "+ Plan for today"'}
       </div>
 
       <div class="hilfe-h3">${de ? 'Notizbuch' : 'Notebook'}</div>
       <div class="hilfe-p">${de
-        ? 'Freie Notizen, Gedanken oder Beobachtungen – zeitgestempelt für diesen Tag gespeichert.'
-        : 'Free notes, thoughts or observations – time-stamped and saved for the day.'}</div>
+        ? 'Freie Notizen, Gedanken oder Beobachtungen werden zeitgestempelt für diesen Tag gespeichert.'
+        : 'Free notes, thoughts or observations are time-stamped and saved for the day.'}</div>
 
       <div class="hilfe-h3">${de ? 'Tagesabschluss' : "Day's end"}</div>
       <div class="hilfe-p">${de
@@ -5235,10 +6503,9 @@ function renderHilfeInhalt() {
 
       <div class="hilfe-h3">${de ? 'Heutige Übungen' : "Today's exercises"}</div>
       <div class="hilfe-p">${de
-        ? 'Alle Übungen die du heute geplant hast, mit Status (erledigt / offen) und Möglichkeit zur Bewertung.'
-        : 'All exercises you have planned for today, with status (done / open) and the option to rate them.'}</div>
+        ? 'Alle Übungen, die du heute geplant hast, mit Status erledigt oder offen und Möglichkeit zur Bewertung.'
+        : 'All exercises you have planned for today, with status done or open and the option to rate them.'}</div>
     </div>
-
     <!-- CHECK-IN -->
     <div class="hilfe-sektion" id="hilfe-checkin">
       <div class="hilfe-h2">${de ? 'Check-in – wie geht es mir?' : 'Check-in – how am I doing?'}</div>
@@ -5353,12 +6620,16 @@ function renderHilfeInhalt() {
         ? '\"Standard-Pool laden\" importiert 120 vorgefertigte Übungen – ohne vorhandene zu überschreiben. Nützlich nach einem Neustart der App.'
         : '"Load default pool" imports 120 ready-made exercises – without overwriting existing ones. Useful after resetting the app.'}</div>
 
-      <div class="hilfe-h3">${de ? 'Daten' : 'Data'}</div>
+      <div class="hilfe-h3">${de ? 'Daten & Datenschutz' : 'Data & privacy'}</div>
       <div class="hilfe-box warn">
         ${de
           ? '<strong>Exportieren:</strong> Lädt eine JSON-Datei mit allen deinen Daten herunter – als Backup oder zum Übertragen auf ein anderes Gerät<br><br><strong>Importieren:</strong> Spielt ein gespeichertes Backup wieder ein – überschreibt dabei alle aktuellen Daten<br><br><strong>Alle Daten löschen:</strong> Setzt die App vollständig zurück. Nicht rückgängig machbar – vorher Backup exportieren!'
           : '<strong>Export:</strong> Downloads a JSON file with all your data – as a backup or to transfer to another device<br><br><strong>Import:</strong> Restores a saved backup – this overwrites all current data<br><br><strong>Delete all data:</strong> Fully resets the app. Cannot be undone – export a backup first!'}
       </div>
+
+      <div class="hilfe-box info">${de
+        ? 'Persönliche Inhalte wie Check-ins, Übungen, Journal und Tagesabschluss bleiben auf diesem Gerät. Nur App-Dateien und Updates werden geladen. Export, Import und Sync passieren nur, wenn du sie bewusst auslöst.'
+        : 'Personal content such as check-ins, exercises, notebook and day summaries stays on this device. Only app files and updates are loaded. Export, import and sync only happen when you intentionally start them.'}</div>
 
       <div class="hilfe-h3">${de ? 'Synchronisierung' : 'Synchronisation'}</div>
       <div class="hilfe-p">${de
@@ -5375,8 +6646,11 @@ function renderHilfeInhalt() {
     <div class="hilfe-sektion" id="hilfe-sync">
       <div class="hilfe-h2">${de ? 'Synchronisierung zwischen Geräten' : 'Synchronisation between devices'}</div>
       <div class="hilfe-p">${de
-        ? 'Da alle Daten lokal gespeichert sind, gibt es keine automatische Cloud-Synchronisierung. Du kannst deine Daten aber über eine eigene Datei auf OneDrive, Google Drive oder einem anderen Cloud-Speicher teilen.'
-        : 'Since all data is stored locally, there is no automatic cloud synchronisation. However, you can share your data via a file on OneDrive, Google Drive or another cloud storage service.'}</div>
+        ? 'Die App synchronisiert nicht automatisch ins Netz. Wenn du Sync einrichtest, schreibt oder liest Innenpause nur die Datei, die du selbst auswählst, zum Beispiel in OneDrive, Google Drive oder einem lokalen Ordner.'
+        : 'The app does not automatically sync to the internet. If you set up sync, Innenpause only writes to or reads from the file you choose yourself, for example in OneDrive, Google Drive or a local folder.'}</div>
+      <div class="hilfe-box info">${de
+        ? 'Ohne bewusst eingerichtete Sync-Datei bleiben deine persönlichen Daten ausschließlich im lokalen Speicher des aktuellen Geräts.'
+        : 'Without an intentionally configured sync file, your personal data remains only in local storage on the current device.'}</div>
 
       <div class="hilfe-h3">${de ? 'Einmalig einrichten' : 'Set up once'}</div>
       <div class="hilfe-schritt"><div class="hilfe-schritt-nr">1</div><div>${de
@@ -5424,6 +6698,10 @@ function renderHilfeInhalt() {
           ? '<strong>PC – Chrome/Edge:</strong><br><span class="hilfe-kbd">Strg</span> + <span class="hilfe-kbd">Shift</span> + <span class="hilfe-kbd">R</span> (Hard Refresh)<br><br>Falls das nicht hilft:<br><span class="hilfe-kbd">F12</span> → Anwendung → Service Worker → \"Registrierung aufheben\" → <span class="hilfe-kbd">F5</span><br><br><strong>Android – Chrome:</strong><br>Menü → Einstellungen → Datenschutz → Browserdaten löschen → nur \"Cache\" → Löschen<br><br><strong>iPhone – Safari:</strong><br>iOS-Einstellungen → Safari → \"Verlauf und Websitedaten löschen\"'
           : '<strong>PC – Chrome/Edge:</strong><br><span class="hilfe-kbd">Ctrl</span> + <span class="hilfe-kbd">Shift</span> + <span class="hilfe-kbd">R</span> (Hard Refresh)<br><br>If that does not help:<br><span class="hilfe-kbd">F12</span> → Application → Service Worker → "Unregister" → <span class="hilfe-kbd">F5</span><br><br><strong>Android – Chrome:</strong><br>Menu → Settings → Privacy → Clear browsing data → Cache only → Clear<br><br><strong>iPhone – Safari:</strong><br>iOS Settings → Safari → "Clear History and Website Data"'}
       </div>
+
+      <div class="hilfe-box tipp">${de
+        ? 'In den Einstellungen zeigt der Debug-Status App-Version, version.json, Service Worker, Cache-Name und den letzten Startfehler. Der Button "App technisch zurücksetzen" löscht nur technische App-Caches, keine persönlichen Daten.'
+        : 'In Settings, the debug status shows app version, version.json, service worker, cache name and the last startup error. The "technical reset" button only clears technical app caches, not personal data.'}</div>
 
       <div class="hilfe-h3">${de ? 'App lädt nicht / bleibt hängen' : 'App does not load / freezes'}</div>
       <div class="hilfe-box info">
@@ -5490,6 +6768,7 @@ function initialisiereSprache() {
   // Tagesimpuls Label
   const impulsLabel = document.querySelector('.impuls-label');
   if (impulsLabel) impulsLabel.textContent = t('impuls_label');
+  aktualisiereStickyTabPosition();
 
   // Tabs
   const tabBtns = document.querySelectorAll('.tab-btn');
@@ -5811,6 +7090,27 @@ function initialisiereSprache() {
   document.querySelectorAll('#content-einstellungen [onclick="zeigeTab(\'uebungen\')"]').forEach(b => b.textContent = t('einst_pool_oeffnen'));
   document.querySelectorAll('[onclick="importiereStandardPool()"]').forEach(b => b.textContent = t('einst_pool_import_btn'));
   document.querySelectorAll('[onclick="zeigeSyncModal(\'einrichten\')"]').forEach(b => b.textContent = t('einst_sync_einrichten'));
+
+  // PDF-Modal übersetzen
+  const pdfFelder = [
+    ['pdf-modal-titel',    'pdf_modal_titel'],
+    ['pdf-lbl-zeitraum',  'pdf_modal_zeitraum'],
+    ['pdf-lbl-von',       'pdf_modal_von'],
+    ['pdf-lbl-bis',       'pdf_modal_bis'],
+    ['pdf-lbl-inhalte',   'pdf_modal_inhalte'],
+    ['pdf-lbl-checkins',  'pdf_modal_cb_checkins'],
+    ['pdf-lbl-uebungen',  'pdf_modal_cb_uebungen'],
+    ['pdf-lbl-notizen',   'pdf_modal_cb_notizen'],
+    ['pdf-lbl-abschluss', 'pdf_modal_cb_abschluss'],
+    ['pdf-btn-abbrechen', 'pdf_modal_abbrechen'],
+    ['pdf-btn-erstellen', 'pdf_modal_erstellen'],
+  ];
+  pdfFelder.forEach(([id, key]) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = t(key);
+  });
+  const pdfHinweis = document.getElementById('pdf-lbl-hinweis');
+  if (pdfHinweis) pdfHinweis.innerHTML = '💡 ' + t('pdf_modal_hinweis');
 }
 
 // EN Standard-Pool importieren
@@ -5918,19 +7218,67 @@ function zeigeSyncModal(modus) {
 //   a) direkt beim Start (wenn Lizenz bereits gespeichert)
 //   b) von pruefeeLizenz() nach erfolgreicher Lizenz-Eingabe
 // ============================================================
-function ladeApp() {
+async function fuehreStartSchritt(name, fn) {
+  try {
+    return await fn();
+  } catch (e) {
+    const detail = `${name}: ${e?.message || String(e)}`;
+    console.error('Startschritt fehlgeschlagen:', detail, e);
+    throw new Error(detail);
+  }
+}
+
+async function ladeVersion() {
+  await ladeVersionJson();
+}
+
+function ladeEinstellungen() {
+  pruefeLocalStorageZugriff();
   importiereStandardPoolStill(); // Übungspool beim ersten Start befüllen
   setzeTageszeitDefaults();
   ladeEinstellungenUI();
+}
+
+function rendereStartansicht() {
   ladeHeuteTab();
   ladeStreak();
   pruefeUpdate();
   zeigeSyncErinnerung();
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+async function registriereServiceWorkerOptional() {
+  await registriereServiceWorker();
+}
+
+async function ladeApp() {
+  APP_START_OK = false;
+  try {
+    await fuehreStartSchritt('Version laden', ladeVersion);
+    await fuehreStartSchritt('Einstellungen laden', ladeEinstellungen);
+    await fuehreStartSchritt('Startansicht rendern', rendereStartansicht);
+    await fuehreStartSchritt('Service Worker optional registrieren', registriereServiceWorkerOptional);
+    APP_START_OK = pruefeAppStartStrukturell();
+    aktualisiereDebugStatus();
+  } catch (e) {
+    console.error('Innenpause konnte nicht vollständig starten:', e);
+    zeigeStartFehler(e?.message || String(e));
+    aktualisiereDebugStatus();
+  }
+}
+
+window.addEventListener('error', e => {
+  console.error('Innenpause Laufzeitfehler:', e.error || e.message);
+  if (!APP_START_OK) zeigeStartFehler(e.message || 'Unbekannter Laufzeitfehler');
+});
+window.addEventListener('unhandledrejection', e => {
+  console.error('Innenpause Promise-Fehler:', e.reason);
+  if (!APP_START_OK) zeigeStartFehler(e.reason?.message || String(e.reason));
+});
+
+document.addEventListener('DOMContentLoaded', async function() {
   initialisiereSprache();
   ladeAppTitel();
+  aktualisiereStickyTabPosition();
 
   // Enter-Taste im Lizenz-Input
   const lizenzInput = document.getElementById('lizenz-input');
@@ -5941,66 +7289,95 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   if (!zeigeHauptApp()) return;
-  ladeApp();
+  await ladeApp();
 });
 
+window.addEventListener('resize', aktualisiereStickyTabPosition);
+
 </script>
+
+<!-- ÜBUNGS-FLOW MODAL -->
+<div id="flow-modal" onclick="if(event.target.id==='flow-modal') schliesseFlow()">
+  <div class="flow-box">
+    <div class="flow-header">
+      <div class="flow-label" id="flow-step-count">Schritt 1 von 3</div>
+      <div class="flow-title" id="flow-title">Übung</div>
+    </div>
+    <div class="flow-body">
+      <div class="flow-progress"><div class="flow-progress-fill" id="flow-progress-fill"></div></div>
+      <div class="flow-meta" id="flow-meta"></div>
+      <div class="flow-step-title" id="flow-step-title">Ankommen</div>
+      <div class="flow-step-text" id="flow-step-text"></div>
+      <div class="flow-feedback" id="flow-feedback">
+        <div style="font-size:13px;color:var(--text2);font-weight:600;margin-bottom:6px">Kurze Notiz danach</div>
+        <textarea id="flow-feedback-note" rows="2" placeholder="Was nimmst du wahr?"></textarea>
+      </div>
+      <div class="flow-actions">
+        <button class="btn btn-secondary" id="flow-back-btn" onclick="flowZurueck()">Zurück</button>
+        <button class="btn btn-primary" id="flow-next-btn" onclick="flowWeiter()">Weiter</button>
+      </div>
+      <button class="btn btn-secondary btn-block btn-sm" onclick="schliesseFlow()">Schließen</button>
+    </div>
+  </div>
+</div>
+
 <!-- PDF-EXPORT MODAL -->
 <div class="modal-overlay" id="pdf-modal">
   <div class="modal">
-    <div class="modal-titel">📄 PDF exportieren</div>
+    <div class="modal-titel" id="pdf-modal-titel">📄 PDF exportieren</div>
 
     <div style="margin-bottom:16px">
-      <div style="font-size:13px;color:var(--text2);margin-bottom:10px;font-weight:500">Zeitraum</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:10px;font-weight:500" id="pdf-lbl-zeitraum">Zeitraum</div>
       <div style="display:flex;gap:10px;align-items:center">
         <div style="flex:1">
-          <label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px">Von</label>
+          <label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px" id="pdf-lbl-von">Von</label>
           <input type="date" id="pdf-von" style="width:100%">
         </div>
         <div style="color:var(--text3);padding-top:18px">–</div>
         <div style="flex:1">
-          <label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px">Bis</label>
+          <label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px" id="pdf-lbl-bis">Bis</label>
           <input type="date" id="pdf-bis" style="width:100%">
         </div>
       </div>
     </div>
 
     <div style="margin-bottom:20px">
-      <div style="font-size:13px;color:var(--text2);margin-bottom:10px;font-weight:500">Inhalte</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:10px;font-weight:500" id="pdf-lbl-inhalte">Inhalte</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
         <label class="pdf-cb-label">
           <input type="checkbox" id="pdf-cb-checkins" checked>
-          <span>🌤 Check-ins</span>
+          <span id="pdf-lbl-checkins">🌤 Check-ins</span>
         </label>
         <label class="pdf-cb-label">
           <input type="checkbox" id="pdf-cb-uebungen" checked>
-          <span>🧘 Übungen</span>
+          <span id="pdf-lbl-uebungen">🧘 Übungen</span>
         </label>
         <label class="pdf-cb-label">
           <input type="checkbox" id="pdf-cb-notizen" checked>
-          <span>📝 Notizbuch</span>
+          <span id="pdf-lbl-notizen">📝 Notizbuch</span>
         </label>
         <label class="pdf-cb-label">
           <input type="checkbox" id="pdf-cb-abschluss" checked>
-          <span>🌙 Tagesabschluss</span>
+          <span id="pdf-lbl-abschluss">🌙 Tagesabschluss</span>
         </label>
       </div>
     </div>
 
-    <div style="font-size:12px;color:var(--text3);margin-bottom:16px;line-height:1.5">
+    <div style="font-size:12px;color:var(--text3);margin-bottom:16px;line-height:1.5" id="pdf-lbl-hinweis">
       💡 Nach dem Klick öffnet sich der Druckdialog deines Browsers.<br>
       Dort „Als PDF speichern" wählen.
     </div>
 
     <div style="display:flex;gap:8px">
-      <button class="btn btn-secondary" style="flex:1" onclick="schliessePdfModal()">Abbrechen</button>
-      <button class="btn btn-primary" style="flex:1" onclick="startepdfdruck()">📄 PDF erstellen</button>
+      <button class="btn btn-secondary" style="flex:1" onclick="schliessePdfModal()" id="pdf-btn-abbrechen">Abbrechen</button>
+      <button class="btn btn-primary" style="flex:1" onclick="startepdfdruck()" id="pdf-btn-erstellen">📄 PDF erstellen</button>
     </div>
   </div>
 </div>
 
 <!-- PRINT BEREICH (nur beim Drucken sichtbar) -->
 <div id="print-bereich"></div>
+
 
 </body>
 </html>
