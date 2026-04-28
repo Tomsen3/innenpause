@@ -22,6 +22,8 @@ function exportiereAllesDaten() {
   a.download = `achtsamkeit-backup-${heuteString()}.json`;
   a.click();
   URL.revokeObjectURL(url);
+  localStorage.setItem('backup_letzter_export', heuteString());
+  localStorage.removeItem('backup_erinnerung_datum');
   zeigToast(t('toast_export'));
 }
 
