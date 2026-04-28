@@ -1,6 +1,7 @@
-// sw.js - stabilisierte Version (v3)
+// sw.js - stabilisierte Version (v3.1)
 
-const CACHE_NAME = 'innenpause-v3-0';
+const CACHE_NAME = 'innenpause-v3-1';
+const CACHE_PREFIX = 'innenpause-';
 
 const SHELL = [
   './index.html',
@@ -35,7 +36,7 @@ self.addEventListener('activate', event => {
     caches.keys().then(keys => {
       return Promise.all(
         keys
-          .filter(k => k !== CACHE_NAME)
+          .filter(k => k.startsWith(CACHE_PREFIX) && k !== CACHE_NAME)
           .map(k => caches.delete(k))
       );
     }).then(() => self.clients.claim())

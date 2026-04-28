@@ -1,13 +1,14 @@
 {
-  "appVersion": "3.0",
+  "appVersion": "3.1",
   "released": "2026-04-28",
   "updates": [
     {
-      "version": "3.0",
+      "version": "3.1",
       "changelog": [
-        "Neuer Tab Halt finden als akute GfK-orientierte Unterstuetzung",
-        "Beobachtungs-Coach mit Satzstartern fuer bewertungsarme Beschreibungen",
-        "Klärung kann freiwillig als Notiz im heutigen Journal gespeichert werden"
+        "Service Worker bereinigt nur noch eigene Innenpause-Caches",
+        "Versionsanzeige zeigt installierte, geladene und online verfuegbare Version klarer an",
+        "Backup-Erinnerung fuer lokale Daten verbessert",
+        "Changelog fuer technische Stabilitaetsupdates erweitert"
       ]
     }
   ]
