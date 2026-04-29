@@ -1,7 +1,15 @@
 {
-    "appVersion":  "3.2",
+    "appVersion":  "3.3",
     "released":  "2026-04-29",
     "updates":  [
+                    {
+                        "version":  "3.3",
+                        "changelog":  [
+                                          "Header auf Smartphone und Desktop klarer abgesetzt",
+                                          "Mobiles Header-Layout entzerrt und Begruessung auf zwei Zeilen verteilt",
+                                          "Tagesimpuls im Kopfbereich besser lesbar skaliert"
+                                      ]
+                    },
                     {
                         "version":  "3.2",
                         "changelog":  [

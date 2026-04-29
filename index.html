@@ -636,7 +636,7 @@
 // ============================================================
 // APP VERSION
 // ============================================================
-const BUNDLED_APP_VERSION = '3.2';
+const BUNDLED_APP_VERSION = '3.3';
 let APP_VERSION = BUNDLED_APP_VERSION;
 let VERSION_UPDATES = [];
 let VERSION_JSON_STATUS = { ok: false, quelle: 'fallback', meldung: 'Noch nicht geladen', geladenAm: null };
@@ -1762,18 +1762,18 @@ function ladeBegruessung() {
   const h = new Date().getHours();
   let gruss;
   if (SPRACHE === 'en') {
-    if (h < 11)       gruss = 'Good morning, take a moment';
-    else if (h < 17)  gruss = 'Good afternoon, take a moment';
-    else              gruss = 'Good evening, take a moment';
+    if (h < 11)       gruss = 'Good morning';
+    else if (h < 17)  gruss = 'Good afternoon';
+    else              gruss = 'Good evening';
   } else {
-    if (h < 11)       gruss = 'Guten Morgen, nimm dir einen Moment';
-    else if (h < 17)  gruss = 'Guten Tag, nimm dir einen Moment';
-    else              gruss = 'Guten Abend, nimm dir einen Moment';
+    if (h < 11)       gruss = 'Guten Morgen';
+    else if (h < 17)  gruss = 'Guten Tag';
+    else              gruss = 'Guten Abend';
   }
   const tage = t('tag_labels_voll');
   const monate = t('monat_labels');
   const d = new Date();
-  const datumStr = `${tage[d.getDay()]}, ${d.getDate()}. ${monate[d.getMonth()]}`;
+  const datumStr = `${SPRACHE === 'en' ? 'Take a moment' : 'Nimm dir einen Moment'} - ${tage[d.getDay()]}, ${d.getDate()}. ${monate[d.getMonth()]}`;
 
   if (header) {
     header.innerHTML = `
@@ -1875,7 +1875,7 @@ function schnellUebung(maxMin) {
   if (!alle.length) { zeigToast(SPRACHE === 'en' ? `No exercises up to ${maxMin} min.` : `Keine Übungen bis ${maxMin} Min.`); return; }
   const u = alle[Math.floor(Math.random() * alle.length)];
   const kat = katAnzeige(u.kategorie);
-  zeigToast(`${u.titel} · ${u.dauer_minuten} Min.`);
+  zeigToast(`${u.titel} - ${u.dauer_minuten} Min.`);
   // Direkt in uebung-jetzt-container einblenden
   const c = document.getElementById('uebung-jetzt-container');
   if (c) c.innerHTML = `
@@ -2375,7 +2375,7 @@ async function registriereServiceWorker() {
 function letzterStartfehlerText() {
   if (!START_FEHLER_LISTE.length) return '–';
   const letzter = START_FEHLER_LISTE[START_FEHLER_LISTE.length - 1];
-  return `${new Date(letzter.zeit).toLocaleTimeString()} · ${letzter.detail}`;
+  return `${new Date(letzter.zeit).toLocaleTimeString()} - ${letzter.detail}`;
 }
 
 async function ermittleCacheStatus() {
