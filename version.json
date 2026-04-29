@@ -1,15 +1,25 @@
 {
-  "appVersion": "3.1",
-  "released": "2026-04-28",
-  "updates": [
-    {
-      "version": "3.1",
-      "changelog": [
-        "Service Worker bereinigt nur noch eigene Innenpause-Caches",
-        "Versionsanzeige zeigt installierte, geladene und online verfuegbare Version klarer an",
-        "Backup-Erinnerung fuer lokale Daten verbessert",
-        "Changelog fuer technische Stabilitaetsupdates erweitert"
-      ]
-    }
-  ]
+    "appVersion":  "3.2",
+    "released":  "2026-04-29",
+    "updates":  [
+                    {
+                        "version":  "3.2",
+                        "changelog":  [
+                                          "Header farblich klarer vom App-Inhalt abgesetzt",
+                                          "Check-ins erscheinen erst ab den eingestellten Tageszeiten",
+                                          "Tagesimpulse bleiben beim Sprachwechsel Deutsch/Englisch synchron",
+                                          "Ladeproblem im Tagesfortschritt behoben",
+                                          "Service-Worker-Cache auf neue App-Version aktualisiert"
+                                      ]
+                    },
+                    {
+                        "version":  "3.1",
+                        "changelog":  [
+                                          "Service Worker bereinigt nur noch eigene Innenpause-Caches",
+                                          "Versionsanzeige zeigt installierte, geladene und online verfuegbare Version klarer an",
+                                          "Backup-Erinnerung fuer lokale Daten verbessert",
+                                          "Changelog fuer technische Stabilitaetsupdates erweitert"
+                                      ]
+                    }
+                ]
 }
