@@ -636,7 +636,7 @@
 // ============================================================
 // APP VERSION
 // ============================================================
-const BUNDLED_APP_VERSION = '3.3';
+const BUNDLED_APP_VERSION = '3.4';
 let APP_VERSION = BUNDLED_APP_VERSION;
 let VERSION_UPDATES = [];
 let VERSION_JSON_STATUS = { ok: false, quelle: 'fallback', meldung: 'Noch nicht geladen', geladenAm: null };
@@ -4453,7 +4453,8 @@ function ladeEinstellungen() {
 function rendereStartansicht() {
   ladeHeuteTab();
   ladeStreak();
-  zeigeTab(AKTIVER_TAB, false);
+  AKTIVER_TAB = 'heute';
+  zeigeTab('heute', false);
   stelleScrollPositionNachSprachwechselWiederHer();
   pruefeUpdate();
   zeigeSyncErinnerung();

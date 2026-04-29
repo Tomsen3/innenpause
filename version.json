@@ -1,7 +1,14 @@
 {
-    "appVersion":  "3.3",
+    "appVersion":  "3.4",
     "released":  "2026-04-29",
     "updates":  [
+                    {
+                        "version":  "3.4",
+                        "changelog":  [
+                                          "App startet bei jedem neuen Öffnen wieder im Heute-Reiter",
+                                          "Reiterwechsel während der Nutzung bleibt weiterhin erhalten"
+                                      ]
+                    },
                     {
                         "version":  "3.3",
                         "changelog":  [
