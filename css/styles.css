@@ -137,14 +137,14 @@
 
   /* IMPULS HEADER */
   #impuls-header {
-    background: #e6eee3;
+    background: #cddfca;
     color: #1f2a21;
     padding: 12px 20px 14px;
     position: sticky;
     top: 0;
     z-index: 100;
-    border-bottom: 1px solid rgba(111,127,112,0.22);
-    box-shadow: 0 1px 10px rgba(31,42,33,0.06);
+    border-bottom: 1px solid rgba(67,91,70,0.42);
+    box-shadow: 0 3px 16px rgba(31,42,33,0.14);
   }
   .app-titel-bereich {
     display: flex;
@@ -163,9 +163,10 @@
   }
   .header-greeting {
     text-align: right;
-    color: #2f3f31;
+    color: #263629;
     line-height: 1.25;
-    white-space: nowrap;
+    max-width: min(52vw, 420px);
+    overflow-wrap: anywhere;
   }
   .header-greeting-main {
     font-family: 'Lora', serif;
@@ -174,7 +175,7 @@
   }
   .header-greeting-date {
     font-size: 11px;
-    color: #6f7f70;
+    color: #566958;
   }
   .header-tools {
     display: flex;
@@ -192,7 +193,7 @@
   #app-titel-anzeige:hover { opacity: 0.75; }
   #app-untertitel-anzeige {
     font-size: 11px;
-    color: #6f7f70;
+    color: #566958;
     letter-spacing: 0.5px;
     cursor: pointer;
     transition: opacity 0.2s;
@@ -244,8 +245,72 @@
   }
   .impuls-kategorie {
     font-size: 11px;
-    color: #6f7f70;
+    color: #566958;
     margin-top: 4px;
+  }
+
+
+  @media (max-width: 640px) {
+    #impuls-header {
+      padding: 10px 12px 13px;
+      background: #c9ddc5;
+    }
+    #impuls-header > div:first-child {
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px 10px;
+      align-items: start !important;
+    }
+    .app-titel-bereich {
+      min-width: 0;
+      gap: 4px;
+      margin-bottom: 6px;
+      padding-bottom: 7px;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    #app-titel-anzeige {
+      font-size: 22px;
+      line-height: 1.05;
+    }
+    #app-untertitel-anzeige {
+      font-size: 13px;
+      line-height: 1.35;
+      max-width: 12.5em;
+    }
+    .header-meta {
+      min-width: 0;
+      margin-left: 0;
+      align-items: flex-end;
+      gap: 7px;
+    }
+    .header-greeting {
+    text-align: right;
+    color: #263629;
+    line-height: 1.25;
+    max-width: min(52vw, 420px);
+    overflow-wrap: anywhere;
+  }
+    .header-greeting-main {
+      font-size: 15px;
+      line-height: 1.16;
+    }
+    .header-greeting-date {
+      font-size: 11px;
+      line-height: 1.2;
+    }
+    .header-tools {
+      gap: 6px;
+      justify-content: flex-end;
+      flex-wrap: nowrap;
+    }
+    .impuls-label {
+      margin-top: 2px;
+    }
+    .impuls-text {
+      font-size: 17px;
+      line-height: 1.38;
+    }
   }
 
   /* TABS */
@@ -689,6 +754,15 @@
   .heute-slot:hover { background: var(--bg2); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(44,36,22,0.10); }
   .heute-slot:active { transform: scale(0.97); }
   .heute-slot.aktiv { border-color: var(--accent2); background: #fdf5e6; box-shadow: 0 6px 18px rgba(181,149,106,0.18); }
+  .heute-slot.gesperrt {
+    opacity: 0.58;
+    cursor: default;
+    background: var(--bg2);
+  }
+  .heute-slot.gesperrt:hover {
+    transform: none;
+    box-shadow: none;
+  }
   .heute-slot-icon { font-size: 22px; margin-bottom: 4px; }
   .heute-slot-label { font-size: 12px; color: var(--text2); }
   .heute-slot-status { font-size: 10px; color: var(--text3); margin-top: 2px; }
@@ -1023,7 +1097,7 @@
 
   @media (max-width: 420px) {
     .uebung-jetzt-actions { grid-template-columns: 1fr; }
-    #impuls-header { padding: 10px 14px 12px; }
+    #impuls-header { padding: 10px 12px 13px; }
     .app-titel-bereich {
       gap: 7px;
       flex-wrap: wrap;
@@ -1035,10 +1109,10 @@
       gap: 4px;
       margin-left: 8px;
     }
-    .header-greeting-main { font-size: 13px; }
-    .header-greeting-date { font-size: 10px; }
-    #app-titel-anzeige { font-size: 17px; }
-    .impuls-text { font-size: 15px; line-height: 1.42; }
+    .header-greeting-main { font-size: 15px; line-height: 1.16; }
+    .header-greeting-date { font-size: 11px; line-height: 1.2; }
+    #app-titel-anzeige { font-size: 22px; line-height: 1.05; }
+    .impuls-text { font-size: 17px; line-height: 1.38; }
     .tab-btn { padding: 10px 6px 8px; }
     .halt-stepper { grid-template-columns: 1fr; }
     .halt-step { display:flex; justify-content:space-between; border-right:0; border-bottom:1px solid var(--border); text-align:left; }
