@@ -1089,6 +1089,24 @@ function getFreigeschalteteTageszeiten() {
   return result;
 }
 
+function getStartStunde(tageszeit) {
+  const fallback = { morgen: '5', mittag: '11', abend: '17' };
+  const key = {
+    morgen: 'setting_startMorgen',
+    mittag: 'setting_startMittag',
+    abend: 'setting_startAbend'
+  }[tageszeit];
+  return parseInt(localStorage.getItem(key) ?? fallback[tageszeit]);
+}
+
+function istTageszeitFreigeschaltet(tageszeit) {
+  return getFreigeschalteteTageszeiten().includes(tageszeit);
+}
+
+function getStartLabel(tageszeit) {
+  return `${getStartStunde(tageszeit)}:00`;
+}
+
 function zeigToast(msg, dauer = 2500) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -1156,6 +1174,7 @@ function zeigeTab(name, speichern = true) {
   document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
   document.getElementById('content-' + name).classList.add('active');
   document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'checkin') aktualisiereCheckinFreischaltung();
   if (name === 'verlauf') ladeVerlaufInit();
   if (name === 'uebungen') ladeUebungen();
   if (name === 'heute') ladeHeuteTab();
@@ -1164,23 +1183,104 @@ function zeigeTab(name, speichern = true) {
 }
 
 function toggleAkk(name, directId = false) {
+  if (!directId && ['morgen', 'mittag', 'abend'].includes(name) && !istTageszeitFreigeschaltet(name)) {
+    zeigToast(SPRACHE === 'en' ? `This check-in opens at ${getStartLabel(name)}.` : `Dieser Check-in erscheint ab ${getStartLabel(name)} Uhr.`);
+    return;
+  }
   const el = directId ? document.getElementById(name) : document.getElementById('akk-' + name);
   if (el) el.classList.toggle('open');
 }
 
 function oeffneCheckin(zeit) {
   const el = document.getElementById('akk-' + zeit);
+  if (!istTageszeitFreigeschaltet(zeit)) {
+    zeigToast(SPRACHE === 'en' ? `This check-in opens at ${getStartLabel(zeit)}.` : `Dieser Check-in erscheint ab ${getStartLabel(zeit)} Uhr.`);
+    return;
+  }
+  if (!el) return;
   if (!el.classList.contains('open')) el.classList.add('open');
   setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+function aktualisiereCheckinFreischaltung() {
+  const freigeschaltet = getFreigeschalteteTageszeiten();
+  const labels = { morgen: t('morgen'), mittag: t('mittag'), abend: t('abend') };
+  const checkinsHeute = ls('checkins', {})[heuteString()] || {};
+  let hinweis = document.getElementById('checkin-freischaltung-hinweis');
+  const checkinContent = document.getElementById('content-checkin');
+  if (!hinweis && checkinContent) {
+    hinweis = document.createElement('div');
+    hinweis.id = 'checkin-freischaltung-hinweis';
+    const ersterAkk = checkinContent.querySelector('.akkordeon');
+    checkinContent.insertBefore(hinweis, ersterAkk || null);
+  }
+
+  ['morgen', 'mittag', 'abend'].forEach(tz => {
+    const frei = freigeschaltet.includes(tz);
+    const akk = document.getElementById('akk-' + tz);
+    if (akk) {
+      akk.style.display = frei ? '' : 'none';
+      if (!frei) akk.classList.remove('open');
+    }
+    const slot = document.getElementById('slot-' + tz);
+    const status = document.getElementById('status-' + tz);
+    if (slot) slot.classList.toggle('gesperrt', !frei);
+    if (slot) slot.classList.toggle('aktiv', !!checkinsHeute[tz]);
+    if (status) {
+      status.textContent = checkinsHeute[tz]
+        ? '✓'
+        : frei
+          ? '-'
+          : (SPRACHE === 'en' ? `from ${getStartLabel(tz)}` : `ab ${getStartLabel(tz)}`);
+    }
+  });
+
+  if (hinweis) {
+    const naechste = ['morgen', 'mittag', 'abend'].find(tz => !freigeschaltet.includes(tz));
+    if (freigeschaltet.length === 0) {
+      hinweis.innerHTML = leerHTML(
+        SPRACHE === 'en' ? 'No check-in is active yet.' : 'Noch kein Check-in aktiv.',
+        SPRACHE === 'en' ? `The first check-in opens at ${getStartLabel('morgen')}.` : `Der erste Check-in erscheint ab ${getStartLabel('morgen')} Uhr.`
+      );
+    } else if (naechste) {
+      hinweis.innerHTML = leerHTML(
+        SPRACHE === 'en' ? `${freigeschaltet.length} of 3 check-ins are active.` : `${freigeschaltet.length} von 3 Check-ins sind aktiv.`,
+        SPRACHE === 'en' ? `${labels[naechste]} opens at ${getStartLabel(naechste)}.` : `${labels[naechste]} erscheint ab ${getStartLabel(naechste)} Uhr.`
+      );
+    } else {
+      hinweis.innerHTML = '';
+    }
+  }
 }
 
 // ============================================================
 // TAGESIMPULS
 // ============================================================
-function ladeImpuls() {
+function getTagesimpulsIndex() {
   const heute = heuteString();
-  const seed = parseInt(heute.replace(/-/g, '')) % IMPULSE_POOL.length;
-  const impuls = IMPULSE_POOL[seed];
+  const paarLaenge = Math.min(IMPULSE_POOL_DE.length, IMPULSE_POOL_EN.length);
+  const aktiveLaenge = IMPULSE_POOL.length || 1;
+  const max = paarLaenge > 0 ? paarLaenge : aktiveLaenge;
+  const key = 'impuls_index_' + heute;
+  const gespeichert = parseInt(localStorage.getItem(key) || '', 10);
+  if (Number.isInteger(gespeichert) && gespeichert >= 0 && gespeichert < max) return gespeichert;
+
+  const index = parseInt(heute.replace(/-/g, ''), 10) % max;
+  localStorage.setItem(key, String(index));
+  return index;
+}
+
+function getTagesimpuls() {
+  const index = getTagesimpulsIndex();
+  const pool = SPRACHE === 'en' ? IMPULSE_POOL_EN : IMPULSE_POOL_DE;
+  return pool[index] || IMPULSE_POOL[index % Math.max(IMPULSE_POOL.length, 1)] || {
+    text: SPRACHE === 'en' ? 'Today, one small moment may be enough.' : 'Heute darf ein kleiner Moment reichen.',
+    kategorie: SPRACHE === 'en' ? 'Mindfulness' : 'Achtsamkeit'
+  };
+}
+
+function ladeImpuls() {
+  const impuls = getTagesimpuls();
   document.getElementById('impuls-text').textContent = impuls.text;
   document.getElementById('impuls-kategorie').textContent = t('impuls_label') + ' ' + impuls.kategorie;
   document.querySelector('.impuls-label') && (document.querySelector('.impuls-label').textContent = t('impuls_label'));
@@ -1662,13 +1762,13 @@ function ladeBegruessung() {
   const h = new Date().getHours();
   let gruss;
   if (SPRACHE === 'en') {
-    if (h < 11)       gruss = 'Good morning';
-    else if (h < 17)  gruss = 'Good afternoon';
-    else              gruss = 'Good evening';
+    if (h < 11)       gruss = 'Good morning, take a moment';
+    else if (h < 17)  gruss = 'Good afternoon, take a moment';
+    else              gruss = 'Good evening, take a moment';
   } else {
-    if (h < 11)       gruss = 'Guten Morgen';
-    else if (h < 17)  gruss = 'Guten Tag';
-    else              gruss = 'Guten Abend';
+    if (h < 11)       gruss = 'Guten Morgen, nimm dir einen Moment';
+    else if (h < 17)  gruss = 'Guten Tag, nimm dir einen Moment';
+    else              gruss = 'Guten Abend, nimm dir einen Moment';
   }
   const tage = t('tag_labels_voll');
   const monate = t('monat_labels');
@@ -1704,15 +1804,22 @@ function ladeTagesfortschritt() {
   const heute = heuteString();
   const daten = ls('checkins', {})[heute] || {};
   const zeiten = ['morgen', 'mittag', 'abend'];
+  const freigeschaltet = getFreigeschalteteTageszeiten();
   const erledigt = zeiten.filter(tz => !!daten[tz]).length;
   const prozent = Math.round((erledigt / zeiten.length) * 100);
-  const naechsterKey = zeiten.find(tz => !daten[tz]);
+  const naechsterKey = zeiten.find(tz => freigeschaltet.includes(tz) && !daten[tz]);
+  const naechsteGesperrte = zeiten.find(tz => !freigeschaltet.includes(tz));
   const labelMap = { morgen: t('morgen'), mittag: t('mittag'), abend: t('abend') };
   const titel = SPRACHE === 'en' ? 'Today\'s check-ins' : 'Dein Tagesstand';
   const zaehler = SPRACHE === 'en' ? `${erledigt} of 3` : `${erledigt} von 3`;
-  const sub = erledigt === 3
+  let sub = erledigt === 3
     ? (SPRACHE === 'en' ? 'All three check-ins are saved. Good. Enough for today.' : 'Alle drei Check-ins sind gespeichert. Gut. Für heute reicht das Verwaltungsprogramm.')
     : (SPRACHE === 'en' ? `Next useful step: ${labelMap[naechsterKey]} check-in.` : `Nächster sinnvoller Schritt: ${labelMap[naechsterKey]}-Check-in.`);
+  if (erledigt < 3 && !naechsterKey) {
+    sub = naechsteGesperrte
+      ? (SPRACHE === 'en' ? `${labelMap[naechsteGesperrte]} opens at ${getStartLabel(naechsteGesperrte)}.` : `${labelMap[naechsteGesperrte]} erscheint ab ${getStartLabel(naechsteGesperrte)} Uhr.`)
+      : (SPRACHE === 'en' ? 'Everything active is done for now.' : 'Alles, was gerade aktiv ist, ist erledigt.');
+  }
   c.innerHTML = `
     <div class="tagesfortschritt-card">
       <div class="tagesfortschritt-head">
@@ -1733,7 +1840,7 @@ function ladeNaechsterSchritt() {
   const checkinsHeute = ls('checkins', {})[heute] || {};
   const dailyExHeute = ls('daily_exercises', {})[heute] || [];
   const offeneUebung = dailyExHeute.find(e => !e.erledigt);
-  const checkinFehlt = !checkinsHeute[aktuelleZeit];
+  const checkinFehlt = istTageszeitFreigeschaltet(aktuelleZeit) && !checkinsHeute[aktuelleZeit];
   const labels = { morgen: t('morgen'), mittag: t('mittag'), abend: t('abend') };
 
   if (checkinFehlt) {
@@ -2123,6 +2230,7 @@ function ladeHeuteTab() {
     ['Vorschlagsreduktion', aktualisiereVorschlaegeReduktion],
     ['Check-in-Formulare', () => ['morgen', 'mittag', 'abend'].forEach(tz => baueCheckinFormular(tz))],
     ['Check-in-Werte', ladeCheckinWerte],
+    ['Check-in-Freischaltung', aktualisiereCheckinFreischaltung],
     ['Tagesfortschritt', ladeTagesfortschritt],
     ['Nächster Schritt', ladeNaechsterSchritt],
     ['Heutige Übungen', ladeHeuteUebungen],
@@ -4364,6 +4472,11 @@ async function ladeApp() {
     await fuehreStartSchritt('Service Worker optional registrieren', registriereServiceWorkerOptional);
     APP_START_OK = pruefeAppStartStrukturell();
     aktualisiereDebugStatus();
+    setInterval(() => {
+      aktualisiereCheckinFreischaltung();
+      ladeVorschlaege();
+      ladeNaechsterSchritt();
+    }, 60000);
   } catch (e) {
     console.error('Innenpause konnte nicht vollständig starten:', e);
     zeigeStartFehler(e?.message || String(e));
