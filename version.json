@@ -1,7 +1,15 @@
 {
-    "appVersion":  "3.6",
+    "appVersion":  "3.7",
     "released":  "2026-05-05",
     "updates":  [
+                    {
+                        "version":  "3.7",
+                        "changelog":  [
+                                          "Hilfe an die neue App-Struktur mit Heute, Mehr, Halt finden, Uebungen und Einstellungen angepasst",
+                                          "Sicherungsdatei, seltene Aktionen und technische Hinweise in der Hilfe ruhiger beschrieben",
+                                          "Service-Worker-Cache auf neue App-Version aktualisiert"
+                                      ]
+                    },
                     {
                         "version":  "3.6",
                         "changelog":  [
