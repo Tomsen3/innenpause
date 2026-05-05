@@ -1,7 +1,16 @@
 {
-    "appVersion":  "3.5",
+    "appVersion":  "3.6",
     "released":  "2026-05-05",
     "updates":  [
+                    {
+                        "version":  "3.6",
+                        "changelog":  [
+                                          "Mobile Ansicht fuer Header, Heute, Halt finden, Uebungen und Einstellungen nachjustiert",
+                                          "Halt finden alltagssprachlicher formuliert und Notiz-Vorschau verstaendlicher gemacht",
+                                          "Sicherungsdatei- und Einstellungsbereiche ruhiger und weniger technisch beschrieben",
+                                          "Service-Worker-Cache auf neue App-Version aktualisiert"
+                                      ]
+                    },
                     {
                         "version":  "3.5",
                         "changelog":  [

@@ -40,7 +40,7 @@
 <!-- TAGESIMPULS HEADER -->
 <div id="impuls-header">
   <div style="display:flex;justify-content:space-between;align-items:flex-start">
-    <div class="app-titel-bereich" onclick="oeffneTitelEdit()" style="flex:1">
+    <div class="app-titel-bereich" style="flex:1">
       <span id="app-titel-anzeige">Innenpause</span>
       <span id="app-untertitel-anzeige">Deine täglichen Achtsamkeits-Momente</span>
     </div>
@@ -50,20 +50,13 @@
         <div class="header-greeting-date">Dienstag, 28. April</div>
       </div>
       <div class="header-tools">
+        <button class="header-halt-btn" onclick="zeigeTab('halt')" title="Halt finden">Halt finden</button>
         <button class="hilfe-btn" onclick="oeffneHilfe()" title="Hilfe">?</button>
         <button id="lang-btn-de" onclick="setSprache('de')" title="Deutsch"
           style="background:rgba(255,255,255,0.52);border:1px solid rgba(111,127,112,0.28);cursor:pointer;font-size:20px;padding:3px 6px;border-radius:6px;opacity:0.45;transition:opacity 0.2s,border-color 0.2s,background 0.2s;line-height:1;color:#1f2a21">🇩🇪</button>
         <button id="lang-btn-en" onclick="setSprache('en')" title="English"
           style="background:rgba(255,255,255,0.52);border:1px solid rgba(111,127,112,0.28);cursor:pointer;font-size:20px;padding:3px 6px;border-radius:6px;opacity:0.45;transition:opacity 0.2s,border-color 0.2s,background 0.2s;line-height:1;color:#1f2a21">🇬🇧</button>
       </div>
-    </div>
-  </div>
-  <div id="app-titel-edit-bereich">
-    <input type="text" id="app-titel-input" placeholder="App-Name..." maxlength="40">
-    <input type="text" id="app-untertitel-input" placeholder="Untertitel..." maxlength="60">
-    <div class="titel-edit-aktionen">
-      <button class="btn-titel-ok" onclick="speichereAppTitel()">✓ Speichern</button>
-      <button class="btn-titel-ab" onclick="schliesseTitelEdit()">Abbrechen</button>
     </div>
   </div>
   <div class="impuls-label">✦ Tagesimpuls</div>
@@ -76,20 +69,14 @@
   <button class="tab-btn active" onclick="zeigeTab('heute')" id="tab-heute">
     <span class="tab-icon">☀️</span><span class="tab-label">Heute</span>
   </button>
-  <button class="tab-btn" onclick="zeigeTab('halt')" id="tab-halt">
-    <span class="tab-icon">🤲</span><span class="tab-label">Halt finden</span>
-  </button>
   <button class="tab-btn" onclick="zeigeTab('checkin')" id="tab-checkin">
     <span class="tab-icon">📊</span><span class="tab-label">Check-in</span>
   </button>
   <button class="tab-btn" onclick="zeigeTab('uebungen')" id="tab-uebungen">
     <span class="tab-icon">🌿</span><span class="tab-label">Übungen</span>
   </button>
-  <button class="tab-btn" onclick="zeigeTab('verlauf')" id="tab-verlauf">
-    <span class="tab-icon">📖</span><span class="tab-label">Verlauf</span>
-  </button>
-  <button class="tab-btn" onclick="zeigeTab('einstellungen')" id="tab-einstellungen">
-    <span class="tab-icon">⚙️</span><span class="tab-label">Einst.</span>
+  <button class="tab-btn" onclick="zeigeTab('mehr')" id="tab-mehr">
+    <span class="tab-icon">⋯</span><span class="tab-label">Mehr</span>
   </button>
 </div>
 
@@ -98,64 +85,84 @@
    <!-- ===== TAB: HEUTE ===== -->
   <div id="content-heute" class="tab-content active">
     <div id="rueckkehr-container"></div>
-    <div class="section-label">Übung jetzt</div>
+    <div class="heute-einstieg-card">
+      <div class="heute-einstieg-title">Ein Moment für dich</div>
+      <button class="btn btn-primary btn-block heute-hauptbutton" onclick="toggleMomentAuswahl()" aria-expanded="false">Kurz innehalten</button>
+      <button class="heute-halt-link" onclick="zeigeTab('halt')">Wenn es gerade schwierig ist: Halt finden</button>
+      <div class="moment-auswahl" id="moment-auswahl" aria-hidden="true">
+        <div class="moment-auswahl-title">Was passt gerade?</div>
+        <button class="moment-option" onclick="momentAuswahlAktion('spueren')">kurz spüren</button>
+        <button class="moment-option" onclick="momentAuswahlAktion('schreiben')">etwas aufschreiben</button>
+        <button class="moment-option" onclick="momentAuswahlAktion('uebung')">freie Übung wählen</button>
+        <button class="moment-option moment-option-halt" onclick="momentAuswahlAktion('halt')">Halt finden</button>
+        <button class="moment-schliessen" onclick="toggleMomentAuswahl(false)">Wieder schließen</button>
+      </div>
+    </div>
+
+    <div class="section-label">Für jetzt vorgeschlagen</div>
     <div id="uebung-jetzt-container">
       <div class="loading">Lade aktuelle Übung...</div>
     </div>
-    <div id="schnellzugriff-container"></div>
-    <div id="naechster-schritt-container"></div>
-    <div id="tagesfortschritt-container"></div>
-    <div id="streak-container"></div>
-    <div class="heute-grid">
-      <div class="heute-slot" id="slot-morgen" onclick="zeigeTab('checkin'); oeffneCheckin('morgen')">
-        <div class="heute-slot-icon">🌅</div>
-        <div class="heute-slot-label">Morgen</div>
-        <div class="heute-slot-status" id="status-morgen">–</div>
-      </div>
-      <div class="heute-slot" id="slot-mittag" onclick="zeigeTab('checkin'); oeffneCheckin('mittag')">
-        <div class="heute-slot-icon">☀️</div>
-        <div class="heute-slot-label">Mittag</div>
-        <div class="heute-slot-status" id="status-mittag">–</div>
-      </div>
-      <div class="heute-slot" id="slot-abend" onclick="zeigeTab('checkin'); oeffneCheckin('abend')">
-        <div class="heute-slot-icon">🌙</div>
-        <div class="heute-slot-label">Abend</div>
-        <div class="heute-slot-status" id="status-abend">–</div>
-      </div>
-    </div>
-    <div class="section-label">Übungsvorschläge</div>
-    <div style="padding:0 16px 6px">
-      <button class="btn btn-secondary btn-sm btn-block" id="vorschlaege-toggle" onclick="toggleVorschlaegeHeute()">Weitere Vorschläge anzeigen</button>
-    </div>
-    <div id="heute-vorschlaege-container" class="vorschlaege-reduziert">
-      <div class="loading">Lade Vorschläge...</div>
-    </div>
 
-    <div class="section-label">Notizbuch</div>
-    <div class="card card-reflexion heute-compact-card">
-      <textarea id="journal-input" rows="2" placeholder="Gedanken, Beobachtungen, Momente..."></textarea>
-      <button class="btn btn-primary btn-block btn-sm" onclick="speichereJournal()">Eintrag speichern</button>
+    <div class="heute-mehr-toggle-wrap">
+      <button class="btn btn-secondary btn-sm btn-block" id="heute-mehr-toggle" onclick="toggleHeuteMehr()">Mehr anzeigen</button>
     </div>
-    <div id="journal-eintraege-heute"></div>
+    <div id="heute-mehr-bereich" class="heute-mehr-bereich">
+      <div id="schnellzugriff-container"></div>
+      <div id="naechster-schritt-container"></div>
+      <div id="tagesfortschritt-container"></div>
+      <div id="streak-container"></div>
+      <div class="heute-grid">
+        <div class="heute-slot" id="slot-morgen" onclick="zeigeTab('checkin'); oeffneCheckin('morgen')">
+          <div class="heute-slot-icon">🌅</div>
+          <div class="heute-slot-label">Morgen</div>
+          <div class="heute-slot-status" id="status-morgen">–</div>
+        </div>
+        <div class="heute-slot" id="slot-mittag" onclick="zeigeTab('checkin'); oeffneCheckin('mittag')">
+          <div class="heute-slot-icon">☀️</div>
+          <div class="heute-slot-label">Mittag</div>
+          <div class="heute-slot-status" id="status-mittag">–</div>
+        </div>
+        <div class="heute-slot" id="slot-abend" onclick="zeigeTab('checkin'); oeffneCheckin('abend')">
+          <div class="heute-slot-icon">🌙</div>
+          <div class="heute-slot-label">Abend</div>
+          <div class="heute-slot-status" id="status-abend">–</div>
+        </div>
+      </div>
+      <div class="section-label">Übungsvorschläge</div>
+      <div style="padding:0 16px 6px">
+        <button class="btn btn-secondary btn-sm btn-block" id="vorschlaege-toggle" onclick="toggleVorschlaegeHeute()">Weitere Vorschläge anzeigen</button>
+      </div>
+      <div id="heute-vorschlaege-container" class="vorschlaege-reduziert">
+        <div class="loading">Lade Vorschläge...</div>
+      </div>
 
-    <div class="section-label">Tagesabschluss</div>
-    <div class="card card-reflexion heute-compact-card" id="abschluss-card">
-      <div class="card-title">Tagesabschluss</div>
-      <textarea id="abschluss-text" rows="2" placeholder="Was nehme ich vom heutigen Tag mit?"></textarea>
-      <div style="margin-top:10px">
-        <label style="font-size:13px;color:var(--text2)" id="lbl-highlight">Highlight des Tages</label>
-        <input type="text" id="abschluss-highlight" placeholder="Ein Moment, der gut war..." style="margin-top:6px">
+      <div class="section-label">Notizbuch</div>
+      <div class="card card-reflexion heute-compact-card">
+        <textarea id="journal-input" rows="2" placeholder="Gedanken, Sätze, Momente..."></textarea>
+        <button class="btn btn-primary btn-block btn-sm" onclick="speichereJournal()">Eintrag speichern</button>
       </div>
-      <div style="margin-top:10px">
-        <label style="font-size:13px;color:var(--text2)" id="lbl-dankbarkeit">Dankbarkeit</label>
-        <input type="text" id="abschluss-dankbarkeit" placeholder="Ich bin dankbar für..." style="margin-top:6px">
+      <div id="journal-eintraege-heute"></div>
+
+      <div class="section-label">Tagesabschluss</div>
+      <div class="card card-reflexion heute-compact-card" id="abschluss-card">
+        <div class="card-title">Tagesabschluss</div>
+        <textarea id="abschluss-text" rows="2" placeholder="Was nehme ich vom heutigen Tag mit?"></textarea>
+        <div style="margin-top:10px">
+          <label style="font-size:13px;color:var(--text2)" id="lbl-highlight">Highlight des Tages</label>
+          <input type="text" id="abschluss-highlight" placeholder="Ein Moment, der gut war..." style="margin-top:6px">
+        </div>
+        <div style="margin-top:10px">
+          <label style="font-size:13px;color:var(--text2)" id="lbl-dankbarkeit">Dankbarkeit</label>
+          <input type="text" id="abschluss-dankbarkeit" placeholder="Ich bin dankbar für..." style="margin-top:6px">
+        </div>
+        <button class="btn btn-primary btn-block" onclick="speichereAbschluss()">Tagesabschluss speichern</button>
       </div>
-      <button class="btn btn-primary btn-block" onclick="speichereAbschluss()">Tagesabschluss speichern</button>
+
+      <!-- Heutige Übungen (wird dynamisch befüllt) -->
+      <div class="section-label">Heutige Übungen</div>
+      <div id="heute-uebungen-container"></div>
     </div>
-
-    <!-- Heutige Übungen (wird dynamisch befüllt) -->
-    <div class="section-label">Heutige Übungen</div>
-    <div id="heute-uebungen-container"></div>
     <div id="begruessung-container"></div>
   </div>
 
@@ -217,7 +224,19 @@
 
   <!-- ===== TAB: ÜBUNGEN ===== -->
   <div id="content-uebungen" class="tab-content">
-    <div class="card" style="margin-top:12px">
+    <div class="uebungen-einstieg">
+      <button class="uebung-chip active" data-quick-filter="alle" onclick="setzeUebungsSchnellauswahl('alle')">Alle</button>
+      <button class="uebung-chip" data-quick-filter="kurz" onclick="setzeUebungsSchnellauswahl('kurz')">Kurz</button>
+      <button class="uebung-chip" data-quick-filter="ruhig" onclick="setzeUebungsSchnellauswahl('ruhig')">Ruhig</button>
+      <button class="uebung-chip" data-quick-filter="koerper" onclick="setzeUebungsSchnellauswahl('koerper')">Körper</button>
+      <button class="uebung-chip" data-quick-filter="schreiben" onclick="setzeUebungsSchnellauswahl('schreiben')">Schreiben</button>
+      <button class="uebung-chip" data-quick-filter="schwierig" onclick="setzeUebungsSchnellauswahl('schwierig')">Schwieriger Moment</button>
+    </div>
+
+    <div style="padding:0 16px 4px">
+      <button class="btn btn-secondary btn-sm btn-block" id="uebungen-filter-toggle" onclick="toggleUebungenFilter()">Mehr filtern</button>
+    </div>
+    <div class="card uebungen-filter-card" id="uebungen-filter-bereich">
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
         <select id="filter-kat" onchange="ladeUebungen()" style="flex:1;min-width:120px">
           <option value="">Alle Kategorien</option>
@@ -232,7 +251,7 @@
           <option value="">Standard</option>
           <option value="favoriten">⭐ Favoriten</option>
           <option value="bewertung_desc">★ Beste zuerst</option>
-          <option value="bewertung_asc">★ Schlechteste zuerst</option>
+          <option value="bewertung_asc">★ Weniger hilfreich zuerst</option>
           <option value="name_asc">A–Z</option>
           <option value="name_desc">Z–A</option>
         </select>
@@ -250,13 +269,73 @@
       <div id="filter-zaehler" style="font-size:12px;color:var(--text3);margin-top:8px;text-align:right;min-height:16px"></div>
     </div>
     <div id="uebungen-container"><div class="loading">Lade Übungen...</div></div>
-    <div style="padding: 0 16px">
+    <div class="admin-only" style="padding: 0 16px">
       <button class="btn btn-secondary btn-block" onclick="oeffneNeueUebung()">+ Neue Übung hinzufügen</button>
+    </div>
+  </div>
+
+  <!-- ===== TAB: MEHR ===== -->
+  <div id="content-mehr" class="tab-content">
+    <div class="section-label" id="mehr-section-title">Mehr</div>
+    <div class="card card-verwaltung mehr-card">
+      <button class="mehr-row" onclick="toggleMehrBereich('verlauf')" aria-expanded="false" aria-controls="mehr-panel-verlauf">
+        <span class="mehr-row-icon">📖</span>
+        <span>
+          <span class="mehr-row-title" id="mehr-verlauf-title">Verlauf</span>
+          <span class="mehr-row-sub" id="mehr-verlauf-sub">Einträge und Entwicklung ansehen</span>
+        </span>
+        <span class="mehr-row-arrow">▼</span>
+      </button>
+      <div class="mehr-panel" id="mehr-panel-verlauf">
+        <div class="mehr-panel-text" id="mehr-verlauf-panel-text">Hier findest du deine Einträge und einen ruhigen Blick auf die letzten Tage.</div>
+        <button class="btn btn-secondary btn-sm" id="mehr-verlauf-open" onclick="zeigeTab('verlauf')">Verlauf öffnen</button>
+      </div>
+      <button class="mehr-row" onclick="toggleMehrBereich('einstellungen')" aria-expanded="false" aria-controls="mehr-panel-einstellungen">
+        <span class="mehr-row-icon">⚙️</span>
+        <span>
+          <span class="mehr-row-title" id="mehr-einstellungen-title">Einstellungen</span>
+          <span class="mehr-row-sub" id="mehr-einstellungen-sub">Anzeige, Daten und App-Verhalten anpassen</span>
+        </span>
+        <span class="mehr-row-arrow">▼</span>
+      </button>
+      <div class="mehr-panel" id="mehr-panel-einstellungen">
+        <div class="mehr-panel-text" id="mehr-einstellungen-panel-text">Alles, was die App im Hintergrund betrifft: Anzeige, Zeiten, Daten und Sprache.</div>
+        <button class="btn btn-secondary btn-sm" id="mehr-einstellungen-open" onclick="zeigeTab('einstellungen')">Einstellungen öffnen</button>
+      </div>
+      <button class="mehr-row" onclick="toggleMehrBereich('hilfe')" aria-expanded="false" aria-controls="mehr-panel-hilfe">
+        <span class="mehr-row-icon">?</span>
+        <span>
+          <span class="mehr-row-title" id="mehr-hilfe-title">Hilfe</span>
+          <span class="mehr-row-sub" id="mehr-hilfe-sub">Kurze Orientierung und Antworten</span>
+        </span>
+        <span class="mehr-row-arrow">▼</span>
+      </button>
+      <div class="mehr-panel" id="mehr-panel-hilfe">
+        <div class="mehr-panel-text" id="mehr-hilfe-panel-text">Wenn du kurz nachlesen möchtest, was wo zu finden ist.</div>
+        <button class="btn btn-secondary btn-sm" id="mehr-hilfe-open" onclick="oeffneHilfe()">Hilfe öffnen</button>
+      </div>
+    </div>
+
+    <div class="section-label" id="mehr-selten-title">Selten gebraucht</div>
+    <div class="card card-verwaltung mehr-card">
+      <button class="mehr-row" onclick="toggleMehrBereich('technik')" aria-expanded="false" aria-controls="mehr-panel-technik">
+        <span class="mehr-row-icon">🛠</span>
+        <span>
+          <span class="mehr-row-title" id="mehr-technik-title">Technik-Check</span>
+          <span class="mehr-row-sub" id="mehr-technik-sub">Version, Speicher und App-Cache prüfen</span>
+        </span>
+        <span class="mehr-row-arrow">▼</span>
+      </button>
+      <div class="mehr-panel" id="mehr-panel-technik">
+        <div class="mehr-panel-text" id="mehr-technik-panel-text">Nur wenn etwas hakt oder du die App-Version prüfen möchtest.</div>
+        <button class="btn btn-secondary btn-sm" id="mehr-technik-open" onclick="oeffneTechnikEinstellungen()">Technik-Check öffnen</button>
+      </div>
     </div>
   </div>
 
   <!-- ===== TAB: VERLAUF ===== -->
   <div id="content-verlauf" class="tab-content">
+    <button class="mehr-back" onclick="zeigeTab('mehr')">← Zurück zu Mehr</button>
     <div class="section-label">Deine letzten 7 Tage</div>
     <div id="verlauf-insights-container"><div class="loading">Lade Auswertung...</div></div>
     <div class="section-label">Letzte 7 Tage – Stimmung</div>
@@ -281,7 +360,17 @@
 
   <!-- ===== TAB: EINSTELLUNGEN ===== -->
   <div id="content-einstellungen" class="tab-content">
+    <button class="mehr-back" onclick="zeigeTab('mehr')">← Zurück zu Mehr</button>
 
+    <div class="settings-group open" id="settings-group-anzeige">
+      <button class="settings-group-header" onclick="toggleSettingsGroup('anzeige')" aria-expanded="true" aria-controls="settings-panel-anzeige">
+        <span>
+          <span class="settings-group-title" id="settings-anzeige-title">Anzeige</span>
+          <span class="settings-group-sub" id="settings-anzeige-sub">Was du im Alltag direkt bemerkst</span>
+        </span>
+        <span class="settings-group-arrow">▼</span>
+      </button>
+      <div class="settings-group-panel open" id="settings-panel-anzeige">
     <div class="section-label">Anzeige</div>
     <div class="card card-verwaltung">
       <div class="setting-row">
@@ -334,68 +423,103 @@
       </div>
       <button class="btn btn-primary btn-block" style="margin-top:14px" onclick="speichereTageszeitenGrenzen()">Speichern</button>
     </div>
-
-    <div class="section-label">Übungspool</div>
-    <div class="card card-verwaltung">
-      <div class="setting-row">
-        <div>
-          <div class="setting-label">Standard-Pool laden</div>
-          <div class="setting-sub">120 Übungen als Startpunkt importieren</div>
-        </div>
-        <button class="btn btn-secondary btn-sm" onclick="importiereStandardPool()">Import</button>
-      </div>
-      <div class="setting-row">
-        <div>
-          <div class="setting-label">Übungen verwalten</div>
-      <div class="setting-row" style="border-top:1px solid var(--border);padding-top:12px;margin-top:4px">
-        <div>
-          <div class="setting-label">Übungen zurücksetzen</div>
-          <div class="setting-sub">Alle Übungen auf Standard-Pool zurücksetzen – persönliche Daten bleiben erhalten</div>
-        </div>
-        <button class="btn btn-secondary btn-sm" onclick="setzeUebungenZurueck()">Zurücksetzen</button>
-      </div>
-          <div class="setting-sub">Bearbeiten, löschen, hinzufügen</div>
-        </div>
-        <button class="btn btn-secondary btn-sm" onclick="zeigeTab('uebungen')">Öffnen</button>
       </div>
     </div>
 
-    <div class="section-label">Daten</div>
+    <div class="settings-group" id="settings-group-uebungen">
+      <button class="settings-group-header" onclick="toggleSettingsGroup('uebungen')" aria-expanded="false" aria-controls="settings-panel-uebungen">
+        <span>
+          <span class="settings-group-title" id="settings-uebungen-title">Übungen</span>
+          <span class="settings-group-sub" id="settings-uebungen-sub">Auswahl und Bearbeitung im Hintergrund</span>
+        </span>
+        <span class="settings-group-arrow">▼</span>
+      </button>
+      <div class="settings-group-panel" id="settings-panel-uebungen">
+    <div class="section-label">Übungsauswahl</div>
+    <div class="card card-verwaltung settings-quiet-card">
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Bearbeitung einschalten</div>
+          <div class="setting-sub">Nur für betreuende oder verantwortliche Personen</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="toggle-admin-modus" onchange="setzeAdminModus(this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="setting-row admin-only">
+        <div>
+          <div class="setting-label">Grundauswahl laden</div>
+          <div class="setting-sub">Fehlende Übungen aus der Grundauswahl ergänzen</div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="importiereStandardPool()">Import</button>
+      </div>
+      <div class="setting-row admin-only">
+        <div>
+          <div class="setting-label">Übungen verwalten</div>
+          <div class="setting-sub">Nur nach freigeschalteter Bearbeitung</div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="zeigeTab('uebungen')">Öffnen</button>
+      </div>
+      <div class="setting-row admin-only settings-danger-row">
+        <div>
+          <div class="setting-label">Übungsauswahl zurücksetzen</div>
+          <div class="setting-sub">Setzt nur die Übungen auf die Grundauswahl. Persönliche Einträge bleiben erhalten.</div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="setzeUebungenZurueck()">Zurücksetzen</button>
+      </div>
+    </div>
+      </div>
+    </div>
+
+    <div class="settings-group" id="settings-group-daten">
+      <button class="settings-group-header" onclick="toggleSettingsGroup('daten')" aria-expanded="false" aria-controls="settings-panel-daten">
+        <span>
+          <span class="settings-group-title" id="settings-daten-title">Daten sichern</span>
+          <span class="settings-group-sub" id="settings-daten-sub">Eine Kopie deiner Einträge behalten</span>
+        </span>
+        <span class="settings-group-arrow">▼</span>
+      </button>
+      <div class="settings-group-panel" id="settings-panel-daten">
+    <div class="section-label" id="settings-daten-section-label">Daten sichern</div>
     <div class="card card-daten">
       <div class="daten-info" id="daten-info">Alle Daten werden lokal auf diesem Gerät gespeichert.</div>
       <div class="setting-row" style="margin-top:8px">
         <div>
-          <div class="setting-label">Daten exportieren</div>
-          <div class="setting-sub">JSON-Backup aller lokalen Daten</div>
+          <div class="setting-label" id="label-sicherung-speichern">Sicherung speichern</div>
+          <div class="setting-sub" id="sub-sicherung-speichern">Eine Datei mit deinen Einträgen erstellen</div>
         </div>
-        <button class="btn btn-secondary btn-sm" onclick="exportiereAllesDaten()">Export</button>
+        <button class="btn btn-secondary btn-sm" id="btn-sicherung-speichern" onclick="exportiereAllesDaten()">Speichern</button>
       </div>
       <div class="setting-row">
         <div>
-          <div class="setting-label">Daten importieren</div>
-          <div class="setting-sub">Backup wiederherstellen</div>
+          <div class="setting-label" id="label-sicherung-laden">Sicherung laden</div>
+          <div class="setting-sub" id="sub-sicherung-laden">Einträge aus einer Sicherungsdatei zurückholen</div>
         </div>
-        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('import-file').click()">Import</button>
+        <button class="btn btn-secondary btn-sm" id="btn-sicherung-laden" onclick="document.getElementById('import-file').click()">Laden</button>
         <input type="file" id="import-file" accept=".json" style="display:none" onchange="importiereDaten(this)">
       </div>
-      <div class="setting-row">
-        <div>
-          <div class="setting-label">Alle Daten löschen</div>
-          <div class="setting-sub">App zurücksetzen (nicht rückgängig machbar)</div>
+      <details class="settings-rare-actions">
+        <summary>Selten gebraucht</summary>
+        <div class="setting-row settings-danger-row">
+          <div>
+            <div class="setting-label" id="label-daten-loeschen">Neu anfangen und Daten löschen</div>
+            <div class="setting-sub" id="sub-daten-loeschen">Nur öffnen, wenn du wirklich alles von diesem Gerät entfernen möchtest. Es folgt noch eine Sicherheitsfrage.</div>
+          </div>
+          <button class="btn btn-danger btn-sm" onclick="loescheAllesDaten()">Löschen</button>
         </div>
-        <button class="btn btn-danger btn-sm" onclick="loescheAllesDaten()">Löschen</button>
-      </div>
+      </details>
     </div>
 
-    <div class="section-label">Synchronisierung</div>
+    <div class="section-label">Kopie auf mehreren Geräten</div>
     <div class="card card-daten">
       <div style="font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.5">
-        Speichere deine Daten in einer Datei auf OneDrive, Google Drive oder einem anderen Ordner – und lade sie auf anderen Geräten wieder ein.
+        Optional: Du kannst eine Sicherungsdatei in einem Ordner ablegen und sie auf einem anderen Gerät wieder laden.
       </div>
       <div class="setting-row">
         <div>
-          <div class="setting-label">Sync-Datei</div>
-          <div class="setting-sub" id="sync-datei-status">Kein Speicherort festgelegt</div>
+          <div class="setting-label">Sicherungsdatei verbinden</div>
+          <div class="setting-sub" id="sync-datei-status">Noch kein Speicherort festgelegt</div>
         </div>
         <button class="btn btn-secondary btn-sm" onclick="zeigeSyncModal('einrichten')">Einrichten</button>
       </div>
@@ -416,14 +540,25 @@
       </div>
       <div class="setting-row" id="sync-reset-row" style="display:none">
         <div>
-          <div class="setting-label">Sync zurücksetzen</div>
-          <div class="setting-sub">Aktuellen Speicherort vergessen</div>
+          <div class="setting-label">Verbindung zur Sicherungsdatei lösen</div>
+          <div class="setting-sub">Der Speicherort wird vergessen. Deine Einträge bleiben erhalten.</div>
         </div>
-        <button class="btn btn-danger btn-sm" onclick="syncZuruecksetzen()">Zurücksetzen</button>
+        <button class="btn btn-secondary btn-sm" onclick="syncZuruecksetzen()">Lösen</button>
+      </div>
+    </div>
       </div>
     </div>
 
-    <div class="section-label">Lizenz</div>
+    <div class="settings-group" id="settings-group-technik">
+      <button class="settings-group-header" onclick="toggleSettingsGroup('technik')" aria-expanded="false" aria-controls="settings-panel-technik">
+        <span>
+          <span class="settings-group-title" id="settings-technik-title">Wenn etwas hakt</span>
+          <span class="settings-group-sub" id="settings-technik-sub">Selten gebraucht, wenn etwas hakt</span>
+        </span>
+        <span class="settings-group-arrow">▼</span>
+      </button>
+      <div class="settings-group-panel" id="settings-panel-technik">
+    <div class="section-label">Zugang</div>
     <div class="card">
       <div class="setting-row">
         <div>
@@ -434,7 +569,7 @@
       </div>
     </div>
 
-    <div class="section-label">Version</div>
+    <div class="section-label">App-Stand</div>
     <div class="card">
       <div class="setting-row">
         <div>
@@ -445,10 +580,11 @@
       </div>
     </div>
 
-    <div class="section-label">Debug-Status</div>
+    <details class="settings-rare-actions settings-technical-details">
+      <summary>Details anzeigen</summary>
     <div class="card card-daten">
       <div style="font-size:12px;color:var(--text3);line-height:1.5;margin-bottom:8px">
-        Schneller Technik-Check für Version, Speicher, Service Worker und lokale Daten.
+        Ein kurzer Blick auf Version, Speicher und App-Start. Nur nötig, wenn etwas nicht rund läuft.
       </div>
       <div id="debug-status-box" class="debug-status-grid">
         <div class="debug-status-row"><span class="debug-status-label">Status</span><span class="debug-status-value">Wird geladen …</span></div>
@@ -457,8 +593,11 @@
         <button class="btn btn-secondary btn-sm" onclick="aktualisiereDebugStatus()">Status aktualisieren</button>
         <button class="btn btn-secondary btn-sm" onclick="ladeAppSauberNeu()">App sauber neu laden</button>
       </div>
-      <button class="btn btn-danger btn-sm btn-block" onclick="setzeAppCacheZurueck()">App technisch zurücksetzen</button>
-      <div class="setting-sub" style="margin-top:8px">Der technische Reset löscht nur Service Worker, App-Cache und temporäre Update-Flags. Deine Einträge im localStorage bleiben erhalten.</div>
+      <button class="btn btn-danger btn-sm btn-block" onclick="setzeAppCacheZurueck()">App-Start bereinigen</button>
+      <div class="setting-sub" style="margin-top:8px">Das betrifft nur gespeicherte App-Dateien und Update-Hinweise. Deine Einträge bleiben erhalten.</div>
+    </div>
+    </details>
+      </div>
     </div>
 
   </div>
@@ -636,7 +775,7 @@
 // ============================================================
 // APP VERSION
 // ============================================================
-const BUNDLED_APP_VERSION = '3.5';
+const BUNDLED_APP_VERSION = '3.6';
 let APP_VERSION = BUNDLED_APP_VERSION;
 let VERSION_UPDATES = [];
 let VERSION_JSON_STATUS = { ok: false, quelle: 'fallback', meldung: 'Noch nicht geladen', geladenAm: null };
@@ -719,6 +858,9 @@ function getPendingUpdatesForDisplay(gespeichert) {
 // Umschalten: setSprache('en') oder setSprache('de') -> reload.
 // ============================================================
 let SPRACHE = localStorage.getItem('sprache') || 'de';
+const HAUPT_TABS = ['heute', 'checkin', 'uebungen', 'mehr'];
+const MEHR_TABS = ['halt', 'verlauf', 'einstellungen'];
+const APP_TABS = [...HAUPT_TABS, ...MEHR_TABS];
 let AKTIVER_TAB = localStorage.getItem('aktiver_tab') || 'heute';
 
 function setSprache(code) {
@@ -849,11 +991,49 @@ const KAT_DE_EN = {
   'Schwierige Momente': 'Difficult Moments'
 };
 const KAT_EN_DE = Object.fromEntries(Object.entries(KAT_DE_EN).map(([k,v]) => [v,k]));
+const KAT_DISPLAY_DE = {
+  'GfK & Bedürfnisse': 'Was mir wichtig ist',
+  'Selbstmitgefühl': 'Freundlich mit mir',
+  'Polyvagal & Regulation': 'Zur Ruhe kommen',
+  'Kontakt & Verbindung': 'Kontakt',
+  'Ressourcen & Möglichkeiten': 'Was stärkt',
+  'Schwierige Momente': 'Schwieriger Moment'
+};
+const KAT_DISPLAY_EN = {
+  'NVC & Needs': 'What matters',
+  'Self-Compassion': 'Kind to myself',
+  'Polyvagal & Regulation': 'Settle',
+  'Contact & Connection': 'Contact',
+  'Resources & Possibilities': 'What helps',
+  'Difficult Moments': 'Difficult moment'
+};
 
 // Kategorie-Name für Anzeige (DE-intern, EN-Übersetzung für Anzeige)
 function katAnzeige(kat) {
-  if (SPRACHE === 'en') return KAT_DE_EN[kat] || kat;
-  return kat;
+  if (SPRACHE === 'en') {
+    const en = KAT_DE_EN[kat] || kat;
+    return KAT_DISPLAY_EN[en] || en;
+  }
+  return KAT_DISPLAY_DE[kat] || kat;
+}
+
+const HALT_BEDUERFNIS_DISPLAY_DE = {
+  Sicherheit: 'Sicher fühlen',
+  Ruhe: 'Ruhe',
+  Halt: 'Halt',
+  Klarheit: 'Klarheit',
+  Verbindung: 'Kontakt',
+  Verständnis: 'Verstanden werden',
+  Schutz: 'Schutz',
+  Raum: 'Raum',
+  Unterstützung: 'Unterstützung',
+  Entlastung: 'Entlastung',
+  Autonomie: 'Selbst entscheiden',
+  Wertschätzung: 'Gesehen werden'
+};
+
+function haltBeduerfnisAnzeige(value) {
+  return SPRACHE === 'en' ? value : (HALT_BEDUERFNIS_DISPLAY_DE[value] || value);
 }
 // ============================================================
 // TAGESIMPULSE ENGLISCH
@@ -870,6 +1050,7 @@ function katAnzeige(kat) {
 // Für erhöhte Sicherheit könnte man dies serverseitig validieren.
 // ============================================================
 const GUELTIGE_LIZENZ = 'ACHT-2026-R4mX-9Kw3';
+const ADMIN_CODE = '2265';
 const LIZENZ_KEY = 'app_lizenz_aktiv';
 
 function pruefeeLizenz() {
@@ -1164,22 +1345,42 @@ function stelleScrollPositionNachSprachwechselWiederHer() {
   });
 }
 
-function zeigeTab(name, speichern = true) {
-  if (!document.getElementById('content-' + name) || !document.getElementById('tab-' + name)) {
+function getTabAusHash() {
+  const hash = decodeURIComponent((location.hash || '').replace(/^#/, ''));
+  return APP_TABS.includes(hash) ? hash : null;
+}
+
+function setzeTabHistory(name, mode = 'push') {
+  if (!APP_TABS.includes(name) || !history?.replaceState) return;
+  const url = `${location.pathname}${location.search}#${name}`;
+  if (mode === 'replace') {
+    history.replaceState({ tab: name }, '', url);
+  } else if (mode === 'push' && history.pushState) {
+    history.pushState({ tab: name }, '', url);
+  }
+}
+
+function zeigeTab(name, speichern = true, historyMode = 'push') {
+  if (!document.getElementById('content-' + name)) {
     name = 'heute';
   }
+  const navName = document.getElementById('tab-' + name) ? name : (MEHR_TABS.includes(name) ? 'mehr' : name);
+  const vorherigerTab = AKTIVER_TAB;
   AKTIVER_TAB = name;
   if (speichern) localStorage.setItem('aktiver_tab', name);
   document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
   document.getElementById('content-' + name).classList.add('active');
-  document.getElementById('tab-' + name).classList.add('active');
+  document.getElementById('tab-' + navName)?.classList.add('active');
   if (name === 'checkin') aktualisiereCheckinFreischaltung();
   if (name === 'verlauf') ladeVerlaufInit();
   if (name === 'uebungen') ladeUebungen();
   if (name === 'heute') ladeHeuteTab();
   if (name === 'halt') renderHaltFinden();
   if (name === 'einstellungen') ladeEinstellungenUI();
+  if (speichern && historyMode !== 'none' && (historyMode === 'replace' || vorherigerTab !== name)) {
+    setzeTabHistory(name, historyMode);
+  }
 }
 
 function toggleAkk(name, directId = false) {
@@ -1200,6 +1401,50 @@ function oeffneCheckin(zeit) {
   if (!el) return;
   if (!el.classList.contains('open')) el.classList.add('open');
   setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+function istInteraktivesSwipeZiel(target) {
+  return !!target?.closest?.('input, textarea, select, button, a, .modal-overlay.open, #flow-modal.open, #hilfe-modal.open');
+}
+
+function istSwipeErlaubt() {
+  return !document.querySelector('.modal-overlay.open') &&
+    !document.querySelector('#flow-modal.open') &&
+    !document.querySelector('#hilfe-modal.open') &&
+    getComputedStyle(document.getElementById('update-modal') || document.body).display !== 'flex';
+}
+
+let swipeStartX = 0;
+let swipeStartY = 0;
+let swipeStartTime = 0;
+
+function initialisiereSwipeNavigation() {
+  const main = document.getElementById('main');
+  if (!main || main.dataset.swipeNav === '1') return;
+  main.dataset.swipeNav = '1';
+
+  main.addEventListener('touchstart', e => {
+    if (!istSwipeErlaubt() || istInteraktivesSwipeZiel(e.target) || e.touches.length !== 1) return;
+    swipeStartX = e.touches[0].clientX;
+    swipeStartY = e.touches[0].clientY;
+    swipeStartTime = Date.now();
+  }, { passive: true });
+
+  main.addEventListener('touchend', e => {
+    if (!swipeStartTime || !istSwipeErlaubt() || !e.changedTouches.length) return;
+    const dx = e.changedTouches[0].clientX - swipeStartX;
+    const dy = e.changedTouches[0].clientY - swipeStartY;
+    const dt = Date.now() - swipeStartTime;
+    swipeStartTime = 0;
+
+    if (dt > 700 || Math.abs(dx) < 75 || Math.abs(dy) > 55 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    const current = getAktiverTab();
+    const index = HAUPT_TABS.indexOf(current);
+    if (index === -1) return;
+    const nextIndex = dx < 0 ? index + 1 : index - 1;
+    if (nextIndex < 0 || nextIndex >= HAUPT_TABS.length) return;
+    zeigeTab(HAUPT_TABS[nextIndex]);
+  }, { passive: true });
 }
 
 function aktualisiereCheckinFreischaltung() {
@@ -1299,26 +1544,71 @@ function aktualisiereStickyTabPosition() {
 // ============================================================
 function skalaHTML(id, label, val = 5) {
   const labelTeile = String(label).split('||');
+  const orientierung = (labelTeile[2] || '').split('|').filter(Boolean);
   const labelHTML = labelTeile.length > 1
-    ? `<span class="skala-label-text"><span>${labelTeile[0]}</span><small>${labelTeile.slice(1).join('||')}</small></span>`
+    ? `<span class="skala-label-text"><span>${labelTeile[0]}</span><small>${labelTeile[1]}</small></span>`
     : `<span>${label}</span>`;
+  const orientierungHTML = orientierung.length === 3
+    ? `<div class="skala-orientierung"><span>${orientierung[0]}</span><span>${orientierung[1]}</span><span>${orientierung[2]}</span></div>`
+    : '';
   return `
     <div class="skala-gruppe">
       <div class="skala-label">
         ${labelHTML}
         <span class="skala-wert" id="val-${id}">${val}</span>
       </div>
-      <input type="range" id="${id}" min="1" max="10" value="${val}"
-        oninput="document.getElementById('val-${id}').textContent=this.value">
+      <input type="range" id="${id}" min="1" max="10" step="0.1" value="${val}"
+        oninput="aktualisiereSliderFarbe(this); document.getElementById('val-${id}').textContent=this.value">
+      ${orientierungHTML}
     </div>`;
 }
 
-function tagesfrageHTML(tageszeit) {
+function mischeFarbe(a, b, t) {
+  const ah = a.replace('#', '');
+  const bh = b.replace('#', '');
+  const ar = parseInt(ah.slice(0, 2), 16), ag = parseInt(ah.slice(2, 4), 16), ab = parseInt(ah.slice(4, 6), 16);
+  const br = parseInt(bh.slice(0, 2), 16), bg = parseInt(bh.slice(2, 4), 16), bb = parseInt(bh.slice(4, 6), 16);
+  const hx = n => Math.round(n).toString(16).padStart(2, '0');
+  return `#${hx(ar + (br - ar) * t)}${hx(ag + (bg - ag) * t)}${hx(ab + (bb - ab) * t)}`;
+}
+
+function getSliderFarben(wert) {
+  const v = Math.max(1, Math.min(10, Number(wert) || 5));
+  const t = (v - 1) / 9;
+  const fill = t < 0.5
+    ? mischeFarbe('#5f3f31', '#d2752e', t / 0.5)
+    : mischeFarbe('#d2752e', '#cde8a6', (t - 0.5) / 0.5);
+  return { fill };
+}
+
+function aktualisiereSliderFarbe(slider) {
+  if (!slider) return;
+  const min = Number(slider.min || 1);
+  const max = Number(slider.max || 10);
+  const val = Number(slider.value || min);
+  const prozent = ((val - min) / (max - min)) * 100;
+  const farben = getSliderFarben(val);
+  slider.style.setProperty('--slider-fill', farben.fill);
+  slider.style.setProperty('--slider-thumb', farben.fill);
+  slider.style.setProperty('--slider-pos', `${prozent}%`);
+}
+
+function aktualisiereAlleSliderFarben(root = document) {
+  root.querySelectorAll?.('input[type="range"]').forEach(aktualisiereSliderFarbe);
+}
+
+function tagesfrageHTML(tageszeit, nurInhalt = false) {
   const heute = heuteString();
   const seed = (parseInt(heute.replace(/-/g, '')) + tageszeit.length) % TAGESFRAGEN.length;
   const frage = TAGESFRAGEN[seed];
   const showTf = JSON.parse(localStorage.getItem('setting_tagesfrage') ?? 'true');
   if (!showTf) return '';
+  if (nurInhalt) {
+    return `
+      <div class="tagesfrage-text">${frage}</div>
+      <textarea id="tf-antwort-${tageszeit}" rows="2" placeholder="${t('tagesfrage_placeholder')}"></textarea>
+      <input type="hidden" id="tf-text-${tageszeit}" value="${frage.replace(/"/g,'&quot;')}">`;
+  }
   return `
     <div class="tagesfrage-toggle" onclick="toggleTagesfrage('${tageszeit}')">
       ${t('tagesfrage_toggle')}
@@ -1338,25 +1628,60 @@ function baueCheckinFormular(tageszeit) {
   const container = document.getElementById('form-' + tageszeit);
   if (!container) return;
   let html = '';
+  const intro = {
+    morgen: SPRACHE === 'en' ? 'A short look at your start into the day.' : 'Ein kurzer Blick auf deinen Start in den Tag.',
+    mittag: SPRACHE === 'en' ? 'A short look into the middle of the day.' : 'Ein kurzer Blick in die Mitte des Tages.',
+    abend: SPRACHE === 'en' ? 'A short look at your evening.' : 'Ein kurzer Blick auf deinen Abend.',
+  };
+  html += `<div class="checkin-intro">${intro[tageszeit] || ''}</div>`;
   if (tageszeit === 'morgen') {
-    html += `<div style="margin-top:12px"><strong style="font-size:13px;color:var(--text2)">Schlaf</strong></div>`;
-    html += skalaHTML('schlaf-q-' + tageszeit, t('checkin_schlaf_qualitaet'));
-    html += `<div class="skala-gruppe" style="margin-top:8px">
-      <div class="skala-label"><span>⏱ Stunden</span></div>
-      <input type="number" id="schlaf-std-${tageszeit}" min="0" max="24" step="0.5" value="7" style="width:100px">
-    </div>`;
+    const schlafLabel = String(t('checkin_schlaf_qualitaet')).split('||');
+    const orientierung = (schlafLabel[2] || '').split('|').filter(Boolean);
+    const orientierungHTML = orientierung.length === 3
+      ? `<div class="skala-orientierung"><span>${orientierung[0]}</span><span>${orientierung[1]}</span><span>${orientierung[2]}</span></div>`
+      : '';
+    html += `
+      <div class="skala-gruppe schlaf-kompakt">
+        <div class="skala-label">
+          <span class="skala-label-text"><span>${schlafLabel[0] || t('checkin_schlaf')}</span><small>${schlafLabel[1] || ''}</small></span>
+          <label class="schlaf-dauer-inline">
+            <span>${t('checkin_schlaf_stunden')}</span>
+            <input type="number" id="schlaf-std-${tageszeit}" min="0" max="24" step="0.5" value="7">
+          </label>
+        </div>
+        <input type="range" id="schlaf-q-${tageszeit}" min="1" max="10" step="0.1" value="5"
+          oninput="aktualisiereSliderFarbe(this); document.getElementById('val-schlaf-q-${tageszeit}') && (document.getElementById('val-schlaf-q-${tageszeit}').textContent=this.value)">
+        <span class="skala-wert" id="val-schlaf-q-${tageszeit}">5</span>
+        ${orientierungHTML}
+      </div>`;
     html += '<hr class="divider">';
   }
-  html += `<div style="margin-top:4px"><strong style="font-size:13px;color:var(--text2)">Wie geht es dir?</strong></div>`;
+  html += `<div class="checkin-block-label">${SPRACHE === 'en' ? 'Right now' : 'Gerade jetzt'}</div>`;
   html += skalaHTML('stimmung-' + tageszeit, t('checkin_stimmung'));
   html += skalaHTML('energie-' + tageszeit, t('checkin_energie'));
   html += skalaHTML('koerper-' + tageszeit, t('checkin_koerper'));
   html += skalaHTML('verbundenheit-' + tageszeit, t('checkin_verbundenheit'));
-  html += '<hr class="divider">';
-  html += `<div style="margin-bottom:8px"><strong style="font-size:13px;color:var(--text2)">Freitext</strong></div>`;
-  html += `<textarea id="freitext-${tageszeit}" rows="2" placeholder="${t('checkin_freitext_placeholder')}"></textarea>`;
-  html += tagesfrageHTML(tageszeit);
+  html += `
+    <button class="checkin-optional-toggle" type="button" onclick="toggleCheckinOptional('${tageszeit}')">
+      <span>${SPRACHE === 'en' ? 'Add something' : 'Etwas festhalten'}</span><span>▼</span>
+    </button>
+    <div class="checkin-optional" id="checkin-optional-${tageszeit}">
+      <div class="checkin-block-label">${t('checkin_freitext_label')}</div>
+      <textarea id="freitext-${tageszeit}" rows="2" placeholder="${t('checkin_freitext_placeholder')}"></textarea>
+      ${tagesfrageHTML(tageszeit, true)}
+    </div>
+    <div class="checkin-save-note" id="checkin-save-note-${tageszeit}"></div>`;
   container.innerHTML = html;
+  aktualisiereAlleSliderFarben(container);
+}
+
+function toggleCheckinOptional(tz, forceOpen = null) {
+  const el = document.getElementById('checkin-optional-' + tz);
+  const btn = el?.previousElementSibling;
+  if (!el) return;
+  const open = forceOpen === null ? !el.classList.contains('open') : !!forceOpen;
+  el.classList.toggle('open', open);
+  btn?.classList.toggle('open', open);
 }
 
 function ladeCheckinWerte() {
@@ -1380,10 +1705,12 @@ function ladeCheckinWerte() {
     if (row.freitext) {
       const el = document.getElementById('freitext-' + tz);
       if (el) el.value = row.freitext;
+      toggleCheckinOptional(tz, true);
     }
     if (row.tagesfrage_antwort) {
       const el = document.getElementById('tf-antwort-' + tz);
       if (el) el.value = row.tagesfrage_antwort;
+      toggleCheckinOptional(tz, true);
     }
     document.getElementById('status-' + tz).textContent = '✓';
     document.getElementById('slot-' + tz).classList.add('aktiv');
@@ -1396,6 +1723,7 @@ function setSlider(id, val) {
     el.value = val;
     const disp = document.getElementById('val-' + id);
     if (disp) disp.textContent = val;
+    aktualisiereSliderFarbe(el);
   }
 }
 
@@ -1419,7 +1747,16 @@ function speichereCheckin(tageszeit) {
   if (!checkins[heute]) checkins[heute] = {};
   checkins[heute][tageszeit] = obj;
   lsSet('checkins', checkins);
-  zeigToast(t('toast_checkin_gespeichert'));
+  const saveText = SPRACHE === 'en' ? 'Saved. This is enough for this moment.' : 'Gespeichert. Das reicht für diesen Moment.';
+  zeigToast(saveText);
+  const note = document.getElementById('checkin-save-note-' + tageszeit);
+  if (note) {
+    note.innerHTML = `
+      <div>${saveText}</div>
+      <button class="btn btn-secondary btn-sm" onclick="zeigeTab('heute')">${SPRACHE === 'en' ? 'Back to today' : 'Zurück zu Heute'}</button>
+    `;
+    note.classList.add('show');
+  }
   document.getElementById('status-' + tageszeit).textContent = '✓';
   document.getElementById('slot-' + tageszeit).classList.add('aktiv');
   ladeTagesfortschritt();
@@ -1436,6 +1773,67 @@ function getUebungen() {
   return ls('exercises', []);
 }
 
+function istAdminModus() {
+  return localStorage.getItem('admin_modus') === 'true';
+}
+
+function aktualisiereAdminUI() {
+  const admin = istAdminModus();
+  document.body.classList.toggle('admin-mode', admin);
+  const toggle = document.getElementById('toggle-admin-modus');
+  if (toggle) toggle.checked = admin;
+}
+
+function setzeAdminModus(aktiv) {
+  if (aktiv) {
+    const code = prompt(SPRACHE === 'en'
+      ? 'Release code for exercise editing:'
+      : 'Freigabecode für die Bearbeitung der Übungen:');
+    if (code !== ADMIN_CODE) {
+      zeigToast(SPRACHE === 'en' ? 'Exercise editing was not enabled.' : 'Bearbeitung wurde nicht eingeschaltet.');
+      const toggle = document.getElementById('toggle-admin-modus');
+      if (toggle) toggle.checked = false;
+      return;
+    }
+  }
+  localStorage.setItem('admin_modus', aktiv ? 'true' : 'false');
+  aktualisiereAdminUI();
+  ladeUebungen();
+}
+
+function toggleUebungenFilter(forceOpen = null) {
+  const bereich = document.getElementById('uebungen-filter-bereich');
+  const btn = document.getElementById('uebungen-filter-toggle');
+  if (!bereich) return;
+  const open = forceOpen === null ? !bereich.classList.contains('open') : !!forceOpen;
+  bereich.classList.toggle('open', open);
+  if (btn) btn.textContent = open
+    ? (SPRACHE === 'en' ? 'Hide filters' : 'Filter ausblenden')
+    : (SPRACHE === 'en' ? 'More filters' : 'Mehr filtern');
+}
+
+function setzeUebungsSchnellauswahl(name) {
+  const kat = document.getElementById('filter-kat');
+  const dauer = document.getElementById('filter-dauer');
+  const sort = document.getElementById('sort-uebungen');
+  const zeit = document.getElementById('filter-zeit');
+  if (kat) kat.value = '';
+  if (dauer) dauer.value = '';
+  if (sort) sort.value = '';
+  if (zeit) zeit.value = '';
+
+  if (name === 'kurz' && dauer) dauer.value = '3';
+  if (name === 'ruhig' && kat) kat.value = 'Stille & Meditation';
+  if (name === 'koerper' && kat) kat.value = 'Körperwahrnehmung';
+  if (name === 'schreiben' && kat) kat.value = 'Schreiben & Ausdruck';
+  if (name === 'schwierig' && kat) kat.value = 'Schwierige Momente';
+
+  document.querySelectorAll('.uebung-chip').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.quickFilter === name);
+  });
+  ladeUebungen();
+}
+
 function ladeUebungen() {
   const filterKatEl = document.getElementById('filter-kat');
   if (filterKatEl) {
@@ -1449,7 +1847,8 @@ function ladeUebungen() {
   const zeit  = document.getElementById('filter-zeit')?.value || '';
   const sort  = document.getElementById('sort-uebungen')?.value || '';
   const dauer = parseInt(document.getElementById('filter-dauer')?.value || '0');
-  let alle = getUebungen(); // alle inkl. inaktive anzeigen
+  let alle = getUebungen();
+  if (!istAdminModus()) alle = alle.filter(u => u.aktiv !== false);
   if (kat)   alle = alle.filter(u => u.kategorie === kat);
   if (zeit)  alle = alle.filter(u => !u.tageszeit || u.tageszeit.length === 0 || u.tageszeit.includes(zeit));
   if (dauer) alle = alle.filter(u => u.dauer_minuten <= dauer);
@@ -1484,7 +1883,7 @@ function renderUebungen(liste) {
   const c = document.getElementById('uebungen-container');
   const zaehler = document.getElementById('filter-zaehler');
   if (zaehler) {
-    const gesamt = getUebungen().length;
+    const gesamt = istAdminModus() ? getUebungen().length : getUebungen().filter(u => u.aktiv !== false).length;
     if (liste.length === gesamt) {
       zaehler.textContent = `${gesamt} ${t('filter_zaehler_alle')}`;
     } else {
@@ -1492,10 +1891,13 @@ function renderUebungen(liste) {
     }
   }
   if (!liste || liste.length === 0) {
+    const adminAction = istAdminModus()
+      ? `<button class="btn btn-primary btn-sm" onclick="oeffneNeueUebung()">${SPRACHE === 'en' ? 'Add exercise' : 'Übung anlegen'}</button>`
+      : '';
     c.innerHTML = leerHTML(
       SPRACHE === 'en' ? 'No exercises found.' : 'Keine Übungen gefunden.',
-      SPRACHE === 'en' ? 'Reset the filters or add a new exercise.' : 'Setze die Filter zurück oder lege eine neue Übung an.',
-      `<button class="btn btn-secondary btn-sm" onclick="resetFilters()">${t('filter_reset')}</button><button class="btn btn-primary btn-sm" onclick="oeffneNeueUebung()">${SPRACHE === 'en' ? 'Add exercise' : 'Übung anlegen'}</button>`
+      SPRACHE === 'en' ? 'Reset the filters or choose another area.' : 'Setze die Filter zurück oder wähle einen anderen Bereich.',
+      `<button class="btn btn-secondary btn-sm" onclick="resetFilters()">${t('filter_reset')}</button>${adminAction}`
     );
     return;
   }
@@ -1517,6 +1919,10 @@ function uebungCardHTML(u) {
   const istFavorit = u.favorit === true;
   const favIcon = istFavorit ? '❤️' : '🤍';
   const favTitle = istFavorit ? t('fav_entfernen') : t('fav_hinzufuegen');
+  const adminActions = istAdminModus() ? `
+        <button class="btn btn-secondary btn-sm" onclick="bearbeiteUebung('${u.id}')">✏️</button>
+        <button class="btn btn-secondary btn-sm" onclick="toggleUebungAktiv('${u.id}')" title="${toggleTitle}">${toggleIcon}</button>
+        <button class="btn btn-secondary btn-sm" onclick="loescheUebung('${u.id}')">🗑</button>` : '';
   return `
     <div class="uebung-card" id="uebung-${u.id}" style="${cardStyle}">
       <div style="display:flex;justify-content:space-between;align-items:flex-start">
@@ -1532,9 +1938,7 @@ function uebungCardHTML(u) {
       ${u.beschreibung ? `<div class="uebung-desc">${u.beschreibung}</div>` : ''}
       <div class="uebung-actions">
         ${!inaktiv ? `<button class="btn btn-primary btn-sm" onclick="starteUebungsFlow('${u.id}')">${SPRACHE === 'en' ? 'Start' : 'Starten'}</button>` : ''}
-        <button class="btn btn-secondary btn-sm" onclick="bearbeiteUebung('${u.id}')">✏️</button>
-        <button class="btn btn-secondary btn-sm" onclick="toggleUebungAktiv('${u.id}')" title="${toggleTitle}">${toggleIcon}</button>
-        <button class="btn btn-secondary btn-sm" onclick="loescheUebung('${u.id}')">🗑</button>
+        ${adminActions}
       </div>
     </div>`;
 }
@@ -1562,6 +1966,15 @@ function uebungZuHeuteHinzufuegen(exerciseId) {
   mikroFeedback('#naechster-schritt-container .naechster-schritt-card');
 }
 
+function findeHeutigenUebungsEintrag(exerciseId, tageszeit = null) {
+  const eintraege = ls('daily_exercises', {})[heuteString()] || [];
+  const passende = eintraege.filter(e =>
+    e.exerciseId === exerciseId &&
+    (!tageszeit || !e.tageszeit || e.tageszeit === tageszeit)
+  );
+  return passende.find(e => e.erledigt) || passende[0] || null;
+}
+
 function ladeHeuteUebungen() {
   const heute = heuteString();
   const dailyEx = ls('daily_exercises', {})[heute] || [];
@@ -1587,7 +2000,7 @@ function ladeHeuteUebungen() {
         <div style="display:flex;justify-content:space-between;align-items:flex-start">
           <div>
             <div class="uebung-titel" style="font-size:14px">${titel}${fb?.markiert ? ' ★' : ''}</div>
-            ${u ? `<div class="uebung-meta"><span class="badge badge-kat">${katAnzeige(u.kategorie)}</span></div>` : ''}
+        ${u ? `<div class="uebung-meta"><span class="badge badge-kat" data-kat="${katAnzeige(u.kategorie)}">${katAnzeige(u.kategorie)}</span></div>` : ''}
           </div>
           ${de.erledigt ? `<span class="badge badge-done">${t('badge_erledigt')}</span>` : ''}
         </div>
@@ -1927,6 +2340,98 @@ function sanfterWiedereinstieg() {
   zeigeTab('checkin');
   oeffneCheckin(getTageszeit());
 }
+
+function toggleMomentAuswahl(forceOpen = null) {
+  const box = document.getElementById('moment-auswahl');
+  const btn = document.querySelector('.heute-hauptbutton');
+  if (!box) return;
+  const open = forceOpen === null ? !box.classList.contains('open') : !!forceOpen;
+  box.classList.toggle('open', open);
+  box.setAttribute('aria-hidden', open ? 'false' : 'true');
+  if (btn) {
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.textContent = open
+      ? (SPRACHE === 'en' ? 'Close pause options' : 'Auswahl schließen')
+      : t('heute_moment_button');
+  }
+}
+
+function toggleHeuteMehr(forceOpen = null) {
+  const bereich = document.getElementById('heute-mehr-bereich');
+  const btn = document.getElementById('heute-mehr-toggle');
+  if (!bereich) return;
+  const open = forceOpen === null ? !bereich.classList.contains('open') : !!forceOpen;
+  bereich.classList.toggle('open', open);
+  if (btn) btn.textContent = open
+    ? t('heute_weniger_anzeigen')
+    : t('heute_mehr_anzeigen');
+}
+
+function momentAuswahlAktion(aktion) {
+  toggleMomentAuswahl(false);
+  if (aktion === 'spueren') {
+    zeigeTab('checkin');
+    oeffneCheckin(getTageszeit());
+    return;
+  }
+  if (aktion === 'schreiben') {
+    toggleHeuteMehr(true);
+    setTimeout(() => {
+      const journal = document.getElementById('journal-input');
+      journal?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      journal?.focus();
+    }, 80);
+    return;
+  }
+  if (aktion === 'uebung') {
+    zeigeTab('uebungen');
+    return;
+  }
+  if (aktion === 'halt') {
+    zeigeTab('halt');
+  }
+}
+
+function toggleMehrBereich(name) {
+  const panel = document.getElementById('mehr-panel-' + name);
+  const btn = document.querySelector(`[aria-controls="mehr-panel-${name}"]`);
+  if (!panel || !btn) return;
+
+  const sollOeffnen = !panel.classList.contains('open');
+  document.querySelectorAll('.mehr-panel').forEach(el => el.classList.remove('open'));
+  document.querySelectorAll('.mehr-row[aria-controls]').forEach(el => {
+    el.classList.remove('open');
+    el.setAttribute('aria-expanded', 'false');
+  });
+
+  panel.classList.toggle('open', sollOeffnen);
+  btn.classList.toggle('open', sollOeffnen);
+  btn.setAttribute('aria-expanded', sollOeffnen ? 'true' : 'false');
+}
+
+function toggleSettingsGroup(name) {
+  const group = document.getElementById('settings-group-' + name);
+  const panel = document.getElementById('settings-panel-' + name);
+  const btn = group?.querySelector('.settings-group-header');
+  if (!group || !panel || !btn) return;
+
+  const sollOeffnen = !panel.classList.contains('open');
+  group.classList.toggle('open', sollOeffnen);
+  panel.classList.toggle('open', sollOeffnen);
+  btn.setAttribute('aria-expanded', sollOeffnen ? 'true' : 'false');
+}
+
+function oeffneTechnikEinstellungen() {
+  zeigeTab('einstellungen');
+  const group = document.getElementById('settings-group-technik');
+  const panel = document.getElementById('settings-panel-technik');
+  const btn = group?.querySelector('.settings-group-header');
+  group?.classList.add('open');
+  panel?.classList.add('open');
+  btn?.setAttribute('aria-expanded', 'true');
+  setTimeout(() => document.getElementById('debug-status-box')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 80);
+}
+
 function toggleVorschlaegeHeute() {
   const c = document.getElementById('heute-vorschlaege-container');
   const b = document.getElementById('vorschlaege-toggle');
@@ -1986,7 +2491,7 @@ let haltState = {
 function haltCfg() {
   const de = SPRACHE !== 'en';
   return {
-    stepLabels: de ? ['Ankommen','Beobachtung','Gefühl','Bedürfnis','Schritt'] : ['Arrive','Observation','Feeling','Need','Step'],
+    stepLabels: de ? ['Ankommen','Was ist passiert?','Was ist da?','Was ist wichtig?','Nächster Schritt'] : ['Arrive','What happened?','What is here?','What matters?','Next step'],
     belastung: de ? ['sehr aufgewühlt','angespannt','traurig','wütend','erschöpft','ich weiß es nicht'] : ['very stirred up','tense','sad','angry','exhausted','I do not know'],
     gefuehle: de ? ['angespannt','traurig','wütend','ängstlich','erschöpft','überfordert','einsam','beschämt','unsicher','taub','unruhig','verletzt'] : ['tense','sad','angry','afraid','exhausted','overwhelmed','lonely','ashamed','uncertain','numb','restless','hurt'],
     beduerfnisse: de ? ['Sicherheit','Ruhe','Halt','Klarheit','Verbindung','Verständnis','Schutz','Raum','Unterstützung','Entlastung','Autonomie','Wertschätzung'] : ['Safety','Calm','Support','Clarity','Connection','Understanding','Protection','Space','Help','Relief','Autonomy','Appreciation'],
@@ -2019,7 +2524,7 @@ function haltCfg() {
       Wertschätzung: [['Anerkennen','Benenne eine Sache, die du gerade gut oder ehrlich versucht hast.'],['Bitte um Rückmeldung','Formuliere: Mir wäre wichtig zu hören, was du an meinem Beitrag gesehen hast.'],['Selbstwürdigung','Schreibe: Auch wenn es schwer ist, habe ich ...']]
     } : {},
     txt: {
-      stepWord: de ? 'Schritt' : 'Step',
+      stepWord: de ? 'von' : 'of',
       back: de ? 'Zurück' : 'Back',
       next: de ? 'Weiter' : 'Next',
       restart: de ? 'Neu beginnen' : 'Start again',
@@ -2028,8 +2533,8 @@ function haltCfg() {
       chooseStarter: de ? 'Wähle oben eine Richtung, wenn du Satzstarter möchtest. Du kannst auch frei schreiben.' : 'Choose a direction above if you want sentence starters. You can also write freely.',
       emptyObs: de ? 'Du darfst diesen Schritt auch überspringen. Wenn du etwas einträgst, hilft ein möglichst konkreter Satz.' : 'You may skip this step. If you write something, a concrete sentence helps.',
       obsOk: de ? 'Das klingt schon recht konkret. Wenn du magst, bleib bei dem, was gesagt, getan, nicht getan oder wahrnehmbar passiert ist.' : 'This already sounds fairly concrete. If you like, stay with what was said, done, not done, or observably happened.',
-      obsWarn: de ? 'Ich höre, dass dich das bewegt. Manche Wörter klingen eher nach Wirkung, Deutung oder Verstärkung. Für die Beobachtung frage: Was wurde konkret gesagt, getan, nicht getan oder was ist passiert?' : 'I hear that this affects you. Some words sound more like impact, interpretation or emphasis. For the observation ask: what was said, done, not done, or what happened?',
-      finalWarn: de ? 'Deine Beobachtung enthält vielleicht noch Wirkung, Deutung oder Verstärkung. Wenn du magst, geh noch einmal zurück und nutze die Satzstarter.' : 'Your observation may still contain impact, interpretation or emphasis. If you like, go back and use the sentence starters.',
+      obsWarn: de ? 'Ich höre, dass dich das bewegt. Für mehr Ruhe beim Sortieren hilft manchmal die Frage: Was wurde konkret gesagt, getan, nicht getan oder was ist passiert?' : 'I hear that this affects you. For more clarity, ask: what was said, done, not done, or what happened?',
+      finalWarn: de ? 'Wenn du magst, schau noch einmal auf den konkreten Moment: Was war sichtbar, hörbar oder tatsächlich passiert?' : 'If you like, look once more at the concrete moment: what was visible, audible, or actually happened?',
       journalTitle: de ? 'Was brauche ich jetzt?' : 'What do I need now?'
     }
   };
@@ -2052,11 +2557,11 @@ function renderHaltFinden() {
   const content = document.getElementById('halt-content');
   if (!stepper || !content) return;
   const cfg = haltCfg();
-  document.getElementById('halt-main-title').textContent = SPRACHE === 'en' ? 'What do I need now?' : 'Was brauche ich jetzt?';
+  document.getElementById('halt-main-title').textContent = SPRACHE === 'en' ? 'Find support' : 'Halt finden';
   document.getElementById('halt-intro').textContent = SPRACHE === 'en'
-    ? 'A moment to sort things: what happened, what am I feeling, what do I need, what might help now?'
-    : 'Ein Moment zum Sortieren: Was ist passiert, was fühle ich, was brauche ich, was könnte jetzt helfen?';
-  stepper.innerHTML = HALT_STEPS.map((id, i) => `<button class="halt-step ${i === haltStep ? 'active' : ''}" onclick="haltSetStep(${i})"><span class="halt-step-nr">${i + 1}. ${cfg.txt.stepWord}</span><span class="halt-step-label">${cfg.stepLabels[i]}</span></button>`).join('');
+    ? 'For difficult moments: first arrive, then sort one thing at a time.'
+    : 'Für schwierige Momente: erst ankommen, dann Schritt für Schritt sortieren.';
+  stepper.innerHTML = HALT_STEPS.map((id, i) => `<button class="halt-step ${i === haltStep ? 'active' : ''}" onclick="haltSetStep(${i})"><span class="halt-step-nr">${i + 1} ${cfg.txt.stepWord} ${HALT_STEPS.length}</span><span class="halt-step-label">${cfg.stepLabels[i]}</span></button>`).join('');
   const id = HALT_STEPS[haltStep];
   if (id === 'ankommen') content.innerHTML = haltRenderAnkommen(cfg);
   if (id === 'beobachtung') content.innerHTML = haltRenderBeobachtung(cfg);
@@ -2068,8 +2573,8 @@ function renderHaltFinden() {
 function haltRenderAnkommen(cfg) {
   const de = SPRACHE !== 'en';
   return `<div class="halt-title">${de ? 'Einen Moment Halt finden' : 'Find a moment of support'}</div>
-    <div class="halt-intro">${de ? 'Du musst gerade nichts perfekt verstehen. Wir schauen nur auf den nächsten kleinen Schritt.' : 'You do not need to understand everything perfectly. We only look for the next small step.'}</div>
-    <div class="halt-note">${de ? 'Wenn du sehr aufgewühlt bist: Spüre beide Füße am Boden. Schau dich im Raum um. Benenne innerlich drei Dinge, die du siehst.' : 'If you feel very stirred up: feel both feet on the floor. Look around the room. Silently name three things you see.'}</div>
+    <div class="halt-intro">${de ? 'Bevor du sortierst: einmal ankommen. Ein Atemzug reicht als Anfang.' : 'Before sorting: arrive for a moment. One breath is enough to begin.'}</div>
+    <div class="halt-note halt-grounding">${de ? 'Spüre beide Füße am Boden. Atme einmal langsam aus. Schau dich im Raum um und benenne innerlich drei Dinge, die du siehst.' : 'Feel both feet on the floor. Exhale slowly once. Look around the room and silently name three things you see.'}</div>
     <div class="halt-chips">${cfg.belastung.map(x => haltChip(x, haltState.belastung === x, 'belastung')).join('')}</div>
     ${haltActions(false, true)}`;
 }
@@ -2078,7 +2583,7 @@ function haltRenderBeobachtung(cfg) {
   const de = SPRACHE !== 'en';
   const kat = cfg.beobachtungKategorien.find(k => k.id === haltState.beobachtungsKategorie);
   return `<div class="halt-title">${de ? 'Was ist passiert?' : 'What happened?'}</div>
-    <div class="halt-intro">${de ? 'Vielleicht beschreibt dein erster Satz schon, wie es auf dich gewirkt hat. Für die Beobachtung hilft: Was wurde gesagt, getan, nicht getan oder was ist passiert?' : 'Maybe your first sentence already describes how it affected you. For the observation, ask: what was said, done, not done, or what happened?'}</div>
+    <div class="halt-intro">${de ? 'Vielleicht beschreibt dein erster Satz schon, wie es auf dich gewirkt hat. Zum Sortieren hilft: Was wurde gesagt, getan, nicht getan oder was ist passiert?' : 'Maybe your first sentence already describes how it affected you. To sort it, ask: what was said, done, not done, or what happened?'}</div>
     <div class="halt-chips">${cfg.beobachtungKategorien.map(k => haltChip(k.label, haltState.beobachtungsKategorie === k.id, 'beobachtungsKategorie', k.id)).join('')}</div>
     ${kat ? `<div class="halt-note"><strong>${escapeHtml(kat.label)}</strong><br>${escapeHtml(kat.hinweis)}<div class="halt-starter-list">${kat.starter.map(s => `<button class="halt-starter" onclick="haltSetBeobachtung('${escapeHtml(s)}')">${escapeHtml(s)}</button>`).join('')}</div></div>` : `<div class="halt-note">${cfg.txt.chooseStarter}</div>`}
     <textarea id="halt-beobachtung" rows="3" oninput="haltState.beobachtung=this.value;haltUpdateObsHinweis()" placeholder="${de ? 'Beispiel: Ich habe um 10 Uhr geschrieben und bisher keine Antwort bekommen.' : 'Example: I wrote at 10 a.m. and have not received a reply yet.'}">${escapeHtml(haltState.beobachtung)}</textarea>
@@ -2088,7 +2593,7 @@ function haltRenderBeobachtung(cfg) {
 
 function haltRenderGefuehl(cfg) {
   const de = SPRACHE !== 'en';
-  return `<div class="halt-title">${de ? 'Was fühlst du?' : 'What are you feeling?'}</div>
+  return `<div class="halt-title">${de ? 'Was ist da in dir?' : 'What is here in you?'}</div>
     <div class="halt-intro">${de ? 'Wähle ein oder mehrere Gefühle. Es muss nicht exakt sein. Annäherung reicht.' : 'Choose one or more feelings. It does not have to be exact. Approximation is enough.'}</div>
     <div class="halt-chips">${cfg.gefuehle.map(x => haltChip(x, haltState.gefuehle.includes(x), 'gefuehle')).join('')}</div>
     <div class="halt-note">${de ? 'Danke. Das ergibt Sinn, dass sich gerade etwas zeigt. Wir müssen es nicht wegmachen, nur verstehen, was wichtig ist.' : 'Thank you. It makes sense that something is showing up. We do not have to remove it, only understand what matters.'}</div>
@@ -2097,19 +2602,19 @@ function haltRenderGefuehl(cfg) {
 
 function haltRenderBeduerfnis(cfg) {
   const de = SPRACHE !== 'en';
-  return `<div class="halt-title">${de ? 'Was könnte darunter wichtig sein?' : 'What might matter underneath?'}</div>
-    <div class="halt-intro">${de ? 'Ein Bedürfnis ist kein Vorwurf und keine Strategie. Es beschreibt, was für dich gerade Bedeutung hat.' : 'A need is not a blame and not a strategy. It describes what matters to you right now.'}</div>
-    <div class="halt-chips">${cfg.beduerfnisse.map(x => haltChip(x, haltState.beduerfnisse.includes(x), 'beduerfnisse')).join('')}</div>
-    <div class="halt-note">${de ? 'Wenn dieses Bedürfnis wichtig ist, muss es nicht sofort perfekt erfüllt werden. Ein kleiner Schritt zählt.' : 'If this need matters, it does not have to be met perfectly right away. One small step counts.'}</div>
+  return `<div class="halt-title">${de ? 'Was ist dir gerade wichtig?' : 'What matters to you right now?'}</div>
+    <div class="halt-intro">${de ? 'Hier geht es nicht um Schuld oder Lösung. Es geht darum, was gerade Bedeutung hat.' : 'This is not about blame or solving everything. It is about what matters right now.'}</div>
+    <div class="halt-chips">${cfg.beduerfnisse.map(x => haltChip(haltBeduerfnisAnzeige(x), haltState.beduerfnisse.includes(x), 'beduerfnisse', x)).join('')}</div>
+    <div class="halt-note">${de ? 'Was wichtig ist, muss nicht sofort perfekt erfüllt werden. Ein kleiner Schritt zählt.' : 'What matters does not have to be met perfectly right away. One small step counts.'}</div>
     ${haltActions(true, true)}`;
 }
 
 function haltRenderHandlung(cfg) {
   const de = SPRACHE !== 'en';
   const optionen = haltHandlungsOptionen(cfg);
-  const warn = haltEnthaeltDeutung() ? `<div class="halt-note warn"><strong>${de ? 'Beobachtungs-Check:' : 'Observation check:'}</strong><br>${cfg.txt.finalWarn}</div>` : '';
+  const warn = haltEnthaeltDeutung() ? `<div class="halt-note warn"><strong>${de ? 'Klarheits-Check:' : 'Clarity check:'}</strong><br>${cfg.txt.finalWarn}</div>` : '';
   return `<div class="halt-title">${de ? 'Was wäre jetzt ein kleiner nächster Schritt?' : 'What could be one small next step?'}</div>
-    <div class="halt-intro">${de ? 'Wähle eine kleine Handlung oder Bitte. Sie soll machbar sein, nicht perfekt.' : 'Choose a small action or request. It should be doable, not perfect.'}</div>
+    <div class="halt-intro">${de ? 'Wähle eine kleine Handlung, Bitte oder Grenze. Sie soll machbar sein, nicht perfekt.' : 'Choose a small action, request or boundary. It should be doable, not perfect.'}</div>
     ${warn}
     <div class="halt-action-grid">${optionen.map(([titel, text]) => {
       const value = `${titel}: ${text}`;
@@ -2150,9 +2655,9 @@ function haltJournalText(cfg = haltCfg()) {
   return [
     cfg.txt.journalTitle,
     '',
-    `${SPRACHE === 'en' ? 'Observation' : 'Beobachtung'}: ${haltState.beobachtung || '...'}`,
+    `${SPRACHE === 'en' ? 'What happened' : 'Was passiert ist'}: ${haltState.beobachtung || '...'}`,
     `${SPRACHE === 'en' ? 'Feeling' : 'Gefühl'}: ${haltState.gefuehle.join(', ') || '...'}`,
-    `${SPRACHE === 'en' ? 'Need' : 'Bedürfnis'}: ${haltState.beduerfnisse.join(', ') || '...'}`,
+    `${SPRACHE === 'en' ? 'What matters' : 'Was wichtig ist'}: ${haltState.beduerfnisse.map(haltBeduerfnisAnzeige).join(', ') || '...'}`,
     `${SPRACHE === 'en' ? 'Next step' : 'Nächster Schritt'}: ${haltState.handlung || '...'}`
   ].join('\n');
 }
@@ -2260,10 +2765,10 @@ function getSmartKontext() {
   const letzter = getLetzterCheckinHeute();
   if (!letzter) return { typ: 'neutral', grund: SPRACHE === 'en' ? 'Selected from the current time of day. A check-in will make suggestions more precise.' : 'Aus der aktuellen Tageszeit gewählt. Mit einem Check-in werden die Vorschläge genauer.' };
   const stressSignal = Math.max(0, 6 - (letzter.koerper || 5)) + Math.max(0, 6 - (letzter.stimmung || 5));
-  if ((letzter.energie || 5) <= 3) return { typ: 'aktivierung', grund: SPRACHE === 'en' ? 'Your energy is low. The app suggests a gentle activating exercise.' : 'Deine Energie ist niedrig. Deshalb wird eine sanft aktivierende Übung vorgeschlagen.' };
-  if (stressSignal >= 4 || (letzter.koerper || 5) <= 3) return { typ: 'regulation', grund: SPRACHE === 'en' ? 'Your values point to tension. The app suggests regulation first.' : 'Deine Werte deuten auf Anspannung. Deshalb bekommt Regulation Vorrang.' };
-  if ((letzter.verbundenheit || 5) <= 3) return { typ: 'verbindung', grund: SPRACHE === 'en' ? 'Connection is low today. The app suggests contact or self-compassion.' : 'Verbundenheit ist heute niedrig. Deshalb passt Kontakt oder Selbstmitgefühl.' };
-  if ((letzter.stimmung || 5) >= 7 && (letzter.energie || 5) >= 6) return { typ: 'ressource', grund: SPRACHE === 'en' ? 'Your check-in looks stable. The app suggests a resource-oriented exercise.' : 'Dein Check-in wirkt stabil. Deshalb passt eine ressourcenorientierte Übung.' };
+  if ((letzter.energie || 5) <= 3) return { typ: 'aktivierung', grund: SPRACHE === 'en' ? 'Your strength is low. The app suggests a gentle activating exercise.' : 'Du hast gerade wenig Kraft. Deshalb passt eine sanft aktivierende Übung.' };
+  if (stressSignal >= 4 || (letzter.koerper || 5) <= 3) return { typ: 'regulation', grund: SPRACHE === 'en' ? 'Your check-in points to tension. A settling exercise fits first.' : 'Dein Check-in deutet auf Anspannung. Deshalb passt zuerst etwas Beruhigendes.' };
+  if ((letzter.verbundenheit || 5) <= 3) return { typ: 'verbindung', grund: SPRACHE === 'en' ? 'Being here feels hard right now. The app suggests something grounding or gentle.' : 'Gerade hier zu sein wirkt schwer. Deshalb passt etwas Erdendes oder Sanftes.' };
+  if ((letzter.stimmung || 5) >= 7 && (letzter.energie || 5) >= 6) return { typ: 'ressource', grund: SPRACHE === 'en' ? 'Your check-in looks stable. Something strengthening fits well.' : 'Dein Check-in wirkt stabil. Deshalb passt etwas Stärkendes.' };
   return { typ: 'neutral', grund: SPRACHE === 'en' ? 'Balanced suggestion based on your latest check-in.' : 'Ausgewogener Vorschlag auf Basis deines letzten Check-ins.' };
 }
 function scoreUebungFuerKontext(u, kontext) {
@@ -2588,6 +3093,7 @@ function holeOderErstelleVorschlagLokal(tageszeit, alleUebungen) {
 
 
 function setzeUebungenZurueck() {
+  if (!istAdminModus()) return;
   const msg = SPRACHE === 'en'
     ? 'This will reset all exercises to the current standard pool.\n\nYour personal data (check-ins, journal, streaks) will be kept.\n\nContinue?'
     : 'Dadurch werden alle Übungen auf den aktuellen Standard-Pool zurückgesetzt.\n\nDeine persönlichen Daten (Check-ins, Journal, Streaks) bleiben erhalten.\n\nFortfahren?';
@@ -2859,21 +3365,38 @@ function ladeVorschlaege() {
     const u = vorschlag?.uebung || null;
     const kommentar = vorschlag?.kommentar || '';
     const isAktiv = aktuelletageszeit === key;
+    const heutigerEintrag = u ? findeHeutigenUebungsEintrag(u.id, key) : null;
+    const istErledigt = !!heutigerEintrag?.erledigt;
+    const titelEsc = u ? escapeHtml(u.titel) : '';
 
     if (isAktiv && u) {
+      const statusHTML = istErledigt
+        ? `<div class="uebung-jetzt-status done">
+             <span class="uebung-jetzt-status-mark">✓</span>
+             <span>
+               <strong>${SPRACHE === 'en' ? 'Done today' : 'Heute gemacht'}</strong>
+               <small>${SPRACHE === 'en' ? 'You can still add a note or rating.' : 'Du kannst noch eine Notiz oder Bewertung ergänzen.'}</small>
+             </span>
+           </div>`
+        : '';
+      const actionsHTML = istErledigt
+        ? `<button class="btn btn-secondary" onclick="oeffreFeedback('${heutigerEintrag.id}', '${titelEsc}')">${SPRACHE === 'en' ? 'Add note / rating' : 'Notiz oder Bewertung ergänzen'}</button>
+           <button class="btn btn-secondary" onclick="neueUebungVorschlagen('${key}')">${SPRACHE === 'en' ? 'Another one' : 'Andere Übung'}</button>`
+        : `<button class="btn btn-primary" onclick="starteUebungsFlow('${u.id}', ${heutigerEintrag ? `'${heutigerEintrag.id}'` : 'null'})">${SPRACHE === 'en' ? 'Start exercise' : 'Übung starten'}</button>
+           <button class="btn btn-secondary" onclick="neueUebungVorschlagen('${key}')">${SPRACHE === 'en' ? 'Another one' : 'Andere Übung'}</button>`;
       jetztHTML = `
-        <div class="uebung-jetzt-card">
+        <div class="uebung-jetzt-card${istErledigt ? ' uebung-jetzt-done' : ''}">
           <div class="uebung-jetzt-label">${label} ${t('uebung_jetzt_label')}</div>
           <div class="uebung-jetzt-titel">${u.titel}</div>
           <div class="uebung-jetzt-meta">
             <span class="badge badge-kat" data-kat="${katAnzeige(u.kategorie)}">${katAnzeige(u.kategorie)}</span>
             <span>⏱ ${u.dauer_minuten} Min</span>
           </div>
+          ${statusHTML}
           ${u.beschreibung ? `<div class="uebung-jetzt-desc">${u.beschreibung}</div>` : ''}
           ${smartHinweisHTML(vorschlag.smartReason)}
           <div class="uebung-jetzt-actions">
-            <button class="btn btn-primary" onclick="starteUebungsFlow('${u.id}')">${SPRACHE === 'en' ? 'Start exercise' : 'Übung starten'}</button>
-            <button class="btn btn-secondary" onclick="neueUebungVorschlagen('${key}')">${SPRACHE === 'en' ? 'Another one' : 'Andere Übung'}</button>
+            ${actionsHTML}
           </div>
         </div>`;
     }
@@ -2908,7 +3431,11 @@ function ladeVorschlaege() {
           </button>
         </div>
         <div class="uebung-actions" style="margin-top:10px">
-          <button class="btn btn-primary btn-sm" onclick="uebungZuHeuteHinzufuegen('${u.id}')">${t('btn_heute_planen')}</button>
+          ${heutigerEintrag?.erledigt
+            ? `<span class="badge badge-done">${SPRACHE === 'en' ? 'Done today' : 'Heute gemacht'}</span><button class="btn btn-secondary btn-sm" onclick="oeffreFeedback('${heutigerEintrag.id}', '${titelEsc}')">${SPRACHE === 'en' ? 'Add note / rating' : 'Notiz oder Bewertung ergänzen'}</button>`
+            : heutigerEintrag
+              ? `<button class="btn btn-primary btn-sm" onclick="starteUebungsFlow('${u.id}', '${heutigerEintrag.id}')">${SPRACHE === 'en' ? 'Continue' : 'Weiter'}</button>`
+              : `<button class="btn btn-primary btn-sm" onclick="uebungZuHeuteHinzufuegen('${u.id}')">${t('btn_heute_planen')}</button>`}
         </div>
       </div>` : `<div class="empty-state" style="padding:12px 0">${t('keine_uebung')}</div>`;
 
@@ -3003,6 +3530,7 @@ function flowAbschliessen() {
   ladeHeuteUebungen();
   ladeTagesfortschritt();
   ladeNaechsterSchritt();
+  ladeVorschlaege();
   mikroFeedback('#tagesfortschritt-container .tagesfortschritt-card');
   mikroFeedback('#heute-uebungen-container .card');
   aktualisiereVorschlaegeReduktion();
@@ -3012,6 +3540,7 @@ function flowAbschliessen() {
 // ÜBUNG MODAL
 // ============================================================
 function oeffneNeueUebung() {
+  if (!istAdminModus()) return;
   document.getElementById('uebung-edit-id').value = '';
   document.getElementById('uebung-modal-titel').textContent = t('modal_neue_uebung');
   document.getElementById('uebung-titel-input').value = '';
@@ -3025,6 +3554,7 @@ function oeffneNeueUebung() {
 }
 
 function bearbeiteUebung(id) {
+  if (!istAdminModus()) return;
   const alle = getUebungen();
   const u = alle.find(x => x.id === id);
   if (!u) return;
@@ -3047,6 +3577,7 @@ function schliesseUebungModal() {
 }
 
 function speichereUebung() {
+  if (!istAdminModus()) return;
   const id = document.getElementById('uebung-edit-id').value;
   const tageszeiten = [...document.querySelectorAll('.tz-check:checked')].map(c => c.value);
   const katInput = document.getElementById('uebung-kat-input');
@@ -3083,6 +3614,7 @@ function speichereUebung() {
 }
 
 function loescheUebung(id) {
+  if (!istAdminModus()) return;
   if (!confirm(t('confirm_uebung_loeschen'))) return;
   let alle = getUebungen();
   alle = alle.map(u => u.id === id ? { ...u, aktiv: false } : u);
@@ -3092,6 +3624,7 @@ function loescheUebung(id) {
 }
 
 function toggleUebungAktiv(id) {
+  if (!istAdminModus()) return;
   let alle = getUebungen();
   const idx = alle.findIndex(u => u.id === id);
   if (idx === -1) return;
@@ -3122,6 +3655,9 @@ function resetFilters() {
   if (fz) fz.value = '';
   if (fd) fd.value = '';
   if (so) so.value = '';
+  document.querySelectorAll('.uebung-chip').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.quickFilter === 'alle');
+  });
   ladeUebungen();
   zeigToast(t('toast_filter_reset'));
 }
@@ -3150,6 +3686,7 @@ function ladeEinstellungenUI() {
   const aaEl = document.getElementById('toggle-auto-akk');
   if (tfEl) tfEl.checked = tf;
   if (aaEl) aaEl.checked = autoAkk;
+  aktualisiereAdminUI();
 
   // Versionsanzeige
   renderVersionsAnzeige();
@@ -3192,6 +3729,7 @@ function importiereStandardPoolStill() {
 }
 
 function importiereStandardPool() {
+  if (!istAdminModus()) return;
   if (!confirm(t('confirm_pool_import'))) return;
   const alle = getUebungen();
   let neu = 0;
@@ -3220,8 +3758,10 @@ function ladeAppTitel() {
 }
 
 function oeffneTitelEdit() {
+  if (!istAdminModus()) return;
   const titel     = localStorage.getItem('app_titel')      || 'Innenpause';
   const untertitel = localStorage.getItem('app_untertitel') || t('app_untertitel_default');
+  if (!document.getElementById('app-titel-input') || !document.getElementById('app-titel-edit-bereich')) return;
   document.getElementById('app-titel-input').value     = titel;
   document.getElementById('app-untertitel-input').value = untertitel;
   document.querySelector('.app-titel-bereich').style.display  = 'none';
@@ -3231,10 +3771,12 @@ function oeffneTitelEdit() {
 
 function schliesseTitelEdit() {
   document.querySelector('.app-titel-bereich').style.display  = 'flex';
-  document.getElementById('app-titel-edit-bereich').style.display = 'none';
+  const edit = document.getElementById('app-titel-edit-bereich');
+  if (edit) edit.style.display = 'none';
 }
 
 function speichereAppTitel() {
+  if (!istAdminModus()) return;
   const titel     = document.getElementById('app-titel-input').value.trim()     || 'Innenpause';
   const untertitel = document.getElementById('app-untertitel-input').value.trim() || t('app_untertitel_default');
   localStorage.setItem('app_titel',     titel);
@@ -3340,7 +3882,7 @@ function ladeVerlauf() {
       if (tz === 'morgen' && ci.schlaf_qualitaet) {
         html += `<div class="checkin-zeile"><span>😴 Schlaf</span><div style="display:flex;gap:8px;align-items:center"><div class="checkin-balken"><div class="checkin-balken-fill" style="width:${ci.schlaf_qualitaet*10}%"></div></div><span>${ci.schlaf_qualitaet}/10</span></div></div>`;
       }
-      [['stimmung','Stimmung'],['energie','Energie'],['koerper','Körper'],['verbundenheit','Verbundenheit']].forEach(([k,l]) => {
+      [['stimmung','Stimmung'],['energie','Kraft'],['koerper','Körper'],['verbundenheit','Hier sein']].forEach(([k,l]) => {
         if (ci[k] != null) html += `<div class="checkin-zeile"><span>${l}</span><div style="display:flex;gap:8px;align-items:center"><div class="checkin-balken"><div class="checkin-balken-fill" style="width:${ci[k]*10}%"></div></div><span>${ci[k]}/10</span></div></div>`;
       });
       if (ci.freitext) html += `<div style="margin-top:8px;font-size:13px;color:var(--text2);font-style:italic">"${ci.freitext}"</div>`;
@@ -3358,7 +3900,7 @@ function ladeVerlauf() {
       const fb = de.feedback;
       html += `<div class="card">
         <div class="uebung-titel" style="font-size:14px">${titel}</div>
-        ${u ? `<div class="uebung-meta"><span class="badge badge-kat" data-kat="${u.kategorie}">${u.kategorie}</span></div>` : ''}
+        ${u ? `<div class="uebung-meta"><span class="badge badge-kat" data-kat="${katAnzeige(u.kategorie)}">${katAnzeige(u.kategorie)}</span></div>` : ''}
         ${de.erledigt ? `<span class="badge badge-done">${t('badge_erledigt')}</span>` : `<span style="font-size:12px;color:var(--text3)">${t('nicht_erledigt')}</span>`}
         ${fb ? `<div style="margin-top:8px;font-size:13px">
           ${fb.sterne ? '★'.repeat(fb.sterne) + '<span style="opacity:0.2">★</span>'.repeat(5-fb.sterne) : ''}
@@ -3924,12 +4466,61 @@ function initialisiereSprache() {
 
   // Tabs
   const tabBtns = document.querySelectorAll('.tab-btn');
-  const tabKeys = ['tab_heute','tab_halt','tab_checkin','tab_uebungen','tab_verlauf','tab_einst'];
+  const tabKeys = ['tab_heute','tab_checkin','tab_uebungen','tab_mehr'];
   tabBtns.forEach((btn, i) => {
     if (tabKeys[i]) {
       const label = btn.querySelector('.tab-label');
       if (label) label.textContent = t(tabKeys[i]);
     }
+  });
+
+  const mehrTexte = {
+    'mehr-section-title': SPRACHE === 'en' ? 'More' : 'Mehr',
+    'mehr-verlauf-title': SPRACHE === 'en' ? 'History' : 'Verlauf',
+    'mehr-verlauf-sub': SPRACHE === 'en' ? 'View entries and changes over time' : 'Einträge und Entwicklung ansehen',
+    'mehr-verlauf-panel-text': SPRACHE === 'en' ? 'Here you can find your entries and a calm look at the last few days.' : 'Hier findest du deine Einträge und einen ruhigen Blick auf die letzten Tage.',
+    'mehr-verlauf-open': SPRACHE === 'en' ? 'Open history' : 'Verlauf öffnen',
+    'mehr-einstellungen-title': SPRACHE === 'en' ? 'Settings' : 'Einstellungen',
+    'mehr-einstellungen-sub': SPRACHE === 'en' ? 'Adjust display, data and app behaviour' : 'Anzeige, Daten und App-Verhalten anpassen',
+    'mehr-einstellungen-panel-text': SPRACHE === 'en' ? 'Everything that concerns the app in the background: display, times, data and language.' : 'Alles, was die App im Hintergrund betrifft: Anzeige, Zeiten, Daten und Sprache.',
+    'mehr-einstellungen-open': SPRACHE === 'en' ? 'Open settings' : 'Einstellungen öffnen',
+    'mehr-hilfe-title': SPRACHE === 'en' ? 'Help' : 'Hilfe',
+    'mehr-hilfe-sub': SPRACHE === 'en' ? 'Short guidance and answers' : 'Kurze Orientierung und Antworten',
+    'mehr-hilfe-panel-text': SPRACHE === 'en' ? 'If you would like to briefly check where to find what.' : 'Wenn du kurz nachlesen möchtest, was wo zu finden ist.',
+    'mehr-hilfe-open': SPRACHE === 'en' ? 'Open help' : 'Hilfe öffnen',
+    'mehr-selten-title': SPRACHE === 'en' ? 'Rarely needed' : 'Selten gebraucht',
+    'mehr-technik-title': SPRACHE === 'en' ? 'Technical check' : 'Technik-Check',
+    'mehr-technik-sub': SPRACHE === 'en' ? 'Check version, storage and app cache' : 'Version, Speicher und App-Cache prüfen',
+    'mehr-technik-panel-text': SPRACHE === 'en' ? 'Only if something is stuck or you want to check the app version.' : 'Nur wenn etwas hakt oder du die App-Version prüfen möchtest.',
+    'mehr-technik-open': SPRACHE === 'en' ? 'Open technical check' : 'Technik-Check öffnen',
+  };
+  Object.entries(mehrTexte).forEach(([id, text]) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+  });
+
+  const settingsTexte = {
+    'settings-anzeige-title': SPRACHE === 'en' ? 'Display' : 'Anzeige',
+    'settings-anzeige-sub': SPRACHE === 'en' ? 'What you notice directly in daily use' : 'Was du im Alltag direkt bemerkst',
+    'settings-uebungen-title': SPRACHE === 'en' ? 'Exercises' : 'Übungen',
+    'settings-uebungen-sub': SPRACHE === 'en' ? 'Exercise editing in the background' : 'Auswahl und Bearbeitung im Hintergrund',
+    'settings-daten-title': SPRACHE === 'en' ? 'Save data' : 'Daten sichern',
+    'settings-daten-sub': SPRACHE === 'en' ? 'Keep a copy of your entries' : 'Eine Kopie deiner Einträge behalten',
+    'settings-daten-section-label': SPRACHE === 'en' ? 'Save data' : 'Daten sichern',
+    'settings-technik-title': SPRACHE === 'en' ? 'If something is stuck' : 'Wenn etwas hakt',
+    'settings-technik-sub': SPRACHE === 'en' ? 'For rare cases' : 'Nur für seltene Fälle',
+    'label-sicherung-speichern': SPRACHE === 'en' ? 'Save backup' : 'Sicherung speichern',
+    'sub-sicherung-speichern': SPRACHE === 'en' ? 'Create a file with your entries' : 'Eine Datei mit deinen Einträgen erstellen',
+    'btn-sicherung-speichern': SPRACHE === 'en' ? 'Save' : 'Speichern',
+    'label-sicherung-laden': SPRACHE === 'en' ? 'Load backup' : 'Sicherung laden',
+    'sub-sicherung-laden': SPRACHE === 'en' ? 'Restore entries from a backup file' : 'Einträge aus einer Sicherungsdatei zurückholen',
+    'btn-sicherung-laden': SPRACHE === 'en' ? 'Load' : 'Laden',
+    'label-daten-loeschen': SPRACHE === 'en' ? 'Start over and delete data' : 'Neu anfangen und Daten löschen',
+    'sub-daten-loeschen': SPRACHE === 'en' ? 'Only use this if you really want to remove everything from this device. A safety question follows.' : 'Nur öffnen, wenn du wirklich alles von diesem Gerät entfernen möchtest. Es folgt noch eine Sicherheitsfrage.',
+  };
+  Object.entries(settingsTexte).forEach(([id, text]) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
   });
 
   // Heute-Tab Section-Labels
@@ -3938,6 +4529,8 @@ function initialisiereSprache() {
     const map = {
       'Übung jetzt': t('section_uebung_jetzt'),
       'Exercise now': t('section_uebung_jetzt'),
+      'Für jetzt vorgeschlagen': t('section_uebung_jetzt'),
+      'Suggested for now': t('section_uebung_jetzt'),
       'Halt finden': t('tab_halt'),
       'Find support': t('tab_halt'),
       'Übungsvorschläge': t('section_vorschlaege'),
@@ -3954,18 +4547,48 @@ function initialisiereSprache() {
       'Display': t('einst_anzeige'),
       'Tageszeiten-Grenzen': t('einst_tz_grenzen'),
       'Time-of-day boundaries': t('einst_tz_grenzen'),
-      'Übungspool': t('einst_pool'),
-      'Exercise pool': t('einst_pool'),
+      'Übungsauswahl': SPRACHE === 'en' ? 'Exercise selection' : 'Übungsauswahl',
+      'Exercise selection': SPRACHE === 'en' ? 'Exercise selection' : 'Übungsauswahl',
+      'Übungspool': SPRACHE === 'en' ? 'Exercise selection' : 'Übungsauswahl',
+      'Exercise pool': SPRACHE === 'en' ? 'Exercise selection' : 'Übungsauswahl',
       'Daten': t('einst_daten'),
       'Data': t('einst_daten'),
-      'Synchronisierung': t('einst_sync'),
-      'Synchronisation': t('einst_sync'),
-      'Lizenz': t('einst_lizenz'),
-      'Licence': t('einst_lizenz'),
-      'Version': t('einst_version'),
+      'Kopie auf mehreren Geräten': SPRACHE === 'en' ? 'Copy on several devices' : 'Kopie auf mehreren Geräten',
+      'Copy on several devices': SPRACHE === 'en' ? 'Copy on several devices' : 'Kopie auf mehreren Geräten',
+      'Synchronisierung': SPRACHE === 'en' ? 'Copy on several devices' : 'Kopie auf mehreren Geräten',
+      'Synchronisation': SPRACHE === 'en' ? 'Copy on several devices' : 'Kopie auf mehreren Geräten',
+      'Zugang': SPRACHE === 'en' ? 'Access' : 'Zugang',
+      'Access': SPRACHE === 'en' ? 'Access' : 'Zugang',
+      'Lizenz': SPRACHE === 'en' ? 'Access' : 'Zugang',
+      'Licence': SPRACHE === 'en' ? 'Access' : 'Zugang',
+      'App-Stand': SPRACHE === 'en' ? 'App version' : 'App-Stand',
+      'Version': SPRACHE === 'en' ? 'App version' : 'App-Stand',
     };
     if (map[txt]) el.textContent = map[txt];
   });
+
+  // Heute-Einstieg
+  const heuteTitel = document.querySelector('.heute-einstieg-title');
+  if (heuteTitel) heuteTitel.textContent = t('heute_moment_titel');
+  const heuteHauptbutton = document.querySelector('.heute-hauptbutton');
+  if (heuteHauptbutton) heuteHauptbutton.textContent = t('heute_moment_button');
+  const heuteHaltLink = document.querySelector('.heute-halt-link');
+  if (heuteHaltLink) heuteHaltLink.textContent = t('heute_halt_link');
+  const headerHalt = document.querySelector('.header-halt-btn');
+  if (headerHalt) {
+    headerHalt.textContent = t('tab_halt');
+    headerHalt.title = t('tab_halt');
+  }
+  const momentTitel = document.querySelector('.moment-auswahl-title');
+  if (momentTitel) momentTitel.textContent = t('heute_auswahl_titel');
+  const momentOptionen = document.querySelectorAll('.moment-option');
+  const momentKeys = ['heute_option_spueren', 'heute_option_schreiben', 'heute_option_uebung', 'heute_option_halt'];
+  momentOptionen.forEach((btn, i) => { if (momentKeys[i]) btn.textContent = t(momentKeys[i]); });
+  const heuteMehrBtn = document.getElementById('heute-mehr-toggle');
+  const heuteMehrBereich = document.getElementById('heute-mehr-bereich');
+  if (heuteMehrBtn) heuteMehrBtn.textContent = heuteMehrBereich?.classList.contains('open')
+    ? t('heute_weniger_anzeigen')
+    : t('heute_mehr_anzeigen');
 
   // Journal
   const journalInput = document.getElementById('journal-input');
@@ -4020,7 +4643,7 @@ function initialisiereSprache() {
     const katDE = ['Atem','Körperwahrnehmung','Stimme & Singen','GfK & Bedürfnisse','Selbstmitgefühl','Polyvagal & Regulation','Bewegung & Rhythmus','Stille & Meditation','Kontakt & Verbindung','Energie & Lebendigkeit','Ressourcen & Möglichkeiten','Schreiben & Ausdruck','Schwierige Momente'];
     const katEN = t('kategorien');
     for (let i = 0; i < katDE.length; i++) {
-      if (opts[i+1]) opts[i+1].textContent = SPRACHE === 'en' ? katEN[i] : katDE[i];
+      if (opts[i+1]) opts[i+1].textContent = SPRACHE === 'en' ? katEN[i] : katAnzeige(katDE[i]);
     }
   }
   const filterZeit = document.getElementById('filter-zeit');
@@ -4052,6 +4675,22 @@ function initialisiereSprache() {
   }
   const resetBtn = document.querySelector('[onclick="resetFilters()"]');
   if (resetBtn) resetBtn.textContent = t('filter_reset');
+  const filterToggle = document.getElementById('uebungen-filter-toggle');
+  if (filterToggle) filterToggle.textContent = document.getElementById('uebungen-filter-bereich')?.classList.contains('open')
+    ? (SPRACHE === 'en' ? 'Hide filters' : 'Filter ausblenden')
+    : (SPRACHE === 'en' ? 'More filters' : 'Mehr filtern');
+  const quickLabels = {
+    alle: SPRACHE === 'en' ? 'All' : 'Alle',
+    kurz: SPRACHE === 'en' ? 'Short' : 'Kurz',
+    ruhig: SPRACHE === 'en' ? 'Calm' : 'Ruhig',
+    koerper: SPRACHE === 'en' ? 'Body' : 'Körper',
+    schreiben: SPRACHE === 'en' ? 'Writing' : 'Schreiben',
+    schwierig: SPRACHE === 'en' ? 'Difficult moment' : 'Schwieriger Moment',
+  };
+  document.querySelectorAll('.uebung-chip').forEach(btn => {
+    const key = btn.dataset.quickFilter;
+    if (quickLabels[key]) btn.textContent = quickLabels[key];
+  });
   const neueUebungBtn = document.querySelector('[onclick="oeffneNeueUebung()"]');
   if (neueUebungBtn) neueUebungBtn.textContent = t('btn_neue_uebung');
 
@@ -4223,16 +4862,16 @@ function initialisiereSprache() {
   // Sync
   document.querySelectorAll('#content-einstellungen .setting-label').forEach(el => {
     const txt = el.textContent.trim();
-    if (txt === 'Sync-Datei' || txt === 'Sync file') el.textContent = t('einst_sync_datei');
-    if (txt === 'Jetzt synchronisieren' || txt === 'Sync now') el.textContent = t('einst_sync_jetzt');
-    if (txt === 'Sync zurücksetzen' || txt === 'Reset sync') el.textContent = t('einst_sync_reset');
+    if (txt === 'Sync-Datei' || txt === 'Sync file' || txt === 'Sicherungsdatei verbinden') el.textContent = SPRACHE === 'en' ? 'Connect backup file' : 'Sicherungsdatei verbinden';
+    if (txt === 'Jetzt synchronisieren' || txt === 'Sync now') el.textContent = SPRACHE === 'en' ? 'Load or save copy' : 'Kopie laden oder sichern';
+    if (txt === 'Sync zurücksetzen' || txt === 'Reset sync' || txt === 'Verbindung zur Sicherungsdatei lösen') el.textContent = SPRACHE === 'en' ? 'Disconnect backup file' : 'Verbindung zur Sicherungsdatei lösen';
     if (txt === 'Aktivierungsstatus' || txt === 'Activation status') el.textContent = t('einst_aktivierungsstatus');
     if (txt === 'App-Version' || txt === 'App version') el.textContent = t('einst_version_label');
   });
   document.querySelectorAll('#content-einstellungen .setting-sub').forEach(el => {
     const txt = el.textContent.trim();
-    if (txt.includes('Daten laden oder speichern') || txt.includes('Load or save')) el.textContent = t('einst_sync_jetzt_sub');
-    if (txt.includes('Aktuellen Speicherort vergessen') || txt.includes('Forget current')) el.textContent = t('einst_sync_reset_sub');
+    if (txt.includes('Daten laden oder speichern') || txt.includes('Load or save')) el.textContent = SPRACHE === 'en' ? 'Choose what should happen now' : 'Du entscheidest, was jetzt passieren soll';
+    if (txt.includes('Aktuellen Speicherort vergessen') || txt.includes('Forget current')) el.textContent = SPRACHE === 'en' ? 'Only forgets the link in this app' : 'Nur die Verbindung in dieser App wird gelöst';
   });
 
   // Buttons in Einstellungen
@@ -4245,6 +4884,10 @@ function initialisiereSprache() {
   document.querySelectorAll('#content-einstellungen [onclick="zeigeTab(\'uebungen\')"]').forEach(b => b.textContent = t('einst_pool_oeffnen'));
   document.querySelectorAll('[onclick="importiereStandardPool()"]').forEach(b => b.textContent = t('einst_pool_import_btn'));
   document.querySelectorAll('[onclick="zeigeSyncModal(\'einrichten\')"]').forEach(b => b.textContent = t('einst_sync_einrichten'));
+  const sicherungSpeichern = document.getElementById('btn-sicherung-speichern');
+  if (sicherungSpeichern) sicherungSpeichern.textContent = SPRACHE === 'en' ? 'Save' : 'Speichern';
+  const sicherungLaden = document.getElementById('btn-sicherung-laden');
+  if (sicherungLaden) sicherungLaden.textContent = SPRACHE === 'en' ? 'Load' : 'Laden';
 
   // PDF-Modal übersetzen
   const pdfFelder = [
@@ -4270,6 +4913,7 @@ function initialisiereSprache() {
 
 // EN Standard-Pool importieren
 function importiereStandardPoolEN() {
+  if (!istAdminModus()) return;
   if (!confirm(t('confirm_pool_import'))) return;
   const alle = getUebungen();
   let neu = 0;
@@ -4457,8 +5101,11 @@ function ladeEinstellungen() {
 function rendereStartansicht() {
   ladeHeuteTab();
   ladeStreak();
-  AKTIVER_TAB = 'heute';
-  zeigeTab('heute', false);
+  const startTab = getTabAusHash() || (APP_TABS.includes(AKTIVER_TAB) ? AKTIVER_TAB : 'heute');
+  AKTIVER_TAB = startTab;
+  zeigeTab(startTab, false);
+  setzeTabHistory(startTab, 'replace');
+  initialisiereSwipeNavigation();
   stelleScrollPositionNachSprachwechselWiederHer();
   pruefeUpdate();
   zeigeSyncErinnerung();
@@ -4517,6 +5164,11 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 window.addEventListener('resize', aktualisiereStickyTabPosition);
+
+window.addEventListener('popstate', e => {
+  const tab = e.state?.tab || getTabAusHash() || 'heute';
+  zeigeTab(APP_TABS.includes(tab) ? tab : 'heute', true, 'none');
+});
 
 </script>
 <script src="./js/sync-backup.js"></script>
