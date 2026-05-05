@@ -1,7 +1,14 @@
 {
-    "appVersion":  "3.4",
-    "released":  "2026-04-29",
+    "appVersion":  "3.5",
+    "released":  "2026-05-05",
     "updates":  [
+                    {
+                        "version":  "3.5",
+                        "changelog":  [
+                                          "Check-in-Punkt Verbundenheit mit erklaerender Frage ergaenzt",
+                                          "Service-Worker-Cache auf neue App-Version aktualisiert"
+                                      ]
+                    },
                     {
                         "version":  "3.4",
                         "changelog":  [

@@ -636,7 +636,7 @@
 // ============================================================
 // APP VERSION
 // ============================================================
-const BUNDLED_APP_VERSION = '3.4';
+const BUNDLED_APP_VERSION = '3.5';
 let APP_VERSION = BUNDLED_APP_VERSION;
 let VERSION_UPDATES = [];
 let VERSION_JSON_STATUS = { ok: false, quelle: 'fallback', meldung: 'Noch nicht geladen', geladenAm: null };
@@ -1298,10 +1298,14 @@ function aktualisiereStickyTabPosition() {
 // CHECK-IN FORMULARE
 // ============================================================
 function skalaHTML(id, label, val = 5) {
+  const labelTeile = String(label).split('||');
+  const labelHTML = labelTeile.length > 1
+    ? `<span class="skala-label-text"><span>${labelTeile[0]}</span><small>${labelTeile.slice(1).join('||')}</small></span>`
+    : `<span>${label}</span>`;
   return `
     <div class="skala-gruppe">
       <div class="skala-label">
-        <span>${label}</span>
+        ${labelHTML}
         <span class="skala-wert" id="val-${id}">${val}</span>
       </div>
       <input type="range" id="${id}" min="1" max="10" value="${val}"
